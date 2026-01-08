@@ -1,0 +1,512 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+
+#flash-message {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 24px;
+    text-align: center;
+    font-size: 1.3em;
+    font-weight: bold;
+    z-index: 1000000;
+    transition: opacity 1s ease-out;
+    opacity: 1;
+  }
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0 auto;
+    padding: 0;
+    background-color: #f4f4f4;
+    overflow: hidden;
+    height: 100vh;
+}
+
+html{
+    overflow: hidden;
+
+}
+
+header {
+    background-color: #2c8ef0;
+    display: flex;
+    align-items: center;
+    padding: 0 2em;
+    height: 5em;
+    position: relative;
+    font-size: 1.3em;
+    width: 100%;
+}
+
+img {
+    width: 2.5em;
+}
+
+.data-horario {
+    display: flex;
+}
+
+.calendario{
+    width: 50%;
+    margin: 0 auto;
+}
+
+.data-agenda{
+    margin-top: 5px;
+}
+
+.container-header {
+    color: white;
+    padding: 1.5em;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 100%;
+    margin: 0 auto;
+    font-size: 1.1em;
+}
+
+.nome-medico {
+    font-size: 1.2em;
+    margin: 0;
+}
+.container-total-agenda{
+    position: fixed;
+}
+.setores-dropdown select, .buscar-recados input, .calendario input {
+    padding: 0.3em;
+    border: none;
+    border-radius: 4px;
+    display: block;
+    font-size: 1.1em;
+}
+
+.tabela-container {
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 5em -0.7em) !important; /* ← AQUI: Alterado para 0.5em */
+    max-height: calc(100vh - 5em -0.7em) !important;
+    overflow: hidden;
+}
+
+.tabela-scroll-container {
+    flex-grow: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    border: 1px solid #ccc;
+    background-color: white;
+    width: 100% !important;
+}
+
+table.estatisticas th, 
+table.estatisticas td {
+    padding: 0.3em; /* Reduz o padding para diminuir a altura das linhas apenas nesta tabela */
+    border: 1px solid #ddd;
+    text-align: left;
+} 
+
+table {
+    width: 100% !important;
+    border-collapse: collapse;
+    background-color: white;
+    font-size: 1.5em;
+    height: 100%;
+    padding: 0;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+    overflow-y: hidden;
+}
+
+table, th, td {
+    margin: 0;
+    padding: 0;
+    border: 1px solid #ccc;
+    font-size: 1.2rem;
+    font-size: 1.2rem;
+}
+
+thead {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background-color: #fff;
+    box-shadow: 0 -8px 0 8px #2c8ef0;
+}
+
+thead th {
+    padding: 0.75em;
+    background-color: #2c8ef0;
+    color: white;
+    border-bottom: 2px solid #ddd;
+    text-align: left;
+}
+
+tbody {
+    display: table-row-group;
+}
+
+tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+tbody tr:hover {
+    background-color: #f1f1f1;
+}
+
+th, td {
+    padding: 0.75em;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+.tabela-scroll tr:hover td {
+    background-color: #c2c2c2;
+}
+
+
+.tabela-scroll tr:nth-child(odd) {
+    background-color: #e2e2e2; /* cinza claro */
+}
+
+.tabela-scroll tr:nth-child(even) {
+    background-color: #ffffff; /* branco */
+}
+
+th {
+    background-color: #2c8ef0;
+    color: white;
+}
+
+.botaoData {
+    background-color: #2c8ef0; 
+    color: white;
+    border: 2px solid ; 
+    border-radius: 20px; 
+    font-size: 16px; 
+    font-weight: bold; 
+    padding: 0.3vh 0.8vh; 
+    cursor: pointer; 
+    transition: all 0.3s ease; 
+  }
+  
+.botaoData:hover {
+    background-color: #1a4d7a;
+    color: #ffffff; 
+  }
+
+.hora-atual, .recados{
+    margin: 0;
+    font-size: 1.2em;
+    
+}
+
+.recados{
+    max-width: 300px; /* Define a largura máxima */
+    white-space: nowrap; /* Impede que o texto quebre para a próxima linha */
+    overflow: hidden; /* Oculta o texto que ultrapassa o limite */
+    text-overflow: ellipsis; /* Adiciona "..." ao final do texto cortado */
+    cursor: pointer; /* Mostra que o elemento é interativo */
+}
+
+.total-agenda{
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    padding: 0.56em; /* Reduzido de 0.8em para ~30% menor */
+    height: 2.1em;   /* Reduzido de 3em para ~30% menor */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #2c8ef0;
+    z-index: 1000;
+}
+
+.total-agenda p, .total-agenda label {
+    font-size: 1.8rem;
+    font-size: 1.8rem;
+    color: #ffff;
+}
+
+.total-agenda div{
+    display: flex;
+    align-items: center;
+    margin: 0 5rem;
+}
+
+.total-agenda img[title="Estatísticas"] {
+    width: 2em;
+    height: auto;
+}
+
+.btn-comp-aguardando {
+    padding: 0;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+/* Botão de Busca Avançada */
+.busca-avancada-container {
+    display: flex;
+    align-items: center;
+    margin: 0 15px;
+}
+
+.btn-busca-avancada {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background: linear-gradient(135deg, #2c8ef0 0%, #1a6bb8 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.95em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(44, 142, 240, 0.3);
+}
+
+.btn-busca-avancada:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(44, 142, 240, 0.5);
+    background: linear-gradient(135deg, #1a6bb8 0%, #0d4a7a 100%);
+}
+
+.btn-busca-avancada:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(44, 142, 240, 0.3);
+}
+
+@media (max-width: 1366px) {
+    header {
+        font-size: 1rem;
+    }
+
+    .container-header {
+        font-size: 0.9rem;
+    }
+
+    .nome-medico {
+        font-size: 0.9rem;
+    }
+
+    table {
+        font-size: 1rem;
+    }
+
+    th, td {
+        font-size: 0.9rem;
+    }
+
+    .botaoData {
+        font-size: 0.9rem;
+    }
+
+    .total-agenda p,
+    .total-agenda label {
+        font-size: 1rem;
+    }
+
+    .total-agenda{
+        height: 2rem;
+    }
+}
+
+@media (max-width: 1320px), (max-height: 1100px){
+    header {
+        padding: 0 0.5em;
+        height: 5.5em; /* Reduzido de 6em para um cabeçalho menos alto */
+        width: 100%;
+        font-size: 1em; /* Adicionado para reduzir o tamanho geral da fonte */
+    }
+
+    .recados {
+        max-width: 600px; /* Aumentando a largura dos recados para telas menores */
+    }
+
+    .container-header {
+        color: white;
+        padding: 1em 0.5em; /* Reduzido de 1.5em para 1em */
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        width: 100%;
+        font-size: 0.9em; /* Adicionado para reduzir fontes neste container */
+    }
+
+    .calendario{
+        width: 50%;
+        margin: 0 auto;
+    }
+
+    .data-calendario{
+        justify-content: center;
+    }
+
+    .calendario input {
+        padding: 0em;
+        font-size: 1.2em; /* Reduzido de 1.2em */
+    }
+
+    .nome-medico {
+        font-size: 1em; /* Adicionado para reduzir o nome do médico */
+    }
+
+    .hora-atual, .recados {
+        font-size: 1em; /* Adicionado para reduzir estas informações */
+    }
+
+    .tabela-container {
+        display: flex;
+        flex-direction: column;
+        height: calc(100vh - 5.5em - -0.7em) !important; /* ← AQUI: Alterado para 0.5em */
+        max-height: calc(100vh - 5.5em - -0.7em) !important;
+        overflow: hidden;
+    }
+    
+    .tabela-scroll-container {
+        flex-grow: 1;
+        overflow-x: hidden;
+        border: 1px solid #ccc;
+        background-color: white;
+        height: auto;
+    }
+
+    .estatisticas img {
+        width: 23px;
+        height: 23px;
+    }
+
+    table, th, td {
+        font-size: 0.9em; /* Adicionado para reduzir o texto na tabela */
+    }
+
+    .botaoData {
+        font-size: 0.9em; /* Adicionado para reduzir o texto nos botões */
+    }
+
+    .botoes-acao {
+        height: 3.2em; /* Reduzido */
+        align-items: center;
+        padding: 0.3em 0.6em; /* Reduzido */
+    }
+    
+    .botoes-acao img {
+        width: 22px;
+        margin: 0 auto 3px; /* Reduzido */
+    }
+
+    .total-agenda {
+        height: 3.5em; /* Reduzido */
+        padding: 1.3em; /* Reduzido de 0.8em */
+    }    
+    
+}
+
+@media (min-width: 1920px) and (min-height: 1080px) {
+    .tabela-container {
+        display: flex;
+        flex-direction: column;
+        height: calc(100vh - 5em - -0.7em) !important; /* ← AQUI: Alterado para 0.5em */
+        max-height: calc(100vh - 5em - -0.7em) !important;
+        overflow: hidden;
+    }
+    
+    .tabela-scroll-container {
+        flex-grow: 1;
+        overflow-x: hidden;
+        border: 1px solid #ccc;
+        background-color: white;
+        height: auto; /* Ajusta automaticamente */
+    }
+}
+
+@media (max-width: 1024px) and (max-height: 768px) {
+    .total-agenda {
+        height: 1.5em;    /* 30% menor que o padrão já reduzido */
+        padding: 0.4em;   /* Ajuste proporcional */
+    }
+    .total-agenda p,
+    .total-agenda label {
+        font-size: 1.1rem;
+    }
+    .total-agenda div {
+        margin: 0 2rem;
+    }
+    .total-agenda img[title="Estatísticas"] {
+        width: 1.6em; /* 80% de 2em */
+        height: auto;
+    }
+}
+
+/* Ajustes seguros para a tabela - aplicar no final do arquivo */
+table#novaTabela tr td, 
+table#novaTabela tr th {
+    padding: 3px 4px;
+    font-size: 13px;
+}
+
+/* Garantir que as linhas da tabela se mantenham compactas sem quebrar a estrutura */
+table#novaTabela tr {
+    height: auto;
+}
+
+/* Melhorar legibilidade com zebra stripes mais sutis */
+table#novaTabela tr:nth-child(odd) {
+    background-color: #f5f5f5;
+}
+
+/* Destacar linha ao passar o mouse */
+table#novaTabela tr:hover {
+    background-color: #e0f0ff;
+}
+
+/* Ajuste fino para cabeçalho e rodapé */
+/*
+header {
+    padding: 0 1em;
+    height: 3em;
+}
+
+.total-agenda {
+    height: 1.8em;
+    padding: 0.4em;
+}
+
+.total-agenda p, .total-agenda label {
+    font-size: 1rem;
+}
+*/
+
+/* Adicionar ao final do arquivo para ter maior especificidade */
+#novaTabela th, 
+#novaTabela td {
+    padding: 3px 5px !important;
+    font-size: 12px !important;
+    line-height: 1.2 !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#novaTabela tbody tr:nth-child(odd) {
+    background-color: #f8f8f8;
+}
+
+#novaTabela tbody tr:hover {
+    background-color: #e6f0fa !important;
+}
+
+.atendimento-status-icon img {
+    vertical-align: middle;
+    cursor: pointer;
+    transition: filter 0.2s;
+}
+.atendimento-status-icon img[title="Oftalmologia não gerada"] {
+    filter: grayscale(60%) brightness(1.2);
+}

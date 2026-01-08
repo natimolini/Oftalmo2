@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prontuário Especial - Receituário</title>
+    
+    <!-- Importar os mesmos estilos do receituário -->
+    <link rel="stylesheet" href="../static/style/receituario.css">
+    
+    <style>
+        body {
+            background: #f5f5f5;
+            padding: 20px;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        .container-prontuario-especial {
+            max-width: 1800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .prontuario-especial-header {
+            background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);
+            color: white;
+            padding: 25px 30px;
+        }
+
+        .prontuario-especial-header h1 {
+            margin: 0 0 10px 0;
+            font-size: 1.8em;
+        }
+
+        .prontuario-especial-header p {
+            margin: 0;
+            opacity: 0.95;
+            font-size: 1.1em;
+        }
+
+        .aviso-especial {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            color: #856404;
+            padding: 15px 30px;
+            margin: 0;
+            border-bottom: 1px solid #ffc107;
+        }
+
+        /* NOVA ESTRUTURA: Anamnese no topo */
+        .secao-anamnese-topo {
+            padding: 30px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .secao-anamnese-topo h2 {
+            color: #1a4d7a;
+            font-size: 1.2em;
+            margin: 0 0 15px 0;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .secao-anamnese-topo textarea {
+            width: 100%;
+            min-height: 120px;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 1em;
+            resize: vertical;
+            transition: border-color 0.3s;
+        }
+
+        .secao-anamnese-topo textarea:focus {
+            outline: none;
+            border-color: #2c8ef0;
+        }
+
+        /* Linha divisória */
+        .linha-divisoria {
+            height: 2px;
+            background: linear-gradient(to right, #e0e0e0, #1a4d7a, #e0e0e0);
+            margin: 0;
+        }
+
+        /* Área de receituário - dividida em 2 colunas */
+        .conteudo-receituario {
+            display: flex;
+            gap: 30px;
+            padding: 30px;
+            min-height: 600px;
+        }
+
+        /* Coluna esquerda: Lista de medicamentos */
+        .coluna-medicamentos {
+            flex: 0 0 400px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Coluna direita: Receitas */
+        .coluna-receitas {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+        }
+
+        /* Ajustes do receituário */
+        .receituario {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .receituario .opcoes {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .receituario .opcoes h1 {
+            margin: 0 0 15px 0;
+            color: #1a4d7a;
+            font-size: 1.4em;
+        }
+
+        .receituario .opcoes .top {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .textarea-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .botoes-acao {
+            display: flex;
+            gap: 15px;
+            justify-content: flex-end;
+            padding: 20px 30px;
+            background: #f8f9fa;
+            border-top: 2px solid #e0e0e0;
+        }
+
+        .botoes-acao button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-salvar {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-salvar:hover {
+            background: #218838;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+        }
+
+        .btn-imprimir {
+            background: #007bff;
+            color: white;
+        }
+
+        .btn-imprimir:hover {
+            background: #0056b3;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+        }
+
+        .btn-cancelar {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-cancelar:hover {
+            background: #545b62;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3);
+        }
+
+        .loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+        }
+
+        .loading.active {
+            display: flex;
+        }
+
+        .loading-content {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #2c8ef0;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Estilos da lista de medicamentos - ALTURA MÁXIMA 90PX */
+        .lista-medicamento-protocolo {
+            flex: 1;
+            max-height: 360px; /* ← LIMITADO A 90PX */
+            min-height: 360px; /* ← ALTURA FIXA */
+            overflow-y: auto; /* ← BARRA DE ROLAGEM */
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 10px;
+        }
+
+        /* Estilizar barra de rolagem */
+        .lista-medicamento-protocolo::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .lista-medicamento-protocolo::-webkit-scrollbar-track {
+            background: #f0f0f0;
+            border-radius: 4px;
+        }
+
+        .lista-medicamento-protocolo::-webkit-scrollbar-thumb {
+            background: #2c8ef0;
+            border-radius: 4px;
+        }
+
+        .lista-medicamento-protocolo::-webkit-scrollbar-thumb:hover {
+            background: #1a4d7a;
+        }
+
+        .lista-medicamento-protocolo ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .lista-medicamento-protocolo li {
+            padding: 8px;
+            margin-bottom: 3px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background 0.3s;
+            font-size: 0.9em;
+        }
+
+        .lista-medicamento-protocolo li:hover {
+            background: #e8f4fd;
+        }
+
+        /* Estilos das abas e receitas */
+        .receita-tab-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .receita-pane {
+            display: none;
+            flex: 1;
+        }
+
+        .receita-pane.active {
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* TEXTAREA COM ALTURA 4X MAIOR (360px) E FONTE MAIOR */
+        .receita-pane textarea {
+            flex: 1;
+            width: 100%;
+            max-height: 360px; /* ← 4X MAIOR (90px × 4 = 360px) */
+            min-height: 360px; /* ← ALTURA FIXA */
+            overflow-y: auto; /* ← BARRA DE ROLAGEM */
+            font-size: 1.1em; /* ← FONTE AUMENTADA */
+            font-family: 'Arial', sans-serif;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            resize: none; /* ← IMPEDE REDIMENSIONAMENTO MANUAL */
+        }
+
+        .receita-pane textarea:focus {
+            outline: none;
+            border-color: #2c8ef0;
+        }
+
+        /* Estilizar barra de rolagem do textarea */
+        .receita-pane textarea::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .receita-pane textarea::-webkit-scrollbar-track {
+            background: #f0f0f0;
+            border-radius: 4px;
+        }
+
+        .receita-pane textarea::-webkit-scrollbar-thumb {
+            background: #2c8ef0;
+            border-radius: 4px;
+        }
+
+        .receita-pane textarea::-webkit-scrollbar-thumb:hover {
+            background: #1a4d7a;
+        }
+
+        /* Flash message styling */
+        #flash-message {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 8px;
+            z-index: 10000;
+            display: none;
+            max-width: 400px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        #flash-message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        #flash-message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        #flash-message.warning {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Flash Message Container -->
+    <div id="flash-message"></div>
+
+    <div class="loading" id="loading">
+        <div class="loading-content">
+            <div class="spinner"></div>
+            <p>Processando...</p>
+        </div>
+    </div>
+
+    <div class="container-prontuario-especial">
+        <div class="prontuario-especial-header">
+            <h1>📋 Prontuário Especial - Receituário</h1>
+            <p>Paciente: <strong>{{ nm_paciente }}</strong> | Nascimento: {{ dt_nascimento }} | CPF: {{ nr_cpf }}</p>
+        </div>
+
+        <div class="aviso-especial">
+            <strong>⚠️ Atenção:</strong> Este é um prontuário especial para emissão de receituário sem vínculo com atendimento.
+        </div>
+
+        <!-- ANAMNESE NO TOPO -->
+        <div class="secao-anamnese-topo">
+            <h2>Anamnese (Queixa)</h2>
+            <textarea 
+                id="ds_anamnese" 
+                name="ds_anamnese" 
+                placeholder="Descreva a queixa do paciente..."
+            >{{ prontuario.ds_anamnese if prontuario else '' }}</textarea>
+        </div>
+
+        <!-- LINHA DIVISÓRIA -->
+        <div class="linha-divisoria"></div>
+
+        <!-- ÁREA DE RECEITUÁRIO: MEDICAMENTOS À ESQUERDA, RECEITAS À DIREITA -->
+        <div class="conteudo-receituario">
+            <!-- COLUNA ESQUERDA: Lista de Medicamentos -->
+            <div class="coluna-medicamentos">
+                <div class="receituario">
+                    <div class="opcoes">
+                        <h1>Medicamentos:</h1>
+                        
+                        <div class="top">
+                            <label for="pesquisa-medicamento">Pesquisar:</label>
+                            <input type="text" id="pesquisa-medicamento" placeholder="Digite para pesquisar...">
+
+                            <section class="lista-medicamento-protocolo">
+                                <ul></ul>
+                            </section>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- COLUNA DIREITA: Receitas -->
+            <div class="coluna-receitas">
+                <div class="textarea-container">
+                    <h1 style="margin: 0 0 15px 0; color: #1a4d7a; font-size: 1.4em;">Receituário:</h1>
+                    
+                    <!-- Abas para alternar entre receitas -->
+                    <div class="receita-tabs">
+                        <button type="button" class="receita-tab active" data-tab="receita1">Receita 1</button>
+                        <button type="button" class="receita-tab" data-tab="receita2">Receita 2</button>
+                    </div>
+
+                    <!-- Conteúdo das abas -->
+                    <div class="receita-tab-content">
+                        <div class="receita-pane active" id="receita1-pane">
+                            <textarea 
+                                name="ds_receita" 
+                                class="textarea-receituario" 
+                                id="receita"
+                                placeholder="Digite a primeira receita..."
+                            >{{ prontuario.ds_observacao if prontuario else '' }}</textarea>
+                        </div>
+                        <div class="receita-pane" id="receita2-pane">
+                            <textarea 
+                                name="ds_receita2" 
+                                class="textarea-receituario" 
+                                id="receita2"
+                                placeholder="Digite a segunda receita (opcional)..."
+                            >{{ prontuario.ds_observacao2 if prontuario else '' }}</textarea>
+                        </div>
+                    </div>
+
+                    <div class="copias">
+                        <label for="qtd-copias">Número de cópias</label>
+                        <input type="number" id="qtd-copias" value="1" min="1" max="3">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="botoes-acao">
+            <button type="button" id="btn-salvar" class="btn-salvar">
+                💾 Salvar
+            </button>
+            <button type="button" id="btn-imprimir" class="btn-imprimir">
+                🖨️ Imprimir
+            </button>
+            <button type="button" id="btn-cancelar" class="btn-cancelar">
+                ❌ Fechar
+            </button>
+        </div>
+    </div>
+
+    <!-- Dados ocultos para impressão -->
+    <div id="nm_paciente" 
+         style="display: none;" 
+         data-nascimento="{{ dt_nascimento }}" 
+         data-cpf="{{ nr_cpf }}">{{ nm_paciente }}</div>
+
+    <!-- Scripts -->
+    <script type="module">
+        import { exibirMensagem } from '../static/js/flash_messages.js';
+
+        // Dados do prontuário especial
+        const cdPessoaFisica = parseInt('{{ cd_pessoa_fisica }}');
+        const nmPaciente = "{{ nm_paciente }}";
+        const cdProntuarioEspecial = JSON.parse('{{ cd_prontuario_especial if cd_prontuario_especial else "null" }}');        const dtNascimento = "{{ dt_nascimento }}";
+        const nrCpf = "{{ nr_cpf }}";
+
+        console.log('Dados carregados:', { cdPessoaFisica, nmPaciente, cdProntuarioEspecial, dtNascimento, nrCpf });
+
+        // Gerenciamento de medicamentos simplificado
+        let medicamentos = [];
+
+        async function carregarMedicamentos(termo = '') {
+            const lista = document.querySelector('.lista-medicamento-protocolo ul');
+            
+            try {
+                lista.innerHTML = '<li style="text-align: center; padding: 10px;">Carregando...</li>';
+                
+                const url = termo 
+                    ? `/api/search-medications?term=${encodeURIComponent(termo)}`
+                    : '/api/medications';
+                
+                const response = await fetch(url);
+                if (!response.ok) throw new Error('Erro ao buscar medicamentos');
+                
+                medicamentos = await response.json();
+                
+                if (medicamentos.length === 0) {
+                    lista.innerHTML = '<li style="text-align: center; padding: 10px; color: #666;">Nenhum medicamento encontrado</li>';
+                    return;
+                }
+                
+                lista.innerHTML = '';
+                medicamentos.forEach(med => {
+                    const li = document.createElement('li');
+                    li.textContent = med.ds_medicamento;
+                    li.dataset.id = med.cd_medicamento;
+                    
+                    li.addEventListener('click', () => adicionarMedicamento(med));
+                    
+                    lista.appendChild(li);
+                });
+                
+                console.log('Medicamentos carregados:', medicamentos.length);
+            } catch (error) {
+                console.error('Erro ao carregar medicamentos:', error);
+                lista.innerHTML = '<li style="text-align: center; padding: 10px; color: red;">Erro ao carregar medicamentos</li>';
+            }
+        }
+
+        function adicionarMedicamento(med) {
+            const activeTab = document.querySelector('.receita-tab.active');
+            const activeTabId = activeTab ? activeTab.dataset.tab : 'receita1';
+            const textarea = document.getElementById(activeTabId === 'receita1' ? 'receita' : 'receita2');
+            
+            const tipoDeUso = med.ds_uso_medicamento ? `USO: ${med.ds_uso_medicamento}` : '';
+            const posologiaComUso = tipoDeUso 
+                ? `${tipoDeUso}\n${med.ds_posologia}` 
+                : med.ds_posologia;
+            
+            const currentText = textarea.value.trim();
+            
+            // Verificar se já existe
+            if (currentText.includes(posologiaComUso.trim())) {
+                exibirMensagem('⚠️ Este medicamento já foi adicionado', 'warning');
+                return;
+            }
+            
+            textarea.value = currentText 
+                ? `${currentText}\n\n${posologiaComUso}` 
+                : posologiaComUso;
+            
+            textarea.dispatchEvent(new Event('input'));
+            
+            exibirMensagem('✅ Medicamento adicionado', 'success');
+        }
+
+        // Inicialização
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('Inicializando prontuário especial...');
+            
+            // Carregar medicamentos
+            carregarMedicamentos();
+            
+            // Busca de medicamentos
+            const searchInput = document.getElementById('pesquisa-medicamento');
+            let searchTimeout;
+            
+            searchInput.addEventListener('input', (e) => {
+                clearTimeout(searchTimeout);
+                const termo = e.target.value.trim();
+                
+                searchTimeout = setTimeout(() => {
+                    if (termo.length >= 3) {
+                        carregarMedicamentos(termo);
+                    } else if (termo.length === 0) {
+                        carregarMedicamentos();
+                    }
+                }, 300);
+            });
+            
+            // Sistema de abas
+            document.querySelectorAll('.receita-tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    document.querySelectorAll('.receita-tab').forEach(t => t.classList.remove('active'));
+                    document.querySelectorAll('.receita-pane').forEach(p => p.classList.remove('active'));
+                    
+                    tab.classList.add('active');
+                    document.getElementById(`${tab.dataset.tab}-pane`).classList.add('active');
+                });
+            });
+            
+            // Botões
+            document.getElementById('btn-salvar').addEventListener('click', salvarProntuarioEspecial);
+            document.getElementById('btn-imprimir').addEventListener('click', imprimirReceita);
+            document.getElementById('btn-cancelar').addEventListener('click', () => window.close());
+            
+            // Auto-resize anamnese
+            const anamneseTextarea = document.getElementById('ds_anamnese');
+            anamneseTextarea.addEventListener('input', function() {
+                this.style.height = 'auto';
+                this.style.height = (this.scrollHeight) + 'px';
+            });
+            
+            // Atalhos de teclado
+            document.addEventListener('keydown', function(e) {
+                if (e.ctrlKey && e.key === 's') {
+                    e.preventDefault();
+                    salvarProntuarioEspecial();
+                }
+                
+                if (e.ctrlKey && e.key === 'p') {
+                    e.preventDefault();
+                    imprimirReceita();
+                }
+            });
+        });
+
+        function showLoading() {
+            document.getElementById('loading').classList.add('active');
+        }
+
+        function hideLoading() {
+            document.getElementById('loading').classList.remove('active');
+        }
+
+        async function salvarProntuarioEspecial() {
+            console.log('Salvando prontuário especial...');
+            
+            if (!cdPessoaFisica || isNaN(cdPessoaFisica)) {
+                exibirMensagem('❌ Erro: Código do paciente inválido', 'error');
+                return;
+            }
+
+            const dados = {
+                cd_pessoa_fisica: cdPessoaFisica,
+                nm_paciente: nmPaciente,
+                ds_anamnese: document.getElementById('ds_anamnese').value.trim(),
+                ds_conduta: '',
+                ds_observacao: document.getElementById('receita').value.trim(),
+                ds_observacao2: document.getElementById('receita2').value.trim()
+            };
+
+            if (!dados.ds_anamnese && !dados.ds_observacao && !dados.ds_observacao2) {
+                exibirMensagem('⚠️ Preencha pelo menos um campo antes de salvar', 'warning');
+                return;
+            }
+
+            showLoading();
+
+            try {
+                let response;
+
+                if (cdProntuarioEspecial && cdProntuarioEspecial !== null) {
+                    console.log('Atualizando prontuário:', cdProntuarioEspecial);
+                    response = await fetch(`/api/prontuario-especial/atualizar/${cdProntuarioEspecial}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(dados)
+                    });
+                } else {
+                    console.log('Criando novo prontuário');
+                    response = await fetch('/api/prontuario-especial/criar', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(dados)
+                    });
+                }
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error('Erro na resposta:', errorText);
+                    throw new Error(`Erro ${response.status}: ${response.statusText}`);
+                }
+
+                const resultado = await response.json();
+                console.log('Resultado:', resultado);
+
+                if (resultado.status === 'success') {
+                    exibirMensagem('✅ ' + resultado.mensagem, 'success');
+
+                    if (!cdProntuarioEspecial && resultado.cd_prontuario_especial) {
+                        setTimeout(() => {
+                            window.location.href = `/prontuario-especial?cd_pessoa_fisica=${cdPessoaFisica}&cd_prontuario=${resultado.cd_prontuario_especial}`;
+                        }, 1500);
+                    }
+                } else {
+                    throw new Error(resultado.mensagem || resultado.detail || 'Erro desconhecido');
+                }
+            } catch (error) {
+                console.error('Erro ao salvar:', error);
+                exibirMensagem('❌ Erro ao salvar: ' + error.message, 'error');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        async function imprimirReceita() {
+            console.log('Função imprimirReceita chamada');
+            
+            const receita1 = document.getElementById('receita').value.trim();
+            const receita2 = document.getElementById('receita2').value.trim();
+            const qtdCopias = parseInt(document.getElementById('qtd-copias').value) || 1;
+
+            console.log('Dados:', { receita1, receita2, qtdCopias, nmPaciente, dtNascimento, nrCpf });
+
+            const activeTab = document.querySelector('.receita-tab.active');
+            const activeTabId = activeTab ? activeTab.dataset.tab : 'receita1';
+            
+            const receitaAtiva = activeTabId === 'receita1' ? receita1 : receita2;
+
+            console.log('Receita ativa:', receitaAtiva);
+
+            if (!receitaAtiva) {
+                exibirMensagem('⚠️ Não há receita para imprimir na aba selecionada', 'warning');
+                return;
+            }
+
+            if (qtdCopias < 1 || qtdCopias > 3) {
+                exibirMensagem('⚠️ Número de cópias deve estar entre 1 e 3', 'warning');
+                return;
+            }
+
+            showLoading();
+
+            try {
+                console.log('Enviando requisição para /gerar-pdf-receita');
+                
+                const response = await fetch('/gerar-pdf-receita', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        receita: receitaAtiva,
+                        nm_pessoa_fisica: nmPaciente,
+                        data_nascimento: dtNascimento,
+                        data_cpf: nrCpf,
+                        nr_copias: qtdCopias
+                    })
+                });
+
+                console.log('Status da resposta:', response.status);
+
+                if (response.ok) {
+                    const htmlContent = await response.text();
+                    console.log('HTML recebido, tamanho:', htmlContent.length);
+                    
+                    const iframe = document.createElement('iframe');
+                    iframe.style.position = 'absolute';
+                    iframe.style.width = '0';
+                    iframe.style.height = '0';
+                    iframe.style.border = 'none';
+                    
+                    document.body.appendChild(iframe);
+                    
+                    const iframeDoc = iframe.contentWindow.document;
+                    iframeDoc.open();
+                    iframeDoc.write(htmlContent);
+                    iframeDoc.close();
+
+                    iframe.contentWindow.addEventListener('load', () => {
+                        console.log('Iframe carregado, iniciando impressão');
+                        setTimeout(() => {
+                            try {
+                                iframe.contentWindow.focus();
+                                iframe.contentWindow.print();
+                                console.log('Diálogo de impressão aberto');
+                            } catch (e) {
+                                console.error("Erro ao imprimir:", e);
+                                exibirMensagem("❌ Não foi possível abrir o diálogo de impressão", "error");
+                            }
+                            
+                            setTimeout(() => {
+                                document.body.removeChild(iframe);
+                                console.log('Iframe removido');
+                            }, 1000);
+                        }, 500);
+                    });
+
+                    exibirMensagem('📄 Preparando impressão...', 'success');
+                } else {
+                    const errorText = await response.text();
+                    console.error('Erro na resposta:', errorText);
+                    throw new Error(`Erro ${response.status}: ${errorText}`);
+                }
+            } catch (error) {
+                console.error('Erro ao imprimir:', error);
+                exibirMensagem('❌ Erro ao imprimir receita: ' + error.message, 'error');
+            } finally {
+                hideLoading();
+            }
+        }
+    </script>
+</body>
+
+</html>

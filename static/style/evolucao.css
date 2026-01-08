@@ -1,0 +1,1098 @@
+h1 {
+    margin: 0 0 0.4em 0;
+    font-weight: 550;
+    color: #1a4d7a;
+    font-size: 1.5rem; 
+}
+
+.container-evolucao {
+    display: flex;
+    gap: 0; /* Alterado de 0.4em para 0 */
+    width: 100%;
+    height: 100%;
+}
+
+.evolucao {
+    background-color: #ffffff;
+    padding: 0.8em; 
+    padding-bottom: 5em; /* Adiciona espaço para o menu fixo */
+    box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.1); 
+    height: 100%;
+    max-height: calc(100vh - 18em); /* Altura da viewport menos o menu */
+    width: 80%; 
+    overflow-y: scroll;
+    display: flex;
+    flex-direction: column;
+    
+    /* Barra de rolagem 60% mais larga */
+    scrollbar-width: thick; /* Para Firefox */
+    scrollbar-color: #2c8ef0 #f0f0f0;
+}
+
+/* Estilização da barra de rolagem para Webkit (Chrome, Edge, Safari) */
+.evolucao::-webkit-scrollbar {
+    width: 19.2px; /* 60% maior que o padrão de 12px */
+}
+
+.evolucao::-webkit-scrollbar-track {
+    background: #f0f0f0;
+    border-radius: 10px;
+}
+
+.evolucao::-webkit-scrollbar-thumb {
+    background: #2c8ef0;
+    border-radius: 10px;
+    border: 3px solid #f0f0f0; /* Borda para dar um efeito visual melhor */
+}
+
+.evolucao::-webkit-scrollbar-thumb:hover {
+    background: #1a4d7a;
+}
+
+.evolucao div {
+    display: flex;
+    align-items: center;
+    /* alinhamento no topo */
+    margin-bottom: 0.3em;
+}
+
+.evolucao label {
+    width: 80px !important;
+    font-weight: bold;
+    color: #1a4d7a;
+    margin-bottom: 0.1em;
+    font-size: 1.2rem; 
+    margin: 0 !important;
+    padding: 0 !important;
+    line-height: 1.1;
+    /* ou menor, se necessário */
+}
+
+.evolucao textarea {
+    width: 130%; 
+    padding: 4px 8px;
+    font-family: 'Arial Narrow', Arial, sans-serif !important;
+    border: 1px solid #2c8ef0;
+    border-radius: 4px;
+    font-size: 0.85rem; 
+    color: black;
+    transition: border-color 0.3s ease;
+    resize: vertical;
+    background-color: #fffae6;
+    min-height: 4em;
+    max-height: none;
+    height: auto;
+    overflow-y: hidden; /* Remove a barra de rolagem vertical */
+}
+
+.evolucao input[type="text"]:focus {
+    border-color: #2c8ef0;
+}
+
+.evolucao div:hover label {
+    color: #2c8ef0;
+}
+
+.evolucao button {
+    padding: 4px 8px;
+    border: 1px solid #2c8ef0;
+    border-radius: 4px;
+    font-size: 0.75rem; 
+    margin-left: 0.8vh; 
+    cursor: pointer;
+}
+
+.lado-direito {
+    display: flex;
+    flex-direction: column;
+    width: 80%; 
+    height: 100%; 
+}
+
+.section-dinamica {
+    background-color: #ffffff;
+    padding: 0.8em; 
+    box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.1); 
+    height: 100%;
+    width: 100%;
+}
+
+#form-oculos{
+    display: flex;
+    height: 100%;
+    align-items: center;
+}
+
+#form-oculos h1 {
+    margin-bottom: 1.5em;
+    display: block;
+    clear: both;
+}
+
+.oculos{
+    background-color: #ffffff;
+    padding: 0.8em; 
+    height: 100%;
+    width: 90%; 
+    margin-top: 1em;
+}
+
+.oculos label {
+    width: 20%; 
+    color: #1a4d7a;
+    margin-bottom: 0.1em;
+    font-size: 1.2rem; 
+}
+
+.tabela-oculos {
+    border-collapse: collapse;
+    box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.1);
+    margin: 0.8em auto; 
+}
+
+.tabela-oculos th, .tabela-oculos td {
+    padding: 0.25rem 0.2rem; 
+    text-align: center;
+    font-size: 1.1rem; 
+    color: #333;
+    border: 1px solid #2c8ef0;
+    width: 24%; 
+}
+
+.od-oe, .tabela-oculos th {
+    background-color: #1a4d7a;
+    color: #ffffff;
+    font-weight: bold;
+}
+
+.tabela-oculos td {
+    position: relative;
+    background-color: #ffffff;
+    color: #1a4d7a;
+}
+
+.input-oculos, .adicao {
+    text-align: center;
+    padding-right: 8px;
+    width: 100px;
+    height: 40px;
+    position: relative;
+}
+
+/* .tabela-oculos td:not(:has(input[name*="eixo"]))[data-prefix="+"]::before {
+    content: "+";
+    position: absolute;
+    left: 20%;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1;
+    pointer-events: none;
+    font-size: 1.1rem;
+    color: #333;
+}
+
+
+td:not(:has(input[name*="eixo"]))[data-prefix="+"]::before {
+    content: "+";
+    position: absolute;
+    left: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #666;
+} */
+
+
+.div-adicao {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.adicao-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.adicao-wrapper[data-prefix="+"]::before {
+    content: "+";
+    position: absolute;
+    left: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #666;
+    z-index: 1;
+}
+
+/* .tabela-oculos input[name$="eixo"] {
+    position: relative;
+    padding-left: 20px; 
+} */
+
+.tabela-oculos tbody td {
+    position: relative;
+    border: 1px solid #2c8ef0;
+    color: #000000;
+    font-size: 1.1rem;
+    text-align: center;
+}
+
+.tabela-oculos input[type="text"], .tabela-oculos input[type="number"] {
+    position: relative;
+    width: 80%;
+    padding: 0.25em 0.1em;
+    border: none;
+    font-size: 1.1rem;
+    text-align: center;
+    background-color: #fffae6;
+    box-sizing: border-box;
+    border-radius: 10px;
+}
+
+.tabela-oculos input[type="text"].positive, .tabela-oculos input[type="number"].positive {
+    padding-left: 20px; 
+}
+
+.tabela-oculos input[type="text"]:focus, .tabela-oculos input[type="number"]:focus {
+    border-color: #1a4d7a;
+    outline: none;
+}
+
+.tabela-oculos td input {
+    background-color: #ffffff;
+    color: #1a4d7a;
+}
+
+.div-adicao{
+    margin: 0 auto;
+    width: 20%;
+}
+
+.adicao{
+    width: 70%;
+    padding: 4px 8px; 
+    border: 1px solid #2c8ef0;
+    border-radius: 4px;
+    font-size: 1.1rem; 
+    color: #333;
+    margin: 0 auto;
+    background-color: #fffae6
+}
+
+.oculos {
+    display: block;
+}
+
+.info-oculos {
+    width: 100%; 
+}
+
+.observacao {
+    width: 70%; 
+    margin: 0 auto; 
+    height: 40%;
+}
+
+.refracao{
+    width: 40%;
+    margin: 0 auto;
+}
+.refracao label{
+    font-size: 1.3rem;
+}
+
+.observacao label {
+    display: block;
+    margin-bottom: 0.3em;
+    color: #1a4d7a;
+    font-size: 1.3rem;
+    font-weight: bold;
+}
+
+.observacao {
+    position: relative;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.observacao-header {
+    display: flex;
+    justify-content: space-between; /* Isso já está correto */
+    align-items: center;
+    margin-bottom: 5px;
+    width: 100%; /* Garante que ocupe toda a largura disponível */
+}
+
+.observacao-header button {
+    margin-left: auto; /* Empurra o botão para a extrema direita */
+    padding: 4px 8px;
+    border: 1px solid #2c8ef0;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    cursor: pointer;
+}
+
+.textarea-button {
+    display: flex;
+    align-items: flex-start; 
+    gap: 0.5em; 
+    height: 100%;
+}
+
+.observacao textarea {
+    width: 100%;
+    padding: 4px 8px;
+    border: 1px solid #2c8ef0;
+    border-radius: 4px;
+    color: #333;
+    resize: none;
+    font-size: 1.1rem;
+    max-height: 100%;
+    min-height: 100%;
+    overflow: auto;
+    background-color: #fffae6;
+}
+
+.observacao button {
+    padding: 4px 8px;
+    border: 1px solid #2c8ef0;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    cursor: pointer;
+    height: fit-content;
+}
+
+.evolucao .disabled-button {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background-color: #ccc;
+    border: 1px solid #999;
+}
+
+.evolucao .disabled-button:hover {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+.input-oculos {
+    position: relative;
+}
+
+
+@media (max-width: 1366px){
+
+    h1 {
+        font-size: 1.1rem; 
+    }
+
+    .evolucao {
+        overflow-y: scroll; 
+        height: 100%;
+        max-height: 100%;
+        padding-bottom: 5em;
+    }
+
+    .observacao-header button {
+        font-size: 0.7rem;
+        padding: 2px 6px;
+    }
+
+    .evolucao label {
+        font-size: 0.9rem;
+    }
+
+    .evolucao textarea {
+        padding: 2px 4px;
+        font-size: 0.85rem;
+        min-height: 4em; 
+        max-height: none;
+        overflow-y: hidden; /* Remover barra de rolagem */
+        height: auto;
+    }
+
+    .oculos label {
+        font-size: 0.9rem; 
+    }
+
+    .tabela-oculos tbody td{
+        font-size: 0.8rem;  
+        padding: 0rem 0rem;
+    }
+
+    .tabela-oculos th{
+        font-size: 0.8rem;  
+    }
+
+    .tabela-oculos input[type="text"] {
+        width: 60%;
+        font-size: 0.9rem;
+    }
+
+    .adicao{
+        font-size: 0.8rem;
+        padding: 2px;
+    }
+
+    .observacao textarea {
+        width: 100%;
+        padding: 2px 4px;
+        border: 1px solid #2c8ef0;
+        border-radius: 4px;
+        font-size: 0.9rem;
+        max-height: 4rem;
+        min-height: 4rem;
+    }
+
+    /* SEPARADOR de consultas antigas */
+    .separador-consultas-antigas-item {
+        background-color: #6c757d !important;
+        color: white !important;
+        font-weight: bold !important;
+        text-align: center !important;
+        border: none !important;
+        margin: 8px 0 4px 0 !important; /* Margens reduzidas */
+        border-radius: 4px !important;
+        padding: 6px 10px !important; /* Padding reduzido */
+        font-size: 0.85em !important; /* Fonte menor */
+        cursor: default !important;
+        pointer-events: none !important;
+        height: 1.8rem !important; /* Reduzido de 2.2rem para 1.8rem */
+    }
+
+    /* CONSULTAS ANTIGAS */
+    .consultas-antigas-item {
+        background-color: #1a4d7a !important;
+        border: 1px solid #2c8ef0 !important;
+        color: white !important;
+        padding: 6px 10px !important; /* Padding reduzido */
+        margin: 1px 0 !important; /* Margens menores */
+        border-radius: 4px !important;
+        cursor: pointer !important;
+        transition: all 0.2s ease !important;
+        font-size: 0.85em !important; /* Fonte menor */
+        text-align: center !important;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        height: 1.8rem !important; /* Reduzido de 2.2rem para 1.8rem */
+    }
+
+    .consultas-antigas-item:hover {
+        background-color: #0f2d47 !important;
+        border-color: #2c8ef0 !important;
+        color: white !important;
+        transform: translateX(2px) !important;
+    }
+
+    /* BARRA DE ROLAGEM */
+    .arvore-prontuario::-webkit-scrollbar {
+        width: 10px !important;
+    }
+
+    .arvore-prontuario::-webkit-scrollbar-thumb {
+        background-color: #1a4d7a !important;
+        border-radius: 5px;
+        border: 2px solid #f0f0f0;
+    }
+
+    .arvore-prontuario::-webkit-scrollbar-thumb:hover {
+        background-color: #0f2d47 !important;
+    }
+
+    .arvore-prontuario::-webkit-scrollbar-track {
+        background: #f0f0f0;
+        border-radius: 5px;
+    }
+
+    /* Para Firefox */
+    .arvore-prontuario {
+        scrollbar-width: thin;
+        scrollbar-color: #1a4d7a #f0f0f0;
+        max-height: 390px !important; /* 30% maior que 300px */
+    }
+
+    .botoes-acao{
+        height: 1.6rem; /* Reduzido 20%: era 2rem */
+        align-items: center;
+    }
+
+    .botoes-acao label {
+        font-size: 0.64rem; /* Reduzido 20%: era 0.8rem */
+    }
+
+    .botoes-acao div:hover label {
+        font-size: 0.88rem; /* Reduzido 20%: era 1.1rem */
+    }
+}
+
+/*Essa parece a resolução vista*/
+@media (max-width: 1320px), (max-height: 1100px) {
+    h1 {
+        font-size: 1.2em; 
+    }
+
+    .refracao {
+        width: 60%;
+    } 
+
+    .refracao label {
+        font-size: 0.9em;
+    }
+
+    .nm_paciente {
+        max-width: 200px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        cursor: pointer;
+    }
+
+    .profissao {
+        max-width: 100px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        cursor: pointer;
+    }
+
+    .convenio {
+        max-width: 100px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        cursor: pointer;
+    }
+
+    .observacao {
+        width: 100%;
+        height: 100%;
+    }
+
+    .observacao textarea { 
+        max-height: 45%;
+        min-height: 45%;
+        font-size: 1em; /*mudei o tamanho*/
+        width: 98%;
+        margin: 0 auto;
+        border: 1px solid #2c8ef0;
+    }
+
+    .observacao label {
+        font-size: 1em; /*mudei o tamanho*/
+    }
+
+    .evolucao {
+        width: 80%;
+        overflow-y: scroll;
+        height: 100%;
+        max-height: calc(100vh - 18em);
+        padding-bottom: 5em;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .evolucao div label {
+        font-size: 0.9em; /*mudei o tamanho*/
+    }
+
+    .evolucao textarea {
+        background-color: #fffae6;
+        width: 110%; 
+        font-size: 1em;
+        line-height: 1;
+        min-height: 3em;
+        max-height: none;
+        overflow-y: hidden; /* Remover barra de rolagem */
+        height: auto;
+    }
+
+    .tabela-oculos th {
+        font-size: 0.75rem; /* Reduzido de 0.8rem */
+    }
+
+    .tabela-oculos td {
+        font-size: 0.55rem; /* Reduzido de 0.6rem */
+    }
+
+    .conteudo {
+        grid-template-columns: 8% 92%; 
+    }
+
+    .botoes-acao img {
+        width: 10.4%; /* Reduzido 20%: era 13% */
+    }
+
+    .navegacao-prontuario a {
+        font-size: 1.2em;
+    }
+
+    .arvore-prontuario li {
+        font-size: 1em;
+    }
+
+    .adicao {
+        width: 130%;
+        padding: 5px;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+        box-sizing: border-box;
+        font-size: 0.8em; /* Adicionado tamanho de fonte */
+    }
+
+    .label-adicao {
+        font-size: 0.95em; /* Reduzido de 1em */
+        margin-right: 12px;
+        white-space: nowrap;
+    }
+
+    .adicao-wrapper {
+        flex-grow: 1;
+    }
+    
+    .div-adicao.dinamica {
+        position: relative;
+        display: flex;
+        align-items: center;
+        gap: 20px; 
+    }
+
+    /* Adicione isso para garantir que os inputs dentro da tabela de óculos também fiquem menores */
+    .tabela-oculos input[type="text"], .tabela-oculos input[type="number"] {
+        font-size: 0.95rem;
+    }
+
+    #form-oculos h1 {
+        margin-bottom: 1.2em;
+    }
+}
+
+/* Nova media query para resolução 1024x768 */
+@media (max-width: 1024px), (max-height: 768px) {
+    /* Cabeçalho e títulos */
+    h1 {
+        font-size: 0.85em; 
+        margin: 0 0 0.2em 0;
+    }
+    
+    h2, h3 {
+        font-size: 0.75em;
+    }
+    
+    .info-paciente, .header-info, .dados-paciente {
+        font-size: 0.75em;
+    }
+    
+    /* Informações do paciente */
+    .nm_paciente {
+        max-width: 150px;
+        font-size: 0.8em;
+    }
+    
+    .profissao, .convenio {
+        max-width: 80px;
+        font-size: 0.7em;
+    }
+    
+    /* Container de evolução */
+    .evolucao {
+        width: 100%;
+        max-height: calc(100vh - 15em);
+        padding-bottom: 4em;
+    }
+    
+    .evolucao div label {
+        font-size: 0.75em;
+        width: 22%;
+    }
+    
+    .evolucao textarea {
+        width: 100%; 
+        font-size: 0.85em;
+        min-height: 2.5em;
+        max-height: none;
+        resize: vertical;
+        overflow-y: hidden; 
+        height: auto;
+    }
+    
+    .evolucao button {
+        font-size: 0.65rem;
+        padding: 2px 5px;
+        margin-left: 4px;
+    }
+    
+    .evolucao h2, 
+    .evolucao h3,
+    .evolucao p {
+        font-size: 0.85em;
+    }
+    
+    /* Botões de macro */
+    button.macro-btn {
+        font-size: 0.6rem;
+        padding: 0px 3px;
+        height: 18px;
+        min-width: 30px;
+    }
+    
+    /* Seção de refração */
+    .refracao {
+        width: 70%;
+    }
+    
+    .refracao label,
+    .refracao span {
+        font-size: 0.75em;
+    }
+    
+    /* Container de óculos */
+    .oculos {
+        padding: 0.5em;
+        width: 95%;
+    }
+    
+    .oculos label {
+        font-size: 0.8rem;
+        width: 18%;
+        margin-bottom: 0;
+    }
+    
+    /* Tabela de óculos */
+    .tabela-oculos {
+        margin: 0.5em auto;
+        width: 98%;
+    }
+    
+    .tabela-oculos th {
+        font-size: 0.65rem;
+        padding: 0.1rem;
+    }
+    
+    .tabela-oculos td {
+        font-size: 0.5rem;
+        padding: 0.1rem 0;
+    }
+    
+    .tabela-oculos tbody td {
+        font-size: 0.9rem;
+    }
+    
+    .tabela-oculos input[type="text"], 
+    .tabela-oculos input[type="number"] {
+        font-size: 0.75rem;
+        padding: 0.1em;
+        width: 85%;
+        height: 22px;
+    }
+    
+    /* Seção de adição */
+    .div-adicao {
+        width: 35%;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+    }
+    
+    .adicao {
+        width: 65%;
+        padding: 1px;
+        font-size: 0.8em;
+        height: 20px;
+        line-height: 1.2;
+        margin-left: auto;
+    }
+    
+    .label-adicao {
+        font-size: 0.8em !important;
+        margin-right: 15px !important;
+        white-space: nowrap !important;
+        min-width: 40px;
+        display: inline-block;
+    }
+    
+    .input-oculos {
+        height: 22px;
+    }
+    
+    /* Seção de observações */
+    .observacao textarea { 
+        max-height: 40%;
+        min-height: 40%;
+        font-size: 1em;
+        width: 97%;
+    }
+    
+    .observacao label {
+        font-size: 0.9em;
+    }
+    
+    .observacao-header button {
+        font-size: 0.6rem;
+        padding: 1px 3px;
+        margin-left: 3px;
+        height: 18px;
+        min-width: 25px;
+        line-height: 1;
+    }
+    
+    /* Observações dentro de óculos */
+    .oculos .observacao {
+        margin-bottom: 5px;
+    }
+
+    .section-dinamica[data-section="exames"] {
+        width: 400px;
+        margin: 0 auto;
+    }
+
+    .oculos .observacao label {
+        font-size: 0.8em;
+        margin-bottom: 2px;
+    }
+    
+    .oculos .observacao textarea {
+        font-size: 0.9em;
+        max-height: 35%;
+        min-height: 35%;
+        line-height: 1.2;
+        padding: 2px 4px;
+    }
+    
+    .info-oculos {
+        width: 98%;
+        margin: 0 auto;
+    }
+    
+    .info-oculos .observacao textarea {
+        font-size: 0.85em;
+        max-height: 3em;
+        min-height: 3em;
+    }
+    
+    /* Comportamento de textareas vazias */
+    .evolucao textarea.empty {
+        min-height: 0.5em;
+        height: 1.5em;
+        max-height: 1.5em;
+    }
+    
+    .observacao textarea.empty {
+        max-height: 2em;
+        min-height: 2em;
+    }
+    
+    .oculos .observacao textarea.empty {
+        max-height: 2em;
+        min-height: 2em;
+    }
+    
+    .info-oculos .observacao textarea.empty {
+        max-height: 1.5em;
+        min-height: 1.5em;
+    }
+    
+    /* Comportamento para textareas com conteúdo */
+    .observacao textarea:not(.empty) { 
+        max-height: none;
+        resize: vertical;
+    }
+    
+    .oculos .observacao textarea:not(.empty) {
+        max-height: none;
+    }
+    
+    .info-oculos .observacao textarea:not(.empty) {
+        max-height: none;
+    }
+    
+    /* Layout da página */
+    .conteudo {
+        grid-template-columns: 9% 91%;
+    }
+    
+    .botoes-acao img {
+        width: 12%; /* Reduzido 20%: era 15% */
+    }
+    
+    .navegacao-prontuario a {
+        font-size: 1em;
+    }
+    
+    .arvore-prontuario li {
+        font-size: 0.9em;
+    }
+
+    #form-oculos h1 {
+        margin-bottom: 1em;
+        font-size: 1.2em;
+    }
+
+    #textarea-exames,
+    textarea[name="exames"] {
+        font-size: 0.85em !important; /* Aumentado em aproximadamente 2px */
+        color: black !important; /* Garantir que o texto seja preto */
+    }
+    
+    /* Se quiser aumentar outros campos específicos */
+    #textarea-anamnese,
+    textarea[name="anamnese"] {
+        font-size: 0.85em !important;
+        color: black !important;
+    }
+    
+    #textarea-diagnostico,
+    textarea[name="diagnostico"] {
+        font-size: 0.85em !important;
+        color: black !important;
+    }
+    
+    #textarea-conduta,
+    textarea[name="conduta"] {
+        font-size: 0.8em !important;
+        color: black !important;
+    }
+
+    /* SEPARADOR de consultas antigas - versão base */
+    .separador-consultas-antigas-item {
+        background-color: #6c757d !important;
+        color: white !important;
+        font-weight: bold !important;
+        text-align: center !important;
+        border: none !important;
+        margin: 10px 0 5px 0 !important;
+        border-radius: 4px !important;
+        padding: 8px 12px !important;
+        font-size: 0.9em !important;
+        cursor: default !important;
+        pointer-events: none !important;
+        height: 2.2rem !important;
+    }
+
+    /* CONSULTAS ANTIGAS - versão base */
+    .consultas-antigas-item {
+        background-color: #1a4d7a !important;
+        border: 1px solid #2c8ef0 !important;
+        color: white !important;
+        padding: 8px 12px !important;
+        margin: 2px 0 !important;
+        border-radius: 4px !important;
+        cursor: pointer !important;
+        transition: all 0.2s ease !important;
+        font-size: 0.9em !important;
+        text-align: center !important;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        height: 2.2rem !important;
+    }
+
+    .consultas-antigas-item:hover {
+        background-color: #0f2d47 !important;
+        border-color: #2c8ef0 !important;
+        color: white !important;
+        transform: translateX(2px) !important;
+    }
+
+    /* BARRA DE ROLAGEM - versão base */
+    .arvore-prontuario::-webkit-scrollbar {
+        width: 10px !important;
+    }
+
+    .arvore-prontuario::-webkit-scrollbar-thumb {
+        background-color: #1a4d7a !important;
+        border-radius: 5px;
+        border: 2px solid #f0f0f0;
+    }
+
+    .arvore-prontuario::-webkit-scrollbar-thumb:hover {
+        background-color: #0f2d47 !important;
+    }
+
+    .arvore-prontuario::-webkit-scrollbar-track {
+        background: #f0f0f0;
+        border-radius: 5px;
+    }
+
+    /* Para Firefox - versão base */
+    .arvore-prontuario {
+        scrollbar-width: thin;
+        scrollbar-color: #1a4d7a #f0f0f0;
+        max-height: 390px !important; /* 30% maior que 300px base */
+    }
+}
+
+/* COMENTAR OU REMOVER ESTAS REGRAS QUE ESTÃO NO FINAL DO ARQUIVO: */
+
+/*
+    .consultas-antigas-item {
+        background-color: #1a4d7a !important;
+        border: 1px solid #2c8ef0 !important;
+        color: white !important;
+        padding: 8px 12px !important;
+        margin: 2px 0 !important;
+        border-radius: 4px !important;
+        cursor: pointer !important;
+        transition: all 0.2s ease !important;
+        font-size: 1.08em !important;
+        text-align: center !important;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        height: 2.2rem !important;
+    }
+
+    .consultas-antigas-item:hover {
+        background-color: #0f2d47 !important;
+        border-color: #2c8ef0 !important;
+        color: white !important;
+        transform: translateX(2px) !important;
+    }
+*/
+
+/* Ajuste na barra de botões inferior */
+.botoes-acao {
+    position: fixed;
+    bottom: 0px;
+    width: 100%;
+    padding: 0.48em 0.36em; /* Reduzido mais 20%: era 0.64em 0.48em */
+    display: flex;
+    justify-content: space-between;
+    background-color: #fff;
+    box-shadow: 0 -4px 4px rgba(8, 3, 3, 0.1); 
+    height: 2.88em; /* Reduzido 20%: era 3.6em */
+}
+
+.botoes-acao div {
+    text-align: center;
+    flex: 1;
+    margin: 0 5.12px; /* Reduzido 20%: era 6.4px */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3.84px 0; /* Reduzido 20%: era 4.8px */
+}
+
+/* Ajuste nas imagens dos botões para centralizá-las melhor na barra mais alta */
+.botoes-acao img {
+    display: block;
+    margin: 0 auto 5.12px; /* Reduzido 20%: era 6.4px */
+    height: auto;
+    width: 17.92px; /* Reduzido 20%: era 22.4px */
+    max-height: 17.92px; /* Reduzido 20%: era 22.4px */
+}
+
+/* Ajuste nas labels para melhor posicionamento vertical */
+.label-botoes-acao {
+    margin-top: 0px;
+    display: block;
+    font-size: 0.576em; /* Reduzido 20%: era 0.72em */
+}
+
+.botoes-acao label{
+    font-size: 0.64em; /* Reduzido 20%: era 0.8em */
+}
+
+

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulário de Refração</title>
+    <script type="module" src="../static/js/oculos.js"></script>
+</head>  
+<body>
+    <h1>Óculos: </h1>
+    <form id="form-oculos">
+        <section class="oculos">
+            <div class="info-oculos">
+                <div class="refracao">
+                    <label for="refracao">Usar Refração:</label>
+                    <input type="radio" name="tipo_refracao" value="dinamica" id="dinamica" checked>
+                    <label for="dinamica">Dinâmica</label>
+                    <input type="radio" name="tipo_refracao" value="estatica" id="estatica">
+                    <label for="estatica">Estática</label>
+                </div>
+                <table class="tabela-oculos">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>ESFÉRICO</th>
+                            <th>CILINDRO</th>
+                            <th>EIXO</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Dinâmica -->
+                        <tr class="dinamica">
+                            <td class="od-oe">OD</td>
+                            <input type="hidden" name="nr_atendimento" value="{{ nr_atendimento }}">
+                            <td><input type="text" class="input-oculos dinamica" name="vl_od_pl_ard_esf" value="{{ vl_od_pl_ard_esf }}"></td>
+                            <td><input type="text" class="input-oculos dinamica" name="vl_od_pl_ard_cil" value="{{ vl_od_pl_ard_cil }}"></td>
+                            <td><input type="number" class="input-oculos dinamica" name="vl_od_pl_ard_eixo" value="{{ vl_od_pl_ard_eixo }}"></td>
+                        </tr>
+                        <tr class="dinamica">
+                            <td class="od-oe">OE</td>
+                            <td><input type="text" class="input-oculos dinamica" name="vl_oe_pl_ard_esf" value="{{ vl_oe_pl_ard_esf }}"></td>
+                            <td><input type="text" class="input-oculos dinamica" name="vl_oe_pl_ard_cil" value="{{ vl_oe_pl_ard_cil }}"></td>
+                            <td><input type="number" class="input-oculos dinamica" name="vl_oe_pl_ard_eixo" value="{{ vl_oe_pl_ard_eixo }}"></td>
+                        </tr>
+
+                        <!-- Estática -->
+                        <tr class="estatica" style="display:none;">
+                            <td class="od-oe">OD</td>
+                            <td><input type="text" class="input-oculos estatica" name="vl_od_pl_are_esf" value="{{ vl_od_pl_ard_esf }}"></td>
+                            <td><input type="text" class="input-oculos estatica" name="vl_od_pl_are_cil" value="{{ vl_od_pl_ard_cil }}"></td>
+                            <td><input type="number" class="input-oculos estatica" name="vl_od_pl_are_eixo" value="{{ vl_od_pl_ard_eixo }}"></td>
+                        </tr>
+                        <tr class="estatica" style="display:none;">
+                            <td class="od-oe">OE</td>
+                            <td><input type="text" class="input-oculos estatica" name="vl_oe_pl_are_esf"  value="{{ vl_oe_pl_ard_esf }}"></td>
+                            <td><input type="text" class="input-oculos estatica" name="vl_oe_pl_are_cil" value="{{ vl_oe_pl_ard_cil }}"></td>
+                            <td><input type="number" class="input-oculos estatica" name="vl_oe_pl_are_eixo" value="{{ vl_oe_pl_ard_eixo }}"></td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <div class="div-adicao dinamica">
+                    <label class="label-adicao">Adição:</label>
+                    <div class="adicao-wrapper">
+                        <input class="adicao" type="text" name="vl_adicao" value="{{ vl_adicao }}">
+                    </div>
+                </div>
+            </div>
+
+            <div class="observacao">
+                <div class="observacao-header">
+                    <label for="textarea-oculos">Observação:</label>
+                    <button class="observacao-oculos" data-type="oculos" type="button">...</button>
+                </div>
+                <textarea id="textarea-oculos" name="ds_observacao_refracao" class="ds_observacao_refracao">{{ ds_observacao }}</textarea>
+            </div>
+            </div>
+        </section>
+    </form>  
+</body>
+</html>

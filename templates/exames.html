@@ -1,0 +1,72 @@
+<h1>Solicitação de Exames:</h1>
+
+<div class="container-selects-exames">
+    <div class="exame-select">
+        <label for="search-exams">Exames:</label>
+        <input class="input-tabela-exames" type="text" id="search-exams" placeholder="Pesquisar Exame">
+    </div>
+
+    <div class="pacote-select">
+        <label for="search-packages">Pacotes:</label>
+        <div class="custom-dropdown">
+            <input type="text" id="search-packages" placeholder="Selecionar pacote..." autocomplete="off">
+            <div id="packages-dropdown" class="dropdown-content"></div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="container-tabelas">
+    <div>
+        
+        <table class="tabela-exames">
+            <thead>
+                <tr>
+                    <th id="tabelaSelecionarExameDescricao">DESCRIÇÃO</th>
+                </tr>
+            </thead>
+            <tbody id="available-exams">
+                <!-- linhas serão injetadas aqui via JavaScript -->
+            </tbody>
+        </table>
+
+    <div>
+        <label for="">Exames Selecionados:</label>
+        <table class="tabela-exames-selecionados">
+            <thead>
+                <tr>
+                    <th style="width: 70%;" id="tabelaSelecionarExameDescricao">DESCRIÇÃO</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="nenhum-exame">
+                    <td colspan="1">Nenhum exame selecionado</td>
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
+    <div class="adicionar-pacote" style="align-items: center; display: flex;">
+        <button type="submit" class="btnNovoExame">+</button>
+        <div style="align-items: center; display: none;" class="add-pacote">
+            <input type="text" placeholder="Descrição do Pacote" class="inputNovoExame">
+            <img class="confirmarNovoExame" style="width: 4%; cursor: pointer; margin-left: 0.5em;" src="../static/img/mais.png" class="buttonAdicionarMacro" alt="Adicionar">
+            <img class="cancelaNovoExame" style="width: 4%; cursor: pointer; margin-left: 0.5em;" src="../static/img/menos.png" alt="Retirar">
+        </div>
+    </div>
+    <div class="quantidade-exames">
+        <label for="">Quantidade de Exames Selecionados:</label>
+        <p class="exames-selecionados"></p>
+    </div>
+</div>
+
+<script type="module">
+    console.log('Exames HTML script loaded');
+    import ExamManager from '../static/js/exam-management.js';  
+    
+    document.addEventListener('DOMContentLoaded', () => {
+        console.log('DOM loaded, initializing ExamManager');
+        ExamManager.init();
+    });
+</script>

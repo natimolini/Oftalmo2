@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Macro</title>
+    <script type="module" src="../static/js/macros.js"></script>
+    <script type="module" src="../static/js/queixas.js" defer></script>  <!-- Adicione esta linha -->
+</head>
+<body>
+    <form id="form-macro">
+        <section class="macro">
+            <div class="info-macro">
+                <h1>Cadastro de Observações:</h1>
+                <!-- <div class="topo">
+                    <label class="label-text">Descrição:</label>
+                    <input type="text" class="input-text search-field" id="pesquisa-queixa">
+                    <input type="text" class="input-text search-field" id="lista-acuidade-container">
+                    <input type="text" class="input-text search-field" id="lista-diagnostico-container">
+                    <input type="text" class="input-text search-field" id="lista-cirurgias-container">
+                    <div>
+                        <img src="../static/img/mais.png" class="buttonAdicionarMacro" alt="Adicionar">
+                        <img src="../static/img/menos.png" alt="Retirar">
+                    </div>
+                </div>--> 
+                <div class="topo" id="adicionarMacro">
+                    <label class="label-text" id="adicionarMacro">Adicionar:</label>
+                    <input type="text" class="input-text" id="inputAdicionarMacro">
+                    <div>
+                        <img src="../static/img/mais.png" class="buttonAdicionarMacro" id="buttonAdicionarMacro" alt="Adicionar">
+                        <img src="../static/img/menos.png" class="buttonRemoverMacro" id="buttonRemoverMacro" alt="Retirar">
+                    </div>
+                </div>    
+                <div class="topo">
+                    <label class="label-text">Pesquisar:</label>
+                    <input type="text" class="input-text search-field" id="pesquisa-template">
+                </div>
+                <div id="lista-queixas-container" class="modal-content" data-type="queixa"></div>
+                <div id="lista-acuidade-container" class="modal-content" data-type="acuidade"></div>
+                <div id="lista-diagnostico-container" class="modal-content" data-type="diagnostico"></div>
+                <div id="lista-cirurgias-container" class="modal-content" data-type="cirurgias"></div>
+                <div id="lista-oculos-container" class="modal-content" data-type="oculos"></div>
+                <div class="confirmar-cancelar">
+                    <button type="button">Confirmar</button>  <!-- Adicione type="button" -->
+                    <button class="cancelarObservacaoOculos" type="button">Cancelar</button>
+                </div>
+            </div>
+        </section>
+    </form>
+</body>
+</html>

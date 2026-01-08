@@ -1,0 +1,50 @@
+.info-pacientes {
+    background-color: #ffffff; 
+    display: flex;
+    flex-direction: column;
+    gap: 1rem; 
+    width: 80%;
+}
+
+.linha {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.campo {
+    display: flex;
+    min-width: 200px;
+    margin-bottom: 0.5rem;
+}
+
+
+.linha .campo {
+    width: 48%;
+}
+
+
+.info-pacientes label {
+    font-size: 1.2rem; 
+    font-weight: 600;
+    color: #2c8ef0; 
+    margin-right: 1.25rem; 
+}
+
+.info-pacientes p {
+    font-size: 1.2rem;
+    color: #555;
+    margin: 0;
+    white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+    .linha {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    .campo {
+        width: 100%; 
+}}

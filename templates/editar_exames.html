@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Prontuário por Atendimento</title>
+    <link rel="stylesheet" href="../static/style/editar_exames.css">
+    <link rel="stylesheet" href="../static/style/busca-avancada.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Editar Prontuário por Atendimento</h1>
+        
+        <div class="form-container">
+            <!-- Sistema de Abas de Busca -->
+            <div class="busca-tabs-container">
+                <div class="busca-tabs">
+                    <button class="busca-tab active" data-tab="nome">Buscar por Nome</button>
+                    <button class="busca-tab" data-tab="nascimento">Buscar por Data de Nascimento</button>
+                    <button class="busca-tab" data-tab="atendimento">Buscar por Atendimento</button>
+                </div>
+
+                <!-- Formulário de Busca por Nome -->
+                <div class="busca-form active" data-form="nome">
+                    <div class="busca-input-group">
+                        <label>Nome do Paciente:</label>
+                        <input type="text" id="busca-nome-input" placeholder="Digite o nome (mínimo 3 caracteres)">
+                    </div>
+                    <button class="busca-btn" id="busca-nome-btn">Buscar</button>
+                </div>
+
+                <!-- Formulário de Busca por Nascimento -->
+                <div class="busca-form" data-form="nascimento">
+                    <div class="busca-input-group">
+                        <label>Data de Nascimento:</label>
+                        <input type="text" id="busca-nascimento-input" placeholder="DD/MM/AAAA" maxlength="10">
+                    </div>
+                    <button class="busca-btn" id="busca-nascimento-btn">Buscar</button>
+                </div>
+
+                <!-- Formulário de Busca por Atendimento -->
+                <div class="busca-form" data-form="atendimento">
+                    <div class="busca-input-group">
+                        <label>Número do Atendimento:</label>
+                        <input type="text" id="busca-atendimento-input" placeholder="Digite o número do atendimento">
+                    </div>
+                    <button class="busca-btn" id="busca-atendimento-btn">Buscar</button>
+                </div>
+
+                <!-- Resultados da Busca -->
+                <div class="busca-resultados" id="busca-resultados-container" style="display: none;">
+                    <h3>Resultados da Busca</h3>
+                    <div class="busca-lista" id="busca-lista"></div>
+                </div>
+            </div>
+
+            <!-- Dados do Paciente -->
+            <div class="dados-paciente-container" id="dados-paciente-container" style="display: none;">
+                <div class="dados-paciente-header">
+                    <h2>Dados do Paciente</h2>
+                    <div class="botoes-impressao-grupo">
+                        <button class="btn-imprimir" id="btn-imprimir-prontuario">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/>
+                                <path d="M6 14h12v8H6z"/>
+                            </svg>
+                            Imprimir Prontuário
+                        </button>
+                        <button class="btn-imprimir btn-imprimir-resumo" id="btn-imprimir-resumo">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/>
+                                <path d="M6 14h12v8H6z"/>
+                            </svg>
+                            Imprimir Resumo
+                        </button>
+                    </div>
+                </div>
+                <div class="dados-paciente-grid">
+                    <div class="dados-paciente-item">
+                        <label>Nome:</label>
+                        <span id="paciente-nome">-</span>
+                    </div>
+                    <div class="dados-paciente-item">
+                        <label>Data de Nascimento:</label>
+                        <span id="paciente-nascimento">-</span>
+                    </div>
+                    <div class="dados-paciente-item">
+                        <label>CPF:</label>
+                        <span id="paciente-cpf">-</span>
+                    </div>
+                    <div class="dados-paciente-item">
+                        <label>Data do Atendimento:</label>
+                        <span id="paciente-data-atendimento">-</span>
+                    </div>
+                    <div class="dados-paciente-item">
+                        <label>Nº Atendimento:</label>
+                        <span id="paciente-nr-atendimento">-</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sistema de Abas de Edição -->
+            <div class="tabs-container" id="tabs-edicao-container" style="display: none;">
+                <div class="tabs-header">
+                    <button class="tab-button active" data-tab="exames">Exames</button>
+                    <button class="tab-button" data-tab="cirurgias">Cirurgias</button>
+                    <button class="tab-button" data-tab="prontuario">Prontuário</button>
+                </div>
+
+                <!-- Conteúdo das Abas -->
+                <div class="tabs-content">
+                    <!-- Aba Exames -->
+                    <div class="tab-pane active" id="tab-exames">
+                        <div class="textarea-group">
+                            <label for="textarea-exames">Exames:</label>
+                            <textarea id="textarea-exames" placeholder="Os exames aparecerão aqui após a busca..."></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Aba Cirurgias -->
+                    <div class="tab-pane" id="tab-cirurgias">
+                        <div class="textarea-group">
+                            <label for="textarea-cirurgias">Cirurgias:</label>
+                            <textarea id="textarea-cirurgias" placeholder="As cirurgias aparecerão aqui após a busca..."></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Aba Prontuário -->
+                    <div class="tab-pane" id="tab-prontuario">
+                        <div class="textarea-group">
+                            <label for="textarea-prontuario">Resumo do Prontuário (Somente Leitura):</label>
+                            <textarea 
+                                id="textarea-prontuario" 
+                                placeholder="O resumo do prontuário aparecerá aqui após a busca..."
+                                readonly
+                                style="background-color: #f5f5f5; cursor: default;"
+                            ></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="button-group" id="button-group-container" style="display: none;">
+                <button id="btn-salvar" class="btn-success" disabled>Salvar</button>
+                <button id="btn-limpar" class="btn-secondary">Limpar</button>
+            </div>
+        </div>
+
+        <div id="flash-message" class="flash-message"></div>
+    </div>
+
+    <!-- Popup de Atendimentos -->
+    <div id="popup-atendimentos-editar" class="popup-atendimentos-overlay" style="display: none;">
+        <div class="popup-atendimentos-content">
+            <div class="popup-atendimentos-header">
+                <h2 id="popup-atendimentos-titulo">Atendimentos do Paciente</h2>
+                <button class="popup-atendimentos-close" type="button">&times;</button>
+            </div>
+            <div class="popup-atendimentos-body">
+                <div id="popup-atendimentos-lista"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Template de Impressão -->
+<div id="impressao-template" style="display: none;">
+        <div class="impressao-container">
+            <div class="impressao-header">
+                <div class="impressao-logo">
+                    <h2>PRONTUÁRIO DO PACIENTE</h2> </div>
+                <div class="impressao-dados-header">
+                    <div class="impressao-dados-item">
+                        <strong>Nº Atendimento:</strong> <span id="print-nr-atendimento"></span>
+                    </div>
+                    <div class="impressao-dados-item">
+                        <strong>Paciente:</strong> <span id="print-nome"></span>
+                    </div>
+                    <div class="impressao-dados-item">
+                        <strong>Data Atendimento:</strong> <span id="print-data-atendimento"></span>
+                    </div>
+                    <div class="impressao-dados-item">
+                        <strong>Data Documento:</strong> <span id="print-data-documento"></span>
+                    </div>
+                    <div class="impressao-dados-item">
+                        <strong>Hora Documento:</strong> <span id="print-hora-documento"></span>
+                    </div>
+                    <div class="impressao-dados-item">
+                        <strong>Data Nascimento:</strong> <span id="print-nascimento"></span>
+                    </div>
+                    <div class="impressao-dados-item">
+                        <strong>Idade:</strong> <span id="print-idade"></span>
+                    </div>
+                    <div class="impressao-dados-item" hidden>
+                        <strong>Sexo:</strong> <span id="print-sexo"></span>
+                    </div>
+                    <div class="impressao-dados-item">
+                        <strong>Médico:</strong> DR. Irineu Antunes Neto
+                    </div>
+                </div>
+            </div>
+
+            <div class="impressao-secao">
+                <h3>QP</h3>
+                <div class="impressao-conteudo" id="print-qp"></div>
+            </div>
+
+            <div class="impressao-secao">
+                <h3>REF OD e OE</h3>
+                <div class="impressao-conteudo" id="print-refracao"></div>
+            </div>
+
+            <div class="impressao-secao">
+                <h3>AV OD e OE</h3>
+                <div class="impressao-conteudo" id="print-acuidade"></div>
+            </div>
+
+            <div class="impressao-secao">
+                <h3>Diagnóstico</h3>
+                <div class="impressao-conteudo" id="print-diagnostico"></div>
+            </div>
+
+            <div class="impressao-secao">
+                <h3>Exames</h3>
+                <div class="impressao-conteudo" id="print-exames"></div>
+            </div>
+
+            <div class="impressao-secao">
+                <h3>Conduta</h3>
+                <div class="impressao-conteudo" id="print-conduta"></div>
+            </div>
+
+            <div class="impressao-secao">
+                <h3>Cirurgia</h3>
+                <div class="impressao-conteudo" id="print-cirurgia"></div>
+            </div>
+
+            <div class="impressao-secao">
+                <h3>Lente de Contato</h3>
+                <div class="impressao-conteudo" id="print-lente"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Template de Impressão do Resumo -->
+    <div id="impressao-resumo-template" style="display: none;">
+        <div class="impressao-container">
+            <div class="impressao-header">
+                <div class="impressao-logo">
+                    <h2>RESUMO DO HISTÓRICO DO PACIENTE</h2>
+                </div>
+                <div class="impressao-dados-header">
+                    <div class="impressao-dados-item">
+                        <strong>Paciente:</strong> <span id="print-resumo-nome"></span>
+                    </div>
+                    <div class="impressao-dados-item">
+                        <strong>Data Nascimento:</strong> <span id="print-resumo-nascimento"></span>
+                    </div>
+                    <div class="impressao-dados-item">
+                        <strong>CPF:</strong> <span id="print-resumo-cpf"></span>
+                    </div>
+                    <div class="impressao-dados-item">
+                        <strong>Data Documento:</strong> <span id="print-resumo-data-documento"></span>
+                    </div>
+                    <div class="impressao-dados-item">
+                        <strong>Hora Documento:</strong> <span id="print-resumo-hora-documento"></span>
+                    </div>
+                    <div class="impressao-dados-item">
+                        <strong>Médico:</strong> DR. Irineu Antunes Neto
+                    </div>
+                </div>
+            </div>
+
+            <div id="impressao-resumo-conteudo" class="impressao-resumo-historico">
+                <!-- O conteúdo do histórico será inserido aqui -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Card de Impressão da Agenda -->
+    <div class="card-imprimir-agenda">
+        <h2>Imprimir Agenda</h2>
+        <div class="imprimir-agenda-form">
+            <label for="data-impressao-agenda">Data:</label>
+            <input type="date" id="data-impressao-agenda">
+            <button id="btn-imprimir-agenda">Imprimir Agenda</button>
+        </div>
+    </div>
+
+    <!-- Template de Impressão da Agenda -->
+    <div id="impressao-agenda-template" style="display: none;">
+        <div class="impressao-agenda-container">
+            <div class="impressao-agenda-header">
+                <h2 id="agenda-titulo">Agenda de Pacientes</h2>
+                <div id="agenda-header-info">
+                    <span id="agenda-data-extenso"></span> - <span id="agenda-medico">DR. Irineu Antunes Neto</span>
+                </div>
+            </div>
+            <table class="impressao-agenda-tabela">
+                <thead>
+                    <tr>
+                        <th>Hora</th>
+                        <th>Paciente</th>
+                        <th>Convênio</th>
+                        <th>Tipo</th>
+                    </tr>
+                </thead>
+                <tbody id="impressao-agenda-tbody">
+                    <!-- Linhas preenchidas via JS -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script type="module" src="../static/js/editar_exames_busca.js"></script>
+</body>
+</html>

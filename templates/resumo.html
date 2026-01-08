@@ -1,0 +1,87 @@
+<div class="summary-container">
+    <div class="summary-title">
+        <h1>Resumo do Prontuário Eletrônico do Paciente</h1>
+    </div>
+
+    <div class="consultation-history">
+        {% if consultations %}
+            {% for consultation in consultations %}
+            <div class="consultation-card">
+                <div class="consultation-header">
+                    <div class="header-info">
+                        <div class="date-doctor">
+                            <h3>{{ consultation.data_consulta }}</h3>
+                            <span class="doctor-name">Dr(a). {{ consultation.medico }}</span>
+                        </div>
+                        <span class="status-badge {{ consultation.status_consulta.lower() }}">
+                            {{ consultation.status_consulta }}
+                        </span>
+                    </div>
+                </div>
+
+                <div class="consultation-details">
+                    {% if consultation.queixa != 'N/A' %}
+                    <div class="detail-section">
+                        <h4>Queixa Principal</h4>
+                        <p>{{ consultation.queixa }}</p>
+                    </div>
+                    {% endif %}
+
+                    {% if consultation.refracao != 'N/A' %}
+                    <div class="detail-section">
+                        <h4>Refração</h4>
+                        <p>{{ consultation.refracao }}</p>
+                    </div>
+                    {% endif %}
+
+                    {% if consultation.acuidade != 'N/A' %}
+                    <div class="detail-section">
+                        <h4>Acuidade Visual</h4>
+                        <p>{{ consultation.acuidade }}</p>
+                    </div>
+                    {% endif %}
+
+                    {% if consultation.pressao != 'N/A' %}
+                    <div class="detail-section">
+                        <h4>Pressão Intraocular</h4>
+                        <p>{{ consultation.pressao }}</p>
+                    </div>
+                    {% endif %}
+
+                    {% if consultation.diagnostico != 'N/A' %}
+                    <div class="detail-section">
+                        <h4>Diagnóstico</h4>
+                        <p>{{ consultation.diagnostico }}</p>
+                    </div>
+                    {% endif %}
+
+                    {% if consultation.conduta != 'N/A' %}
+                    <div class="detail-section">
+                        <h4>Conduta</h4>
+                        <p>{{ consultation.conduta }}</p>
+                    </div>
+                    {% endif %}
+
+                    {% if consultation.exames != 'N/A' %}
+                    <div class="detail-section">
+                        <h4>Exames Solicitados</h4>
+                        <p>{{ consultation.exames }}</p>
+                    </div>
+                    {% endif %}
+
+                    {% if consultation.oculos != 'N/A' %}
+                    <div class="detail-section">
+                        <h4>Prescrição de Óculos</h4>
+                        <p>{{ consultation.oculos }}</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="no-consultations">
+                <p>Nenhum histórico de consulta encontrado para este paciente.</p>
+            </div>
+        {% endif %}
+    </div>
+</div>

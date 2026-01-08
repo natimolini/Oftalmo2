@@ -1,0 +1,352 @@
+.receituario {
+    display: flex;
+    gap: 2vh;
+    color: #1a4d7a;
+    height: 100%;
+    font-size: 1.3rem;
+}
+
+.receituario h1 {
+    display: block;
+}
+
+.opcoes {
+    display: flex;
+    flex-direction: column;
+    width: 35%;
+    height: 100%;
+}
+
+.top {
+    display: flex;
+    flex-direction: column;
+    gap: 1vh;
+    height: 100%;
+}
+
+.opcoes label {
+    color: #1a4d7a;
+}
+
+
+.top input{
+    padding: 5px !important;
+    border: 1px solid #1a4d7a !important;
+    border-radius: 10px !important;
+    font-size: 1.1rem !important;
+}
+
+.copias input{
+    border: 1px solid #1a4d7a !important;
+    border-radius: 10px !important;
+    font-size: 1.1rem !important;
+    width: 8%;
+    text-align: center;
+}
+
+
+.checkboxes {
+    display: flex;
+    gap: 5px;
+}
+
+.checkboxes label {
+    align-items: center;
+    margin-left: 1rem;
+    font-size: 1.1rem;
+    display: none;
+}
+
+.checkboxes input[type="checkbox"] {
+    margin-right: 5px;
+    accent-color: #2c8ef0;
+}
+
+.textarea-container {
+    flex: 2;
+    display: flex; /* ADICIONADO */
+    flex-direction: column; /* ADICIONADO */
+    height: 100%; /* ADICIONADO */
+}
+
+.textarea-receituario {
+    width: 86%;
+    min-height: 88%; /* Aumentado de 80% para 88% (10% a mais) */
+    max-height: 88%; /* Aumentado de 80% para 88% (10% a mais) */
+    padding: 10px;
+    border: 1px solid #1a4d7a;
+    border-radius: 4px;
+    resize: none;
+    color: #1a4d7a;
+    background-color: #fffae6;
+    font-size: 1.1rem;
+    overflow: auto;
+}
+
+#pesquisa-medicamento:focus {
+    outline: none;
+    border-color: #2c8ef0;
+    box-shadow: 0 0 0 2px rgba(44, 142, 240, 0.1);
+}
+
+/* Medication List Container */
+.lista-medicamento-protocolo {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    max-height: 300px;
+    min-height: 300px;
+    overflow-y: auto;
+    padding: 10px;    
+    border: 1px solid #ccc;
+    background-color: white;
+    border-radius: 5px;
+    margin-top: 10px;
+    /* Firefox scrollbar styling */
+    scrollbar-width: thin;
+    scrollbar-color: #2c8ef0 #f0f0f0;
+}
+
+/* Webkit scrollbar styling */
+.lista-medicamento-protocolo::-webkit-scrollbar {
+    width: 8px;
+}
+
+.lista-medicamento-protocolo::-webkit-scrollbar-track {
+    background: #f0f0f0;
+    border-radius: 4px;
+}
+
+.lista-medicamento-protocolo::-webkit-scrollbar-thumb {
+    background: #2c8ef0;
+    border-radius: 4px;
+}
+
+.lista-medicamento-protocolo::-webkit-scrollbar-thumb:hover {
+    background: #1a4d7a;
+}
+
+/* Medication List Styling */
+.lista-medicamento-protocolo ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    flex: 1;
+}
+
+.lista-medicamento-protocolo li {
+    padding: 8px 12px;
+    border-bottom: 1px solid #ddd;
+    cursor: pointer;
+    font-size: 1.2rem;
+    line-height: 1.5;
+    transition: background-color 0.2s;
+    white-space: normal;
+    /* Permite quebra de linha */
+    overflow-wrap: break-word;
+    /* Quebra palavras longas */
+    word-break: break-word;
+    /* Compatibilidade */
+}
+
+.lista-medicamento-protocolo li:last-child {
+    border-bottom: none;
+}
+
+.lista-medicamento-protocolo li:hover {
+    background-color: #d6d6d6;
+}
+
+.macro-receituario{
+    padding: 4px 8px;
+    border: 1px solid #2c8ef0;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    margin-bottom: 5px;
+    cursor: pointer;
+}
+
+/* Tabs for Receita */
+.receita-tabs {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 10px;
+    border-bottom: 2px solid #ddd;
+}
+
+.receita-tab {
+    padding: 10px 20px;
+    background-color: #f0f0f0;
+    border: 1px solid #ddd;
+    border-bottom: none;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border-radius: 5px 5px 0 0;
+}
+
+.receita-tab:hover {
+    background-color: #e0e0e0;
+}
+
+.receita-tab.active {
+    background-color: white;
+    border-bottom: 2px solid white;
+    margin-bottom: -2px;
+    font-weight: bold;
+}
+
+.receita-tab-content {
+    position: relative;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    height: 100%; /* ADICIONADO */
+}
+
+.receita-pane {
+    display: none;
+    flex: 1;
+    height: 100%; /* ADICIONADO */
+}
+
+.receita-pane.active {
+    display: flex;
+    flex-direction: column;
+    height: 100%; /* ADICIONADO */
+}
+
+.receita-pane textarea {
+    flex: 1;
+    height: 100%;
+    min-height: 88%; /* Aumentado de 80% para 88% (10% a mais) */
+    max-height: 88%; /* Aumentado de 80% para 88% (10% a mais) */
+}
+
+/* Responsive Design */
+@media (max-width: 1366px) {
+    .receituario {
+        font-size: 0.9rem;
+    }
+    
+    .top input {
+        font-size: 0.8rem;
+        padding: 2px;
+    }
+    
+    .checkboxes label {
+        align-items: center;
+        margin-left: 0.5rem;
+        font-size: 0.8rem;
+    }
+    
+    .textarea-receituario {
+        min-height: 66%; /* Aumentado de 60% para 66% (10% a mais) */
+        max-height: 66%; /* Aumentado de 60% para 66% (10% a mais) */
+        width: 84%;
+        font-size: 1em;
+    }
+    
+    .receita-pane textarea {
+        min-height: 66%; /* Aumentado de 60% para 66% (10% a mais) */
+        max-height: 66%; /* Aumentado de 60% para 66% (10% a mais) */
+    }
+    
+    .lista-medicamento-protocolo {
+        max-height: 150px;
+        min-height: 100px;
+        font-family: 'Arial Narrow', Arial, sans-serif !important;
+        color: #1a4d7a;
+    }
+    
+    .lista-medicamento-protocolo li {
+        padding: 6px 10px;
+        font-size: 1em;
+    }
+}
+
+@media (max-width: 1320px), (max-height: 1100px) {
+    .receituario h1 {
+        font-size: 1.2em;
+    }
+
+    .textarea-receituario {
+        min-height: 82.5%; /* Aumentado de 75% para 82.5% (10% a mais) */
+        max-height: 82.5%; /* Aumentado de 75% para 82.5% (10% a mais) */
+        width: 84%;
+        font-size: 1em;
+    }
+    
+    .receita-pane textarea {
+        min-height: 82.5%; /* Aumentado de 75% para 82.5% (10% a mais) */
+        max-height: 82.5%; /* Aumentado de 75% para 82.5% (10% a mais) */
+    }
+
+    .lista-medicamento-protocolo {
+        max-height: calc(60vh - 20px);
+        min-height: calc(60vh - 20px);
+        scrollbar-width: thin;
+        scrollbar-color: #2c8ef0 #f0f0f0;
+    }
+
+    .top label {
+        font-size: 0.9em; /* Reduzido de 1.1em */
+    }
+
+    .top input {
+        font-size: 0.9em !important; /* Reduzido de 1em */
+        padding: 4px !important; /* Reduzido para manter proporção */
+    }
+
+    .lista-medicamento-protocolo li {
+        font-size: 1em; /* Reduzido de 1.1em */
+        padding: 6px 10px; /* Reduzido para manter proporção */
+    }
+    
+    .checkboxes label {
+        font-size: 0.85em; /* Reduzido */
+    }
+    
+    .copias label {
+        font-size: 0.9em; /* Reduzido */
+    }
+    
+    .copias input {
+        font-size: 0.9em !important; /* Reduzido */
+    }
+    
+    .botoes-receituario button {
+        font-size: 0.9em; /* Reduzido */
+    }
+    
+    .lista-medicamento-protocolo .categoria {
+        font-size: 1em; /* Reduzido */
+        padding: 5px 10px; /* Ajustado para manter proporção */
+    }
+
+    .receituario textarea, .textarea-receituario, #textarea-receituario {
+        font-size: 0.75em;
+    }
+}
+
+@media (min-width: 1920px) and (min-height: 1080px) {
+    .lista-medicamento-protocolo {
+        max-height: calc(60vh - 20px); /* Valor aumentado do max-height */
+        min-height: calc(60vh - 20px); /* Valor aumentado do min-height */
+        scrollbar-width: thin;
+        scrollbar-color: #2c8ef0 #f0f0f0;
+    }
+}
+
+.read-only .lista-medicamento-protocolo li {
+    pointer-events: none; /* Disable pointer events */
+    background-color: #f8f9fa; /* Optional: Change background color to indicate non-clickable state */
+    color: #000814; /* Optional: Change text color to indicate non-clickable state */
+}
+
+.read-only .copias input {
+    pointer-events: auto; /* Allow pointer events */
+    background-color: white; /* Reset background color */
+    color: black; /* Reset text color */
+}

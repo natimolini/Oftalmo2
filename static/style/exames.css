@@ -1,0 +1,942 @@
+.container-selects-exames {
+    display: flex;
+    width: 100%;
+    box-sizing: border-box;
+    justify-content: flex-start; /* Alterado de space-around para flex-start */
+    gap: 0; /* Adicionado */
+    padding-left: 30px; /* Adicionado */
+}
+
+.container-selects-exames > div:nth-child(2) {
+    margin-left: 400px; /* Mantém o segundo elemento à direita */
+}
+
+.container-selects-exames div label{
+    display: block;
+}
+
+.container-selects-exames div input, .pesquisar-exames input, .tabela-exames input, .input-tabela-exames{
+    padding: 5px;
+    border: 1px solid #1a4d7a;
+    border-radius: 10px;
+    font-size: 1.1rem;
+}
+
+.pacotes {
+    display: grid;
+    grid-template-columns: 15% 85%;
+}
+
+.container-selects-exames label {
+    color: #1a4d7a;
+    margin-bottom: 0.1em;
+    font-size: 0.9rem;
+}
+
+.container-tabelas {
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+    gap: 0.5em;
+    width: 100%;
+    box-sizing: border-box;
+    margin-top: 3vh;
+    height: 0%;
+}
+
+.container-tabelas div{
+    margin: 0 auto;
+    min-width: 60%;
+    max-width: 60%;
+    height: 0%;
+}
+
+.tabela-exames, .tabela-exames-selecionados {
+    border-collapse: collapse;
+    margin: 1em 0;
+    width: 100% !important;
+    box-sizing: border-box;
+    min-height: 15rem;
+    max-height: 15rem;
+    
+}
+
+.container-tabelas div:nth-child(2) {
+    margin-top: 2px; /* Espaço para o título */
+}
+
+.tabela-exames thead, .tabela-exames-selecionados thead{
+    box-shadow: none !important;
+}
+
+.tabela-exames td, .tabela-exames th, .tabela-exames-selecionados td, .tabela-exames-selecionados th {
+    padding: 0.25em 0.8em;
+    text-align: left;
+    font-size: 0.9rem;
+    border: 1px solid #2c8ef0;
+    height: 0.8rem;
+    line-height: 18px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: left;
+    word-wrap: break-word; /* Quebra palavras longas */
+    word-break: break-word; /* Compatibilidade adicional */
+    white-space: normal; /* Permite a quebra de linha */
+}
+
+
+/* Oculta colunas específicas da tabela */
+.tabela-exames-selecionados td.exam-code,
+.tabela-exames-selecionados th.exam-code,
+.tabela-exames-selecionados td.exam-quantity-cell,
+.tabela-exames-selecionados th.exam-quantity-cell {
+    display: none !important;
+}
+
+.tabela-exames th.exam-code,
+.tabela-exames td.exam-code {
+    display: none !important;
+}
+
+.tabela-exames tr, .tabela-exames-selecionados tr {
+    height: 18px;
+}
+
+.tabela-exames input[type="text"],
+.tabela-exames-selecionados input[type="text"] {
+    width: 100%;
+    padding: 0.25em 0.8em;
+    border: none;
+    outline: none;
+    color: #333;
+    text-align: left;
+    background-color: transparent;
+    box-sizing: border-box;
+    appearance: none;
+}
+
+.tabela-exames th, .tabela-exames-selecionados th {
+    background-color: #1a4d7a;
+    color: #ffffff;
+    padding: 0.25em 0.9em;
+    text-align: left;
+    border: 1px solid #2c8ef0;
+}
+
+.tabela-exames tr:nth-child(odd), .tabela-exames-selecionados tr:nth-child(odd) {
+    background-color: #e2e2e2;
+}
+
+.tabela-exames tr:nth-child(even), .tabela-exames-selecionados tr:nth-child(even) {
+    background-color: #ffffff;
+}
+
+.tabela-exames tr:hover td, .tabela-exames-selecionados tr:hover td {
+    background-color: #c2c2c2;
+}
+
+#tabelaSelecionarExameCodigo {
+    width: 15%;
+}
+
+#tabelaSelecionarExameDescricao {
+    width: 55%;
+}
+
+#tabelaSelecionarExameQuantidade {
+    width: 30%;
+}
+
+.exames-selecionados {
+    margin-left: 1em;
+}
+
+.quantidade-exames {
+    display: flex;
+    align-items: center;
+    margin-left: 0;
+}
+
+.container-selects-exames label {
+    color: #1a4d7a;
+    font-size: 2vh;
+}
+
+.container-selects-exames div {
+    align-items: center;
+}
+
+.container-tabelas label {
+    color: #1a4d7a;
+    font-size: 2vh;
+}
+
+.tabela-exames, .tabela-exames-selecionados {
+    display: block;
+    height: 300px;
+    overflow-y: auto;
+    width: 100%;
+    box-sizing: border-box;
+    scrollbar-width: thin;
+    scrollbar-color: #2c8ef0 #f0f0f0;
+}
+
+.tabela-exames thead, .tabela-exames-selecionados thead {
+    position: sticky;
+    top: 0;
+    background-color: #1a4d7a;
+    color: #fff;
+    z-index: 1;
+}
+
+.exames-selecionados{
+    font-size: 1.1rem;
+}
+
+.tabela-exames-selecionados tr {
+    transition: background-color 0.2s ease;
+}
+
+.tabela-exames-selecionados .exam-name:hover::after {
+    position: absolute;
+    right: 10px;
+    color: #e57373;
+}
+
+/* New button styles */
+.transfer-button {
+    background-color: #2c8ef0;
+    color: #ffffff;
+    border: none;
+    border-radius: 4px;
+    padding: 0.75em 1.5em;
+    cursor: pointer;
+    font-size: 1.1rem;
+    margin: 1em auto;
+    display: block;
+    transition: background-color 0.3s ease;
+    font-weight: 500;
+}
+
+.transfer-button:hover {
+    background-color: #1a4d7a;
+}
+
+@media (max-width: 1366px){
+    .container-selects-exames label {
+        font-size: 0.9rem;
+        margin-bottom: 0.8rem;
+    }
+
+    .container-selects-exames div input, .pesquisar-exames input{
+        padding: 2px;
+        border: 1px solid #1a4d7a;
+        border-radius: 10px;
+        font-size: 0.8rem;
+    }
+
+    .container-selects-exames label {
+        margin-bottom: 0.4rem;
+        font-size: 0.9rem;
+    }
+    
+    .tabela-exames td, .tabela-exames th, .tabela-exames-selecionados td, .tabela-exames-selecionados th {
+        padding: 0.15em 0.5em;
+        font-size: 0.7rem;
+        height: 1.2rem;
+        line-height: 10px;
+    }
+    
+    .tabela-exames, .tabela-exames-selecionados {
+        margin: 0.5em 0 1em 0;
+        box-sizing: border-box;
+        min-height: 10rem;
+        max-height: 10rem;
+    }
+
+    .tabela-exames tr, .tabela-exames-selecionados tr {
+        height: 0.6rem;
+    }
+    
+    .container-selects-exames label {
+        color: #1a4d7a;
+        font-size: 2vh;
+    }
+    
+    .container-selects-exames div {
+        align-items: center;
+    }
+    
+    .container-tabelas label {
+        color: #1a4d7a;
+        font-size: 2vh;
+    }
+    
+    .exames-selecionados{
+        font-size: 0.7rem;
+    }
+
+    .tabela-exames-selecionados tr:hover {
+        background-color: #ffebee !important;
+    }
+    
+    .tabela-exames-selecionados .exam-name {
+        position: relative;
+    }
+    
+    .exam-quantity {
+        pointer-events: auto;
+        cursor: text;
+    }
+
+    /* Responsive button styles */
+    .transfer-button {
+        padding: 0.5em 1em;
+        font-size: 0.9rem;
+        margin: 0.75em auto;
+    }
+}
+
+@media (max-width: 1320px), (max-height: 1100px){
+
+    .container-selects-exames div input{
+        font-size: 1.1em;
+    }
+
+    .container-selects-exames {
+        justify-content: flex-start;
+        gap: 0;
+        padding-left: 30px;
+    }
+    
+    /* Se quiser manter o segundo elemento à direita */
+    .container-selects-exames > div:nth-child(2) {
+        margin-left: 400px;
+
+    }   
+    
+    .tabela-exames, .tabela-exames-selecionados {
+        border-collapse: collapse;
+        margin: 1em auto;
+        width: 100%;
+        box-sizing: border-box;
+        min-height: 13rem;
+        max-height: 13rem;
+        table-layout: fixed; /* Garante que o layout da tabela seja fixo */
+    }
+
+    .container-tabelas {
+        height: 250px;
+        gap: 0em;
+    }
+
+    .pesquisar-exames{
+        font-size: 1.1em;
+    }
+    
+    .container-tabelas div{
+        min-width: 94%;
+        max-width: 94%;
+        height: auto;
+    }
+
+    .tabela-exames td, .tabela-exames th, .tabela-exames-selecionados td, .tabela-exames-selecionados th {
+        padding: 0.25em 0.8em;
+        text-align: left;
+        font-size: 0.8rem; /* Reduzido de 0.9rem */
+        border: 1px solid #2c8ef0;
+    }
+    
+    /* Configuração específica para a coluna QTD */
+    .tabela-exames-selecionados th#tabelaSelecionarExameQuantidade,
+    .tabela-exames-selecionados td:nth-child(3) {
+        width: 10% !important;
+        max-width: 10% !important;
+        min-width: 50px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    
+    /* Ajuste para inputs na coluna QTD */
+    .tabela-exames-selecionados td:nth-child(3) input {
+        width: 90%;
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+    
+    /* Ajustes para colunas código e descrição */
+    .tabela-exames-selecionados th#tabelaSelecionarExameCodigo,
+    .tabela-exames-selecionados td:nth-child(1) {
+        width: 25% !important;
+    }
+    
+    .tabela-exames-selecionados th#tabelaSelecionarExameDescricao,
+    .tabela-exames-selecionados td:nth-child(2) {
+        width: 65% !important;
+    }
+    
+    .tabela-exames tr, .tabela-exames-selecionados tr {
+        height: 20px;
+    }
+    
+    .exames-selecionados{
+        font-size: 1em;
+    }
+    .input-tabela-exames {
+        padding: 3px; /* Tamanho menor */
+        border: 1px solid #1a4d7a;
+        border-radius: 8px;
+        font-size: 0.9rem; /* Fonte menor */
+    }
+    
+}
+
+/* Estilo do botão Novo Pacote */
+.adicionar-pacote button.btnNovoExame {
+    background-color: #2c8ef0;
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    padding: 0.4em 1.2em;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16);
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.adicionar-pacote button.btnNovoExame:hover {
+    background-color: #1a4d7a;
+}
+.container-tabelas div{
+    min-width: 94%;
+    max-width: 94%;
+    height: auto;
+}
+.inputNovoExame {
+    width: 100%;
+    height: 10px;
+    max-width: 250px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 5px;
+    border: 1px solid #1a4d7a;
+    border-radius: 8px;
+    font-size: 1rem;
+  }
+
+.btnNovoExame {
+    min-width: 100px; 
+    max-width: 100px; 
+    padding: 0.5em 1em; 
+    font-size: 1rem; 
+    border-radius: 8px; 
+    color: white; 
+    cursor: pointer; 
+    border: none; 
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-right: 4px;
+}
+
+/* Disable clicking in read-only mode */
+.read-only .tabela-exames tr,
+.read-only .tabela-exames-selecionados tr {
+    pointer-events: none;
+    background-color: #f8f9fa;
+    color: #000814;
+    cursor: default;
+}
+
+.read-only .tabela-exames input,
+.read-only .tabela-exames-selecionados input {
+    pointer-events: none;
+    background-color: #f8f9fa;
+    color: #000814;
+}
+
+/* Disable hover effect in read-only mode */
+.read-only .tabela-exames tr:hover td,
+.read-only .tabela-exames-selecionados tr:hover td {
+    background-color: #f8f9fa;
+}
+
+.custom-dropdown {
+    position: relative;
+    width: 100%;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: white;
+    width: 100%;
+    max-height: 300px;
+    overflow-y: auto;
+    border: 1px solid #1a4d7a;
+    border-radius: 8px;
+    z-index: 10;
+    margin-top: 2px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.dropdown-item {
+    padding: 10px;
+    cursor: pointer;
+    border-bottom: 1px solid #eee;
+}
+
+.dropdown-item:hover {
+    background-color: #f5f5f5;
+}
+
+.dropdown-item:last-child {
+    border-bottom: none;
+}
+
+.loading, .error, .no-results {
+    padding: 10px;
+    text-align: center;
+    color: #666;
+}
+
+.error {
+    color: #e57373;
+}
+
+/* Compact layout for 1024x768 resolution */
+@media (max-width: 1024px), (max-height: 768px) {
+    /* Container layout adjustments */
+    .container-selects-exames {
+        padding-left: 15px;
+        gap: 5px;
+    }
+    
+    .container-selects-exames > div:nth-child(2) {
+        margin-left: 250px;
+    }
+    
+    /* Input fields */
+    .container-selects-exames div input, 
+    .pesquisar-exames input, 
+    .tabela-exames input, 
+    .input-tabela-exames {
+        padding: 2px;
+        border-radius: 6px;
+        font-size: 0.7rem;
+        height: 18px;
+    }
+    
+    /* Labels */
+    .container-selects-exames label,
+    .container-tabelas label {
+        font-size: 0.7rem;
+        margin-bottom: 2px;
+        white-space: nowrap;
+    }
+    
+    /* Table containers */
+    .container-tabelas {
+        gap: 0.2em;
+        margin-top: 1vh;
+        height: 220px;
+    }
+    
+    /* Tables */
+    .tabela-exames, .tabela-exames-selecionados {
+        min-height: 8rem;
+        max-height: 8rem;
+        margin: 0.3em 0;
+    }
+    
+    .tabela-exames td, 
+    .tabela-exames th, 
+    .tabela-exames-selecionados td, 
+    .tabela-exames-selecionados th {
+        padding: 0.1em 0.3em;
+        font-size: 0.7rem;
+        height: 0.5rem;
+        line-height: 8px;
+    }
+    
+    .tabela-exames tr, 
+    .tabela-exames-selecionados tr {
+        height: 12px;
+    }
+    
+    /* Font sizes */
+    .exames-selecionados {
+        font-size: 0.7rem;
+        margin-left: 0.5em;
+    }
+    
+    /* Buttons */
+    .transfer-button {
+        padding: 0.3em 0.8em;
+        font-size: 0.7rem;
+        margin: 0.5em auto;
+        border-radius: 3px;
+    }
+    .container-selects-exames {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 30px;
+        padding: 10px 30px;
+        align-items: flex-end;
+    }
+
+    .campo-exame,
+    .campo-pacote {
+        flex: 1;
+        min-width: 250px;
+        max-width: 400px;
+    }
+
+    /* Remova qualquer margem esquerda forçada */
+    .container-selects-exames>div:nth-child(2) {
+        margin-left: 0 !important;
+    }
+    .adicionar-pacote button.btnNovoExame {
+        padding: 0.2em 0.8em;
+        font-size: 0.7rem;
+        border-radius: 6px;
+    }
+    
+    .btnNovoExame {
+        min-width: 70px;
+        max-width: 70px;
+        padding: 0.3em 0.6em;
+        font-size: 0.7rem;
+    }
+    
+    /* Input fields */
+    .inputNovoExame {
+        height: 8px;
+        max-width: 180px;
+        padding: 2px;
+        font-size: 0.7rem;
+    }
+    
+    /* Dropdown elements */
+    .dropdown-content {
+        max-height: 200px;
+    }
+    
+    .dropdown-item {
+        padding: 6px;
+        font-size: 0.7rem;
+    }
+    
+    /* Reduced width for main containers */
+    .container-tabelas div {
+        min-width: 100%; /* Reduced from 94% */
+        max-width: 100%; /* Reduced from 94% */
+    }
+    
+    /* Adjust the left margin to move second element closer */
+    .container-selects-exames > div:nth-child(2) {
+        margin-left: 180px; /* Reduced from 250px */
+    }
+    
+    /* Make overall container more compact */
+    .container-selects-exames {
+        padding-left: 5px; /* Reduced padding */
+        width: 90%; /* Reduce overall width */
+        margin: 0 auto; /* Center the container */
+    }
+    
+    /* Make the tables themselves narrower */
+    .tabela-exames, .tabela-exames-selecionados {
+        max-width: 100% !important; 
+        min-width: 100% !important;
+    }
+    
+    /* Tighten up column widths */
+    #tabelaSelecionarExameCodigo {
+        width: 12%;
+    }
+    
+    #tabelaSelecionarExameDescricao {
+        width: 60%;
+    }
+    
+    #tabelaSelecionarExameQuantidade {
+        width: 15% !important; /* Reduced from 28% */
+    }
+    
+    /* Adjust the other columns to compensate */
+    #tabelaSelecionarExameCodigo {
+        width: 15%;
+    }
+    
+    #tabelaSelecionarExameDescricao {
+        width: 70%; /* Increased to use the space saved from QTD column */
+    }
+    
+    /* More specific targeting for the QTD column */
+    .tabela-exames-selecionados th#tabelaSelecionarExameQuantidade,
+    .tabela-exames-selecionados td:nth-child(3) {
+        width: 15% !important;
+        max-width: 15% !important;
+        min-width: 40px; /* Reduced from 50px */
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    
+    /* Make inputs in QTD column smaller */
+    .tabela-exames-selecionados td:nth-child(3) input {
+        width: 85%;
+        max-width: 95%;
+        box-sizing: border-box;
+        font-size: 0.6rem; /* Smaller font for QTD inputs */
+    }
+
+
+}
+
+/* Remover barra de rolagem apenas da tabela Exames Selecionados */
+.tabela-exames-selecionados {
+    overflow-y: hidden; /* Remove a barra de rolagem vertical */
+    height: auto; /* Altura automática baseada no conteúdo */
+    max-height: none; /* Remove a limitação de altura máxima */
+}
+
+/* Mantém a configuração original para a tabela de Exames */
+.tabela-exames {
+    overflow-y: auto; /* Mantém a barra de rolagem vertical */
+    height: 300px; /* Mantém a altura fixa */
+    max-height: 300px; /* Mantém a altura máxima */
+}
+
+/* Ajuste para telas menores */
+@media (max-width: 1366px) {
+    .tabela-exames-selecionados {
+        min-height: auto; /* Ajusta a altura mínima */
+        max-height: none; /* Remove a limitação de altura máxima */
+    }
+    
+    .tabela-exames {
+        min-height: 10rem; /* Mantém a altura mínima original */
+        max-height: 10rem; /* Mantém a altura máxima original */
+    }
+}
+
+/* Ajuste para telas muito pequenas */
+@media (max-width: 1024px), (max-height: 768px) {
+    .tabela-exames-selecionados {
+        min-height: auto;
+        max-height: none;
+    }
+    
+    .tabela-exames {
+        min-height: 8rem;
+        max-height: 8rem;
+    }
+}
+
+/* Make the section containing the exames module have a fixed height with scrolling */
+.section-dinamica[data-section="exames"] {
+    max-height: calc(70vh + 15px); /* Aumentado de 5px para 15px (10px a mais) */
+    overflow-y: auto !important; /* Força barra de rolagem vertical */
+    overflow-x: hidden; /* Previne rolagem horizontal */
+    display: block;
+    padding-right: 5px; /* Add padding for scrollbar */
+    scrollbar-width: thin;
+    scrollbar-color: #2c8ef0 #f0f0f0;
+}
+
+/* Set up internal scroll for tabela-exames only */
+.tabela-exames {
+    overflow-y: auto !important; /* Add internal scrollbar */
+    height: 300px !important; /* Fixed height */
+    max-height: 300px !important; /* Maximum height */
+    display: block !important; /* Required for scroll to work */
+}
+
+/* Keep tabela-exames-selecionados without internal scrollbar */
+.tabela-exames-selecionados {
+    overflow-y: visible !important; /* No inner scrollbars */
+    height: auto !important; /* Auto height based on content */
+    max-height: none !important; /* No max height limit */
+    display: table !important; /* Display as table */
+}
+
+/* Maintain sticky headers for both tables */
+.tabela-exames thead, .tabela-exames-selecionados thead {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background-color: #1a4d7a; /* Keep header visible */
+}
+
+/* Media query for different screen sizes */
+@media (max-width: 1366px) {
+    .tabela-exames {
+        height: 10rem !important;
+        max-height: 10rem !important;
+        min-height: 10rem !important;
+    }
+}
+
+/* Media query for 1024x768 resolution */
+@media (max-width: 1024px), (max-height: 768px) {
+    .section-dinamica[data-section="exames"] {
+        max-height: calc(73.5vh + 15px) !important; /* Aumentado de 5px para 15px (10px a mais) */
+        padding-right: 10px;
+    }
+    
+    .tabela-exames {
+        height: 8rem !important;
+        max-height: 8rem !important;
+        overflow-y: scroll !important;
+    }
+    
+    .container-tabelas {
+        height: calc(220px + 15px); /* Aumentado de 5px para 15px (10px a mais) */
+    }
+}
+
+/* Solução para garantir que a barra de rolagem seja sempre visível */
+
+/* Estilo global para scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f0f0f0;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #2c8ef0;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #1a4d7a;
+}
+
+/* Seção principal com scroll garantido */
+.section-dinamica[data-section="exames"] {
+    max-height: 70vh; /* Altura máxima */
+    overflow-y: auto !important; /* Força barra de rolagem vertical */
+    overflow-x: hidden; /* Previne rolagem horizontal */
+    display: block;
+    padding-right: 15px; /* Espaço para a barra de rolagem */
+    box-sizing: border-box;
+    scrollbar-width: thin;
+    scrollbar-color: #2c8ef0 #f0f0f0;
+}
+
+/* Garantir que a tabela de exames tenha scroll próprio */
+.tabela-exames {
+    overflow-y: scroll !important; /* Força barra de rolagem vertical */
+    height: 300px !important;
+    display: block !important;
+    scrollbar-width: thin;
+    scrollbar-color: #2c8ef0 #f0f0f0;
+}
+
+/* Tabela de exames selecionados com altura automática */
+.tabela-exames-selecionados {
+    overflow-y: visible !important;
+    height: auto !important;
+    max-height: none !important;
+    min-height: auto !important;
+    display: table !important;
+    width: 100% !important;
+}
+
+/* Container de tabelas com tamanho adequado */
+.container-tabelas {
+    width: 100%;
+    box-sizing: border-box;
+    overflow: visible;
+}
+
+/* Ajuste para telas menores (1366px) */
+@media (max-width: 1366px) {
+    .section-dinamica[data-section="exames"] {
+        max-height: calc(65vh + 15px); /* Aumentado de 5px para 15px (10px a mais) */
+    }
+    
+    .tabela-exames {
+        height: 10rem !important;
+        max-height: 10rem !important;
+        overflow-y: scroll !important;
+    }
+}
+
+/* Ajuste específico para resolução 1024x768 */
+@media (max-width: 1024px), (max-height: 768px) {
+    .section-dinamica[data-section="exames"] {
+        max-height: calc(73.5vh + 15px) !important; /* Aumentado de 5px para 15px (10px a mais) */
+        padding-right: 10px;
+    }
+    
+    .tabela-exames {
+        height: 8rem !important;
+        max-height: 8rem !important;
+        overflow-y: scroll !important;
+    }
+    
+    .container-tabelas {
+        height: calc(220px + 15px); /* Aumentado de 5px para 15px (10px a mais) */
+    }
+}
+
+/* Solução para reposicionar o Caráter de Solicitação mais à esquerda */
+
+/* Ajuste principal para o segundo elemento (Caráter de Solicitação) */
+.container-selects-exames > div:nth-child(2) {
+    margin-left: 300px; /* Reduzido de 400px para 300px */
+}
+
+/* Ajuste responsivo para telas até 1320px */
+@media (max-width: 1320px), (max-height: 1100px) {
+    .container-selects-exames > div:nth-child(2) {
+        margin-left: 250px; /* Reduzido de 400px para 250px */
+    }
+}
+
+/* Ajuste mais agressivo para telas até 1200px */
+@media (max-width: 1200px) {
+    .container-selects-exames > div:nth-child(2) {
+        margin-left: 200px;
+    }
+}
+
+/* Ajuste para telas menores 1024px */
+@media (max-width: 1024px), (max-height: 768px) {
+    .container-selects-exames > div:nth-child(2) {
+        margin-left: 150px; /* Reduzido para ficar bem visível em 1024px */
+    }
+    
+    /* Melhor aproveitamento do espaço horizontal */
+    .container-selects-exames {
+        width: 95%;
+        justify-content: space-between;
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+    
+    /* Reduzir a largura dos elementos de entrada para caber na tela */
+    .container-selects-exames div input {
+        max-width: 90%;
+    }
+}
+
+/* Ajuste para telas muito pequenas */
+@media (max-width: 800px) {
+    /* Para telas muito pequenas, coloca um elemento abaixo do outro */
+    .container-selects-exames {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .container-selects-exames > div:nth-child(2) {
+        margin-left: 0; /* Remove a margem quando os elementos estiverem empilhados */
+    }
+}

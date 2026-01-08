@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login</title>
+  <link rel="stylesheet" href="../static/style/login.css">
+  <script src="../static/js/login.js" defer></script>
+</head>
+<header>
+  <div id="flash-message" style="display: none;"></div>
+</header>
+<body>
+    <div class="login-container">
+      <img class="logo-login" src="../static/img/oftalmo-curitibapng(1).png" alt="Logo Oftalmo Curitiba">
+      <h3>Login</h3>
+      <h4>Bem-vindo! Favor se identificar:</h4>
+  
+      <form method="post" action="/login" id="login-form">
+        <div>
+          <label for="username">Usuário: </label>
+          <input type="text" id="usuario" name="username" placeholder="Digite seu usuário" required />
+        </div>
+
+        <div>
+          <label for="password">Senha: </label>
+          <input type="password" id="senha" name="password" placeholder="Digite sua senha" required />
+        </div>
+
+        <p>Ainda não tem cadastro? <a class="solic-cadastro" href="">Solicitar cadastro</a></p>
+
+        <button type="submit" id="botao-enviar">Entrar</button>
+      </form>
+
+      {% if error %}
+      <p class="error">{{ error }}</p>
+      {% endif %}
+
+      <p class="site-version">Versão: 1.0.0</p>
+    </div>
+</body>
+</html>

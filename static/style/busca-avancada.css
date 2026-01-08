@@ -1,0 +1,394 @@
+.modal-busca-avancada {
+    display: none;
+    position: fixed;
+    z-index: 10000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(3px);
+}
+
+.modal-busca-content {
+    position: relative;
+    background-color: #fff;
+    margin: 3% auto;
+    padding: 0;
+    width: 90%;
+    max-width: 900px;
+    max-height: 85vh;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-busca-header {
+    background: linear-gradient(135deg, #2c8ef0 0%, #1a6bb8 100%);
+    color: white;
+    padding: 20px 25px;
+    border-radius: 12px 12px 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-busca-header h2 {
+    margin: 0;
+    font-size: 1.5em;
+    font-weight: 600;
+}
+
+.modal-busca-close {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    padding: 0;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background-color 0.2s;
+}
+
+.modal-busca-close:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.modal-busca-body {
+    padding: 25px;
+    overflow-y: auto;
+    flex-grow: 1;
+}
+
+.busca-tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #e0e0e0;
+}
+
+.busca-tab {
+    padding: 12px 24px;
+    background: none;
+    border: none;
+    border-bottom: 3px solid transparent;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: 500;
+    color: #666;
+    transition: all 0.3s;
+}
+
+.busca-tab:hover {
+    color: #2c8ef0;
+}
+
+.busca-tab.active {
+    color: #2c8ef0;
+    border-bottom-color: #2c8ef0;
+}
+
+.busca-form {
+    display: none;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.busca-form.active {
+    display: flex;
+}
+
+.busca-input-group {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.busca-input-group label {
+    font-weight: 500;
+    min-width: 120px;
+    color: #333;
+}
+
+.busca-input-group input {
+    flex: 1;
+    padding: 10px 15px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 1em;
+    transition: border-color 0.3s;
+}
+
+.busca-input-group input:focus {
+    outline: none;
+    border-color: #2c8ef0;
+}
+
+.busca-btn {
+    padding: 10px 24px;
+    background: #2c8ef0;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1em;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.busca-btn:hover {
+    background: #1a6bb8;
+}
+
+.busca-resultados {
+    margin-top: 20px;
+}
+
+.busca-resultados h3 {
+    color: #333;
+    font-size: 1.2em;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #e0e0e0;
+}
+
+.busca-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.busca-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border: 2px solid #e0e0e0;
+    transition: all 0.3s;
+}
+
+.busca-item:hover {
+    border-color: #2c8ef0;
+    background: #f0f7ff;
+}
+
+.busca-item-info {
+    flex: 1;
+}
+
+.busca-item-nome {
+    font-weight: 600;
+    color: #333;
+    font-size: 1.1em;
+    margin-bottom: 5px;
+}
+
+.busca-item-detalhes {
+    color: #666;
+    font-size: 0.9em;
+}
+
+.busca-item-acoes {
+    display: flex;
+    gap: 10px;
+}
+
+.busca-item-btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.9em;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.btn-prontuario {
+    background: #28a745;
+    color: white;
+}
+
+.btn-prontuario:hover {
+    background: #218838;
+}
+
+.btn-especial {
+    background: #ffc107;
+    color: #333;
+}
+
+.btn-especial:hover {
+    background: #e0a800;
+}
+
+.btn-atendimentos {
+    background: #6c757d;
+    color: white;
+}
+
+.btn-atendimentos:hover {
+    background: #5a6268;
+}
+
+/* Popup de Atendimentos */
+.popup-atendimentos-overlay {
+    display: none;
+    position: fixed;
+    z-index: 10001;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(3px);
+    align-items: center; /* Centralizar verticalmente */
+    justify-content: center; /* Centralizar horizontalmente */
+}
+
+.popup-atendimentos-content {
+    position: relative;
+    background-color: #fff;
+    padding: 0;
+    width: 90%;
+    max-width: 800px;
+    max-height: 80vh;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+}
+
+.popup-atendimentos-header {
+    background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+    color: white;
+    padding: 20px;
+    border-radius: 12px 12px 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.popup-atendimentos-header h2 {
+    margin: 0;
+    font-size: 1.5em;
+}
+
+.popup-atendimentos-close {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 2em;
+    cursor: pointer;
+    padding: 0;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background 0.3s;
+}
+
+.popup-atendimentos-close:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.popup-atendimentos-body {
+    padding: 20px;
+    overflow-y: auto;
+    flex: 1;
+}
+
+.atendimento-item {
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.atendimento-item:hover {
+    background: #f8f9fa;
+    border-color: #6c757d;
+    transform: translateX(5px);
+}
+
+.atendimento-info {
+    flex: 1;
+}
+
+.atendimento-data {
+    font-weight: 600;
+    color: #333;
+    font-size: 1.1em;
+    margin-bottom: 5px;
+}
+
+.atendimento-medico {
+    color: #666;
+    font-size: 0.9em;
+}
+
+.atendimento-status {
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 0.85em;
+    font-weight: 500;
+}
+
+.status-atendido {
+    background: #d4edda;
+    color: #155724;
+}
+
+.status-aguardando {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.busca-loading {
+    text-align: center;
+    padding: 40px;
+    color: #666;
+}
+
+.busca-vazio {
+    text-align: center;
+    padding: 40px;
+    color: #999;
+}
+
+/* Scrollbar personalizada */
+.busca-lista::-webkit-scrollbar {
+    width: 8px;
+}
+
+.busca-lista::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.busca-lista::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 10px;
+}
+
+.busca-lista::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}

@@ -1,0 +1,1061 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
+    padding: 20px;
+}
+
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    background-color: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    color: #1a4d7a;
+    margin-bottom: 30px;
+    text-align: center;
+    font-size: 2rem;
+}
+
+.form-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.input-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.input-group label {
+    font-weight: bold;
+    color: #333;
+    min-width: 180px;
+}
+
+.input-group input {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #1a4d7a;
+    border-radius: 8px;
+    font-size: 1rem;
+}
+
+.textarea-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.textarea-group label {
+    font-weight: bold;
+    color: #333;
+}
+
+.textarea-group textarea {
+    min-height: 400px;
+    padding: 15px;
+    border: 1px solid #1a4d7a;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-family: Arial, sans-serif;
+    resize: vertical;
+}
+
+/* Estilo para textarea readonly */
+textarea[readonly] {
+    background-color: #f5f5f5;
+    cursor: default;
+    resize: vertical;
+    color: #333;
+}
+
+textarea[readonly]:focus {
+    outline: 2px solid #2c8ef0;
+    outline-offset: 2px;
+}
+
+.button-group {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+button {
+    padding: 12px 30px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+button:hover:not(:disabled) {
+    transform: translateY(-2px);
+}
+
+button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.btn-primary {
+    background-color: #2c8ef0;
+    color: white;
+}
+
+.btn-primary:hover:not(:disabled) {
+    background-color: #1a4d7a;
+}
+
+.btn-success {
+    background-color: #28a745;
+    color: white;
+}
+
+.btn-success:hover:not(:disabled) {
+    background-color: #218838;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background-color: #5a6268;
+}
+
+.flash-message {
+    display: none;
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 15px 20px;
+    border-radius: 8px;
+    font-weight: bold;
+    z-index: 1000;
+    animation: slideIn 0.3s ease-in-out;
+}
+
+.flash-message.success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.flash-message.error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+.flash-message.info {
+    background-color: #d1ecf1;
+    color: #0c5460;
+    border: 1px solid #bee5eb;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 20px;
+    }
+
+    h1 {
+        font-size: 1.5rem;
+    }
+
+    .input-group {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .input-group label {
+        min-width: auto;
+    }
+
+    .button-group {
+        flex-direction: column;
+    }
+}
+
+/* Estilo das Abas */
+.tabs-container {
+    width: 100%;
+    margin-top: 20px;
+}
+
+.tabs-header {
+    display: flex;
+    gap: 10px;
+    border-bottom: 2px solid #1a4d7a;
+    margin-bottom: 20px;
+}
+
+.tab-button {
+    padding: 12px 24px;
+    background-color: #f5f5f5;
+    border: none;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: bold;
+    color: #333;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+    border-bottom: none;
+}
+
+.tab-button:hover {
+    background-color: #e0e0e0;
+}
+
+.tab-button.active {
+    background-color: #1a4d7a;
+    color: white;
+    border-color: #1a4d7a;
+}
+
+.tabs-content {
+    width: 100%;
+}
+
+.tab-pane {
+    display: none;
+}
+
+.tab-pane.active {
+    display: block;
+}
+
+/* Estilos para as abas de busca */
+.busca-tabs-container {
+    margin-bottom: 30px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    background: #f9f9f9;
+}
+
+.busca-tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #e0e0e0;
+}
+
+.busca-tab {
+    padding: 12px 24px;
+    background: none;
+    border: none;
+    border-bottom: 3px solid transparent;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: 500;
+    color: #666;
+    transition: all 0.3s;
+}
+
+.busca-tab:hover {
+    color: #2c8ef0;
+}
+
+.busca-tab.active {
+    color: #2c8ef0;
+    border-bottom-color: #2c8ef0;
+}
+
+.busca-form {
+    display: none;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.busca-form.active {
+    display: flex;
+}
+
+.busca-input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.busca-input-group label {
+    font-weight: 600;
+    color: #333;
+}
+
+.busca-input-group input {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 1em;
+}
+
+.busca-btn {
+    padding: 12px 24px;
+    background: #2c8ef0;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: 600;
+    transition: background 0.3s;
+    align-self: flex-start;
+}
+
+.busca-btn:hover {
+    background: #1a6bb8;
+}
+
+.busca-resultados {
+    margin-top: 20px;
+}
+
+.busca-resultados h3 {
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.busca-loading,
+.busca-vazio {
+    text-align: center;
+    padding: 20px;
+    color: #666;
+}
+
+/* Estilos para os itens de resultado */
+.busca-item {
+    background: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.3s;
+}
+
+.busca-item:hover {
+    background: #f0f7ff;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.busca-item-info {
+    flex: 1;
+}
+
+.busca-item-nome {
+    font-weight: 600;
+    color: #333;
+    font-size: 1.1em;
+    margin-bottom: 5px;
+}
+
+.busca-item-detalhes {
+    color: #666;
+    font-size: 0.9em;
+}
+
+.busca-item-acoes {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.busca-item-btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.9em;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.btn-prontuario {
+    background: #28a745;
+    color: white;
+}
+
+.btn-prontuario:hover {
+    background: #218838;
+}
+
+.btn-atendimentos {
+    background: #6c757d;
+    color: white;
+}
+
+.btn-atendimentos:hover {
+    background: #5a6268;
+}
+
+.btn-especial {
+    background: #ffc107;
+    color: #333;
+}
+
+.btn-especial:hover {
+    background: #e0a800;
+}
+
+/* Estilos para o popup de atendimentos */
+.popup-atendimentos-overlay {
+    position: fixed;
+    z-index: 10000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(3px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.popup-atendimentos-content {
+    position: relative;
+    background-color: #fff;
+    padding: 0;
+    width: 90%;
+    max-width: 900px;
+    max-height: 80vh;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+}
+
+.popup-atendimentos-header {
+    background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+    color: white;
+    padding: 20px;
+    border-radius: 12px 12px 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.popup-atendimentos-header h2 {
+    margin: 0;
+    font-size: 1.5em;
+}
+
+.popup-atendimentos-close {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 2em;
+    cursor: pointer;
+    padding: 0;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background 0.3s;
+}
+
+.popup-atendimentos-close:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.popup-atendimentos-body {
+    padding: 20px;
+    overflow-y: auto;
+    flex: 1;
+}
+
+.atendimento-item {
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.3s;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.atendimento-item:hover {
+    background: #f8f9fa;
+    border-color: #6c757d;
+}
+
+.atendimento-info {
+    flex: 1;
+    min-width: 200px;
+}
+
+.atendimento-data {
+    font-weight: 600;
+    color: #333;
+    font-size: 1.1em;
+    margin-bottom: 5px;
+}
+
+.atendimento-medico {
+    color: #666;
+    font-size: 0.9em;
+}
+
+.atendimento-status {
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 0.9em;
+    font-weight: 600;
+}
+
+.status-atendido {
+    background: #d4edda;
+    color: #155724;
+}
+
+.status-aguardando {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.atendimento-acoes {
+    display: flex;
+    gap: 10px;
+}
+
+.btn-editar-exam-cir,
+.btn-abrir-prontuario {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.9em;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.btn-editar-exam-cir {
+    background: #007bff;
+    color: white;
+}
+
+.btn-editar-exam-cir:hover {
+    background: #0056b3;
+}
+
+.btn-abrir-prontuario {
+    background: #28a745;
+    color: white;
+}
+
+.btn-abrir-prontuario:hover {
+    background: #218838;
+}
+
+.atendimentos-loading,
+.atendimentos-vazio {
+    text-align: center;
+    padding: 40px 20px;
+    color: #666;
+}
+
+/* Estilos para dados do paciente */
+.dados-paciente-container {
+    margin: 20px 0;
+    padding: 20px;
+    background: linear-gradient(135deg, #1a4d7a 0%, #2c8ef0 100%);
+    border-radius: 8px;
+    color: white;
+}
+
+.dados-paciente-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.dados-paciente-header h2 {
+    margin: 0;
+    font-size: 1.5em;
+    color: white;
+}
+
+.botoes-impressao-grupo {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.btn-imprimir {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background: white;
+    color: #1a4d7a;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s;
+}
+
+.btn-imprimir:hover {
+    background: #f0f0f0;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.btn-imprimir-resumo {
+    background: #e8f4f8;
+    color: #0066cc;
+}
+
+/* Estilos para impressão */
+@media print {
+    /* Reseta o corpo e o html */
+    body, html {
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100%;
+    }
+
+    /* Esconde TODOS os elementos da tela (filhos diretos do body) */
+    body > * {
+        display: none !important;
+    }
+    
+    /* IMPORTANTE: Criar classes específicas para cada tipo de impressão */
+    body.imprimindo-prontuario #impressao-template {
+        display: block !important;
+        padding-top: 0; 
+        margin-top: 0;
+    }
+
+    body.imprimindo-resumo #impressao-resumo-template {
+        display: block !important;
+        padding-top: 0;
+        margin-top: 0;
+    }
+
+    body.imprimindo-agenda #impressao-agenda-template {
+        display: block !important;
+        padding-top: 0;
+        margin-top: 0;
+    }
+
+    /* Garantir que os outros templates permaneçam escondidos durante cada impressão específica */
+    body.imprimindo-prontuario #impressao-resumo-template,
+    body.imprimindo-prontuario #impressao-agenda-template {
+        display: none !important;
+    }
+
+    body.imprimindo-resumo #impressao-template,
+    body.imprimindo-resumo #impressao-agenda-template {
+        display: none !important;
+    }
+
+    body.imprimindo-agenda #impressao-template,
+    body.imprimindo-agenda #impressao-resumo-template {
+        display: none !important;
+    }
+
+    .impressao-consulta {
+        page-break-inside: avoid;
+        margin-bottom: 30px;
+        border: 1px solid #ddd;
+        padding: 15px;
+    }
+
+    .impressao-consulta-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #333;
+    }
+
+    .impressao-consulta-header h3 {
+        margin: 0;
+        font-size: 14pt;
+        color: #333;
+    }
+
+    .impressao-consulta-status {
+        font-weight: bold;
+        color: #2c8ef0;
+    }
+
+    .impressao-consulta-info {
+        margin-bottom: 15px;
+        font-size: 11pt;
+        color: #666;
+    }
+
+    .impressao-consulta-campo {
+        margin-bottom: 15px;
+        line-height: 1.6;
+    }
+
+    .impressao-consulta-campo strong {
+        display: inline-block;
+        margin-right: 5px;
+        color: #333;
+        font-size: 11pt;
+    }
+
+    .impressao-consulta-campo p,
+    .impressao-consulta-campo br {
+        margin: 5px 0;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+    }
+
+    .impressao-resumo-historico {
+        font-family: Arial, sans-serif;
+        font-size: 12pt;
+        line-height: 1.6;
+        color: #000;
+    }
+
+    .impressao-consulta {
+        page-break-inside: avoid;
+        margin-bottom: 30px;
+        border: 1px solid #ddd;
+        padding: 15px;
+    }
+
+    .impressao-consulta-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #333;
+    }
+
+    .impressao-consulta-header h3 {
+        margin: 0;
+        font-size: 14pt;
+        color: #333;
+    }
+
+    .impressao-consulta-status {
+        font-weight: bold;
+        color: #2c8ef0;
+    }
+
+    .impressao-consulta-info {
+        margin-bottom: 15px;
+        font-size: 11pt;
+        color: #666;
+    }
+
+    .impressao-consulta-campo {
+        margin-bottom: 15px;
+        line-height: 1.6;
+    }
+
+    .impressao-consulta-campo strong {
+        display: inline-block;
+        margin-right: 5px;
+        color: #333;
+        font-size: 11pt;
+    }
+
+    .impressao-consulta-campo p,
+    .impressao-consulta-campo br {
+        margin: 5px 0;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+    }
+}
+
+/* Impressão da agenda - mover estas regras para depois das regras principais */
+@media print {
+    /* Regra específica apenas para impressão da agenda quando a classe está ativa */
+    body.imprimindo-agenda > *:not(#impressao-agenda-template) { 
+        display: none !important; 
+    }
+    
+    body.imprimindo-agenda #impressao-agenda-template { 
+        display: block !important; 
+    }
+}
+
+.impressao-container {
+    font-family: Arial, sans-serif;
+    max-width: 210mm;
+    margin: 0 auto;
+    padding: 10mm; /* Reduzido para economizar espaço */
+    background: white;
+    color: #000;
+    font-size: 0.65em; /* Mantém a redução de 35% da base */
+}
+
+.impressao-header {
+    border-bottom: 3px solid #1a4d7a;
+    padding-bottom: 10px; /* Reduzido de 15px */
+    margin-bottom: 15px; /* Reduzido de 20px */
+}
+
+.impressao-logo h2 {
+    color: #1a4d7a;
+    margin: 0 0 15px 0;
+    text-align: center;
+    font-size: 1.8em; /* Relativo ao container */
+}
+
+.impressao-dados-header {
+    display: grid;
+    /* Alterado para 4 colunas para economizar espaço vertical */
+    grid-template-columns: repeat(4, 1fr); 
+    gap: 2px 10px; /* Reduzido o espaçamento entre linhas */
+    /* Aumentado em 20% (relativo ao 1em do conteúdo) */
+    font-size: 1.2em; 
+}
+
+.impressao-dados-item {
+    padding: 2px 0; /* Reduzido de 5px */
+}
+
+.impressao-dados-item strong {
+    color: #1a4d7a;
+    margin-right: 5px;
+}
+
+.impressao-secao {
+    margin-bottom: 10px; /* Reduzido de 20px */
+    page-break-inside: avoid;
+}
+
+.impressao-secao h3 {
+    /* Alterado para ser preto e economizar espaço */
+    background: none; 
+    color: #000; /* Alterado para preto, como solicitado */
+    padding: 0; /* Removido padding */
+    margin: 0 0 5px 0; /* Margem ajustada */
+    border-radius: 0; /* Removido border-radius */
+    border-bottom: 2px solid #1a4d7a; /* Adicionado um sublinhado */
+    padding-bottom: 3px; /* Espaço para o sublinhado */
+    font-size: 1.1em;
+}
+
+.impressao-conteudo {
+    border: 1px solid #ddd;
+    padding: 8px; /* Reduzido de 12px */
+    min-height: auto; /* Removido min-height */
+    border-radius: 4px;
+    background: #f9f9f9;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    font-size: 1em; /* Fonte base do conteúdo */
+    line-height: 1.5; /* Reduzido de 1.6 */
+}
+
+.impressao-conteudo:empty::before {
+    content: "Não informado";
+    color: #999;
+    font-style: italic;
+}
+
+/* Estilos para impressão do resumo */
+@media print {
+    .impressao-resumo-historico {
+        font-family: Arial, sans-serif;
+        font-size: 8pt;
+        line-height: 1.6;
+        color: #000;
+    }
+
+    .impressao-consulta {
+        page-break-inside: avoid;
+        margin-bottom: 30px;
+        border: 1px solid #ddd;
+        padding: 15px;
+    }
+
+    .impressao-consulta-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #333;
+    }
+
+    .impressao-consulta-header h3 {
+        margin: 0;
+        font-size: 14pt;
+        color: #333;
+    }
+
+    .impressao-consulta-status {
+        font-weight: bold;
+        color: #2c8ef0;
+    }
+
+    .impressao-consulta-info {
+        margin-bottom: 15px;
+        font-size: 11pt;
+        color: #666;
+    }
+
+    .impressao-consulta-campo {
+        margin-bottom: 15px;
+        line-height: 1.6;
+    }
+
+    .impressao-consulta-campo strong {
+        display: inline-block;
+        margin-right: 5px;
+        color: #333;
+        font-size: 8pt;
+    }
+
+    .impressao-consulta-campo p,
+    .impressao-consulta-campo br {
+        margin: 5px 0;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+    }
+}
+
+/* Card de impressão da agenda */
+.card-imprimir-agenda {
+    margin: 40px auto 0 auto;
+    max-width: 500px;
+    background: #f9f9f9;
+    border: 1px solid #2c8ef0;
+    border-radius: 10px;
+    padding: 24px 32px;
+    box-shadow: 0 2px 8px rgba(44,142,240,0.08);
+    text-align: center;
+}
+.card-imprimir-agenda h2 {
+    color: #1a4d7a;
+    margin-bottom: 18px;
+}
+.imprimir-agenda-form {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    align-items: center;
+}
+.imprimir-agenda-form input[type="date"] {
+    padding: 8px;
+    border-radius: 6px;
+    border: 1px solid #2c8ef0;
+    font-size: 1em;
+}
+.imprimir-agenda-form button {
+    background: #2c8ef0;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 10px 18px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.imprimir-agenda-form button:hover {
+    background: #1a4d7a;
+}
+
+/* Impressão da agenda */
+#impressao-agenda-template {
+    background: white;
+}
+.impressao-agenda-container {
+    font-family: Arial, sans-serif;
+    max-width: 210mm;
+    margin: 0 auto;
+    padding: 18mm 10mm;
+    color: #000;
+    font-size: 10px;
+}
+.impressao-agenda-header {
+    border-bottom: 2px solid #1a4d7a;
+    margin-bottom: 18px;
+    padding-bottom: 8px;
+    text-align: center;
+}
+.impressao-agenda-header h2 {
+    margin: 0 0 6px 0;
+    font-size: 1.5em;
+    color: #1a4d7a;
+}
+#agenda-header-info {
+    font-size: 1.1em;
+    color: #333;
+}
+.impressao-agenda-tabela {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 18px;
+    font-size: 1em;
+}
+.impressao-agenda-tabela th, .impressao-agenda-tabela td {
+    font-size: 10px;
+    border: 1px solid #bbb;
+    padding: 2px 4px;
+    text-align: left;
+}
+.impressao-agenda-tabela th {
+    background: #e7f1fa;
+    color: #1a4d7a;
+}
+.impressao-agenda-tabela tbody tr:nth-child(even) {
+    background: #f0f4fa !important; /* cinza/azul bem claro */
+}
+.impressao-agenda-tabela tbody tr:nth-child(odd) {
+    background: #ffffff !important;
+}
+
+/* Impressão: só mostra o template da agenda */
+@media print {
+    body > * { display: none !important; }
+    #impressao-agenda-template { display: block !important; }
+}
+
+.impressao-agenda-container,
+.impressao-agenda-tabela,
+.impressao-agenda-tabela th,
+.impressao-agenda-tabela td {
+    font-size: 9px !important;
+    color: #000 !important;
+}

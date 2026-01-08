@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <script>
+        // Global error handler to catch undefined variables
+        window.addEventListener('error', function(e) {
+            if (e.message && e.message.includes('container is not defined')) {
+                console.warn('Container reference error caught. Using fallback container.');
+                window.container = document.createElement('div');
+                e.preventDefault(); // Prevent the error from bubbling up
+            }
+            
+            // Add handler for receituario is not defined
+            if (e.message && e.message.includes('receituario is not defined')) {
+                console.warn('Receituario reference error caught. Using fallback object.');
+                window.receituario = { value: '' };
+                e.preventDefault();
+            }
+        });
+        
+        // Safer version of adjustHeight function
+        function adjustHeight(element) {
+            if (!element) return;
+            
+            element.style.height = 'auto'; 
+            element.style.height = (element.scrollHeight) + 'px';
+        }
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prontuário Eletrônico</title>
+    <link rel="stylesheet" href="../static/style/base_prontuario.css">
+    <link rel="stylesheet" href="../static/style/evolucao.css">
+    <link rel="stylesheet" href="../static/style/resizable-divisor.css">
+    <link rel="stylesheet" href="../static/style/exames.css">
+    <link rel="stylesheet" href="../static/style/info_paciente.css">
+    <link rel="stylesheet" href="../static/style/modal_observacao_oculos.css">
+    <link rel="stylesheet" href="../static/style/resumo.css">
+    <link rel="stylesheet" href="../static/style/receituario.css">
+    <link rel="stylesheet" href="../static/style/popups.css">
+    <link rel="stylesheet" href="../static/style/popup-historico.css">
+    <script type="module" src="../static/js/popup-prontuario.js" defer></script>
+    <script type="module">
+        import { atualizaSectionProntuario } from '../static/js/section-dinamica.js';
+        window.atualizaSectionProntuario = atualizaSectionProntuario;
+    </script>
+    <script type="module" src="../static/js/wrapper-functions.js" defer></script>
+    <script type="module" src="../static/js/dt-evolucao.js" defer></script>
+    <script type="module" src="../static/js/macros.js" defer></script>
+    <script type="module" src="../static/js/horario-atual.js"></script>
+    <script type="module" src="../static/js/arvore_prontuario.js" defer></script>
+    <script type="module" src="../static/js/popups.js" defer></script>
+    <script type="module" src="../static/js/salvar_prontuario.js" defer></script>
+    <script type="module" src="../static/js/rascunho_prontuario.js" defer></script>
+    <script type="module" src="../static/js/imprimir-pdf-oculos.js" defer></script>
+    <script type="module" src="../static/js/imprimir-pdf-receita.js" defer></script>
+    <script type="module" src="../static/js/imprimir-pdf-exames.js" defer></script>
+    <!-- <script type="module" src="../static/js/adicionar-macros.js" defer></script> -->
+    <script type="module" src="../static/js/imprimir-pdf-resumo.js" defer></script>
+    <script type="module" src="../static/js/novo-exame.js" defer></script>
+    <script type="module" src="../static/js/flash_messages.js" defer></script>
+    <script type="module" src="../static/js/imprimir-todos.js" defer></script>
+    <script type="module" src="../static/js/search.js" defer></script>
+    <script type="module" src="../static/js/async-data-loader.js" defer></script>
+    <script type="module" src="../static/js/popup-historico.js" defer></script>
+    <script type="module" src="../static/js/prontuario.js" defer></script>
+    <script type="module" src="../static/js/historico-paciente.js" defer></script>
+    <script type="module" src="../static/js/evolucao-navigation.js" defer></script>
+
+
+    <style>
+        /* Estilo do overlay */
+        #loadingOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5); /* Fundo escuro semi-transparente */
+            display: none; /* Oculto por padrão */
+            justify-content: center;
+            align-items: center;
+            z-index: 9999; /* Garante que fica acima de tudo */
+        }
+
+        /* Estilo do ícone de loading */
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #fff;
+            border-top: 5px solid transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div id="flash-message" style="display: none;"></div>
+    <header>
+        <div class="container-header">
+            {% if fim_consulta != None %}
+            <div style="display: flex; justify-content: space-around;">
+                <img src="../static/img/estatisticas/pensil_read_only_1.png" class="pencil-icon">
+            </div>
+            {% else %}
+            <div style="display: flex; justify-content: space-around;">
+                <img src="../static/img/estatisticas/pensil_blue.png" class="pencil-icon">
+            </div>
+            {% endif %}
+            <!-- <div>
+                <img src="../static/img/paciente (1).png" alt="">
+            </div> -->
+
+            {% if data_agenda %}
+            <div>
+                <label for="DataAgenda">Data: {{ data_agenda }}</label>
+            </div>
+            {% endif %}
+
+            <div>
+                <label for="Horario">Horário:</label>
+                <p class="hora-atual"></p>
+            </div>
+
+            <div class="medico">
+                <label for="Medico">Médico:</label>
+                <p class="nome-medico">{{ nm_guerra }}</p>
+            </div>
+
+            <!-- Sempre exibir a data, mesmo que vazia -->
+            <div class="data-atendimento">
+                <label for="DataAgenda">Data:</label>
+                <span id="data-agenda-display">{{ data_agenda if data_agenda else 'Carregando...' }}</span>
+            </div>
+    
+            <div class="paciente">
+                <label for="search-input">Paciente: </label>
+                <div class="paciente-info">
+                    <input 
+                        id="search-input" 
+                        class="nome-paciente" 
+                        type="text" 
+                        placeholder="Buscar Paciente"
+                        autocomplete="off"
+                        style="height: 15px;"
+                    />
+                    <div id="search-results" class="search-results"></div>
+                </div>
+            </div>
+    
+        </div>
+        <div>
+            <img onclick="window.saveAndClosePopup()" src="../static/img/fechar.png" alt="NavBar">
+        </div>
+    </header>
+    <div class="sub-header">
+        <div class="info-paciente">
+            <div>
+                <label for="Nome">Nome:</label>
+                <span class="nm_paciente" id="nm_paciente"
+                      title="{{nm_paciente}}"
+                      data-cd-pessoa-fisica="{{ cd_pessoa_fisica }}"
+                      data-cpf="{{cpf}}"
+                      data-nascimento="{{nascimento}}">
+                    {{ nm_paciente }}
+                </span>
+            </div>
+            <div>
+                <label for="Idade">Idade:</label>
+                <span class="idade"> {{ idade_paciente }} anos</span>
+            </div>
+            <div>
+                <label for="Profissao">Profissão:</label>
+                <span class="profissao" id="profissao" title="{{ profissao }}">{{ profissao }}</span>
+            </div>
+            <div>
+                <label for="Convenio">Convênio:</label>
+                <span class="convenio" id="nm-convenio" title="{{ convenio }}">{{ convenio }}</span>
+            </div>
+            <div>
+                <label for="UltimaConsulta" class="label-ult-consulta" title="Última Consulta">Última Consulta:</label>
+                <span class="dt_ult_consulta" title="{{ ultima_consulta }}">{{ ultima_consulta }}</span>
+            </div>
+            <div>
+                <label for="Sexo">Sexo:</label>
+                <span>{{ sexo }}</span>
+            </div>
+            <div>
+                <label for="Atendimento">Atendimento:</label>
+                <span id="nr_atendimento">{{ nr_atendimento }}</span>
+            </div>
+        </div>
+    </div>
+    <div class="conteudo">
+        
+        <nav class="navegacao-prontuario">
+            <ul>
+                <li class="botao-navegacao">
+                    <a >Evolução</a>
+                    <ul class="arvore-prontuario" style="display: block;">
+                        {% for data, nr_atendimento, cd_pessoa in consultas_anteriores %}
+                        <li 
+                            class="consultas-anteriores" 
+                            data-nr-atendimento="{{ nr_atendimento }}" 
+                            data-cd-pessoa="{{ cd_pessoa }}" 
+                            onclick="window.saveAndUpdateDate(this)"
+                        > 
+                            {{ data }}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </li>
+                <li class="botao-navegacao" style="display: none;">
+                    <a >Laudos</a>
+                    <ul class="arvore-prontuario" style="display: none;">
+                        <li><img src=""> 10/10/2024</li>
+                        <li><img src=""> 10/10/2024</li>
+                        <li><img src=""> 10/10/2024</li>
+                        <li><img src=""> 10/10/2024</li>
+                    </ul>
+                </li>
+                <li class="botao-navegacao" style="display: none;">
+                    <a >Cirurgias</a>
+                    <ul class="arvore-prontuario" style="display: none;">
+                        <li><img src=""> 10/10/2024</li>
+                        <li><img src=""> 10/10/2024</li>
+                        <li><img src=""> 10/10/2024</li>
+                        <li><img src=""> 10/10/2024</li>
+                    </ul>
+                </li>
+                <li class="botao-navegacao" style="display: none;">
+                    <a class="impressora-img"><img style="margin: 0 auto; display: flex; width: 40%;" class="impressora-imagem" src="../static/img/impressora.png" alt=""></a>
+                    <ul class="arvore-impressora">
+                        <li id="botao-oculos" style="display: none;">
+                           Óculos
+                        </li>
+                        <li id="botao-receita" style="display: none;">
+                            Receita
+                        </li>
+                        <li id="botao-exames" style="display: none;">
+                            Exames
+                        </li>
+                        <li id="botao-resumo" style="display: none;">
+                            Resumo
+                        </li>
+                        <li id="botao-imprimir-tudo" style="display: none;">
+                            Todos
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+
+        <div class="container-evolucao {% if fim_consulta != None %}read-only{% endif %}">
+            <section class="evolucao painel painel-esquerdo">
+                <h1>Evolução: </h1>
+                <div>
+                    <label for="">Queixa Paciente</label>
+                    <textarea oninput="adjustHeight(this)" name="ds_anamnese" id="text-area-anamnese">{% if ds_anamnese %} {{ ds_anamnese }} {% endif %}</textarea>
+                    <button class="observacao-oculos" data-type="queixa">...</button>
+                </div>
+                <div>
+                    <label for="textarea-refacao">Refração</label>
+                    <textarea oninput="adjustHeight(this)" name="ds_refracao" id="textarea-refracao">{% if ds_oculos %} {{ ds_oculos }} {% endif %}</textarea>
+                    <button class="observacao-oculos disabled-button" disabled>...</button>
+                </div>
+                <div>
+                    <label for="">Acuidade Visual</label>
+                    <textarea oninput="adjustHeight(this)" name="ds_acuidade" id="textarea-acuidade">{% if ds_acuidade_visual %} {{ ds_acuidade_visual }} {% endif %}</textarea>
+                    <button class="observacao-oculos" data-type="acuidade">...</button>
+                </div>
+                <div>
+                    <label for="">Pressão Intraocular</label>
+                    <textarea oninput="adjustHeight(this)" name="ds_tonometria" id="textarea-tonometria">{% if ds_pressao %} {{ ds_pressao }} {% endif %}</textarea>
+                    <button class="observacao-oculos disabled-button" disabled>...</button>
+                </div>
+                <div>
+                    <label for="">Diagnóstico</label>
+                    <textarea oninput="adjustHeight(this)" name="ds_diagnostico" id="text-area-diagnostico">{% if ds_diagnostico %} {{ ds_diagnostico }} {% endif %}</textarea>
+                    <button class="observacao-oculos" data-type="diagnostico">...</button>
+                </div>
+                <div>
+                    <label for="">Conduta</label>
+                    <textarea oninput="adjustHeight(this)" name="ds_conduta" id="textarea-conduta">{% if ds_conduta %} {{ ds_conduta }} {% endif %}</textarea>
+                    <input type="hidden" id="macros-conduta-atuais" value="">
+                    <button class="observacao-oculos disabled-button" disabled>...</button>
+                </div>
+                <div>
+                    <label for="">Exames</label>
+                    <textarea oninput="adjustHeight(this)" name="ds_exames" id="textarea-exames">{% if ds_exames %} {{ ds_exames }} {% endif %}</textarea>
+                    <button class="observacao-oculos disabled-button" disabled>...</button>
+                </div>
+                <div>
+                    <label for="">Cirurgias</label>
+                    <textarea oninput="adjustHeight(this)" name="" id="text-area-cirurgia">{% if cirurgia %} {{ cirurgia }} {% endif %}</textarea>
+                    <button class="observacao-oculos" data-type="cirurgias">...</button>
+                </div>
+                <div>
+                    <label for="">Lente de Contato</label>
+                    <textarea oninput="adjustHeight(this)" name="ds_lentes_contato" id="text-area-lentes-contato">{% if ds_lentes %} {{ ds_lentes }} {% endif %}</textarea>
+                    <button class="observacao-oculos disabled-button" disabled>...</button>
+                </div>
+            </section>
+            
+            <div class="divisor" id="divisor-redimensionavel"></div>
+            
+            <div class="lado-direito painel painel-direito">
+                <div class="section-dinamica" data-section="{{ section }}">       
+                    {% if section == "oculos" %}
+                        {% include "oculos.html" %}
+                    {% elif section == "exames" %}
+                        {% include "exames.html" %}
+                    {% elif section == "receituario" %}
+                        {% include "receituario.html" %}
+                    {% elif section == "resumo" %}
+                        {% include "resumo.html" %}
+                    {% else %}
+                        {% include "oculos.html" %}
+                    {% endif %}
+                </div>    
+            </div>
+        </div>
+
+        <section class="botoes-acao">
+            <div id="botao-oculos" onclick="window.saveAndUpdateSection('oculos')">
+                <img src="../static/img/oculos-de-sol (1).png" alt="Oculos">
+                <label class="label-botoes-acao" for="">Óculos</label>
+            </div>
+
+            <div id="botao-receituario" onclick="window.saveAndUpdateSection('receituario')">
+                <img src="../static/img/remedio.png" alt="Receituario">  
+                <label class="label-botoes-acao" for="">Receituário</label>
+            </div>
+
+            <div id="botao-exames" onclick="window.saveAndUpdateSection('exames')">
+                <img src="../static/img/tubos-de-ensaio.png" alt="Exames">
+                <label class="label-botoes-acao" for="">Exames</label>
+            </div>
+
+            <div onclick="window.atualizaSectionProntuario('resumo')" style="display:none;">
+                <img src="../static/img/achar (1).png" alt="Resumo">
+                <label class="label-botoes-acao" for="">Resumo</label>
+            </div>
+            <div id="botao-historico">
+                <img src="../static/img/achar (1).png" alt="Histórico">
+                <label class="label-botoes-acao" for="">Resumo</label>
+            </div>
+
+            <div id="botao-imprimir-atual" onclick="window.saveAndPrint()">
+                <img src="../static/img/impressora.png" alt="Imprimir" style="width: 24px; height: auto;">
+                <label class="label-botoes-acao" for="">Imprimir</label>
+            </div>
+
+            <div id="botao-rascunho">
+                <img src="../static/img/caderno-de-rascunhos.png" alt="Rascunho">
+                <label class="label-botoes-acao" for="">Rascunho</label>
+            </div>
+            
+            <div id="botao-salvar">
+                <img src="../static/img/salvar.png" alt="Salvar">
+                <label class="label-botoes-acao" for="">Salvar</label>
+            </div>
+        </section>
+    </div>
+
+    <dialog id="modal-observacao-oculos">
+        {% include 'macro.html' %}
+    </dialog>
+
+
+    <div id="loadingOverlay" style="display: none;">
+        <div class="spinner"></div>
+        <p style="color: white; margin-top: 10px;">|    Carregando dados do prontuário...</p>
+    </div>
+
+    <div id="popup-historico-paciente" class="popup-historico-paciente-overlay" style="display: none;">
+        <div class="popup-historico-paciente-content">
+            <div class="popup-historico-paciente-header">
+                <h2>Histórico do Paciente</h2>
+                <button class="popup-historico-paciente-close" type="button">&times;</button>
+            </div>
+            <div class="popup-historico-paciente-body">
+                <div id="popup-historico-paciente-scroll" class="popup-historico-paciente-scroll">
+                    <!-- Conteúdo do histórico será inserido aqui via JS -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function adjustHeight(element) {
+            if (!element) return; // Add null check
+            
+            element.style.height = 'auto'; 
+            element.style.height = (element.scrollHeight) + 'px';
+        }
+    
+        window.onload = function() {
+            const textareas = document.querySelectorAll('textarea');
+            
+            textareas.forEach(function(textarea) {
+                if (textarea) { // Add null check
+                    adjustHeight(textarea);
+                }
+            });
+        };
+
+        // Fix the problematic event handler
+        document.querySelectorAll('textarea').forEach(function(textarea) {
+            if (textarea) { // Add null check
+                textarea.addEventListener('input', function() {
+                    try {
+                        // Make sure objects exist before use
+                        if (typeof container === 'undefined') {
+                            window.container = document.createElement('div');
+                        }
+                        if (typeof receituario === 'undefined') {
+                            window.receituario = { value: '' };
+                        }
+                        
+                        adjustHeight(this);
+                    } catch (err) {
+                        console.warn('Error handling textarea input:', err);
+                        // Continue execution despite error
+                    }
+                });
+            }
+        });
+    </script>
+    <script type="module" src="../static/js/medication-management.js"></script>
+    <script type="module" src="../static/js/section-dinamica.js"></script>
+    <script src="../static/js/resizable-divisor.js"></script>
+        <script type="module">
+        // Wait for section changes and load appropriate scripts
+        document.addEventListener('sectionChanged', (event) => {
+            const section = event.detail?.section;
+            
+            // Clear any previous section-specific intervals
+            if (window.oculosInterval) {
+                clearTimeout(window.oculosInterval);
+                window.oculosInterval = null;
+            }
+            
+            // Initialize section-specific functionality
+            if (section === 'oculos') {
+                import('../static/js/oculos.js').then(module => {
+                    if (typeof module.initialize === 'function') {
+                        module.initialize();
+                    }
+                });
+            }
+        });
+    </script>
+    <script>
+    async function imprimirSecaoAtual() {
+        try {
+            // Get current active section
+            const secaoAtiva = document.querySelector('.section-dinamica')?.getAttribute('data-section');
+            
+            // After saving, execute print logic based on active section
+            switch(secaoAtiva) {
+                case 'oculos':
+                    const dadosOculos = window.capturarValoresOculos();
+                    window.enviarDados(dadosOculos);
+                    break;
+                case 'receituario':
+                    const dadosReceita = window.capturarValoresReceita();
+                    window.enviarDadosReceita(dadosReceita);
+                    break;
+                case 'exames':
+                    const dadosExames = window.capturarValoresExames();
+                    window.enviarDadosExames(dadosExames);
+                    break;
+                case 'resumo':
+                    const dadosResumo = window.capturarValoresResumo();
+                    window.enviarDadosResumo(dadosResumo);
+                    break;
+                default:
+                    // Try to print oculos as default
+                    try {
+                        const dadosOculos = window.capturarValoresOculos();
+                        window.enviarDados(dadosOculos);
+                    } catch(e) {
+                        console.error("Erro ao imprimir seção atual:", e);
+                        alert("Não foi possível imprimir esta seção");
+                    }
+            }
+        } catch (error) {
+            console.error("Erro durante o processo de impressão:", error);
+            exibirMensagem("Erro ao processar a impressão", "error");
+        }
+    }
+</script>
+<script>
+    window.imprimirSecaoAtual = imprimirSecaoAtual;
+</script>
+<script>
+        // Fallback: se a data não veio do servidor, buscar via API
+        document.addEventListener('DOMContentLoaded', async () => {
+            const dataDisplay = document.getElementById('data-agenda-display');
+            const dataAtual = dataDisplay.textContent.trim();
+            
+            if (!dataAtual || dataAtual === 'Carregando...') {
+                const nrAtendimento = document.getElementById('nr_atendimento').textContent.trim();
+                
+                if (nrAtendimento) {
+                    try {
+                        const response = await fetch(`/api/data-atendimento/${nrAtendimento}`);
+                        if (response.ok) {
+                            const data = await response.json();
+                            dataDisplay.textContent = data.data_formatada || 'Não disponível';
+                        }
+                    } catch (error) {
+                        console.error('Erro ao buscar data do atendimento:', error);
+                        dataDisplay.textContent = 'Não disponível';
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

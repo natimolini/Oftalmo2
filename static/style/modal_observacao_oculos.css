@@ -1,0 +1,122 @@
+dialog#modal-observacao-oculos {
+    position: fixed;
+    top: 70%;
+    left: 30%;
+    transform: translate(-50%, -50%);
+    width: 30%;
+    padding: 1.5em;
+    border: none;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2);
+    background-color: #ffffff;
+    border-radius: 8px;
+    overflow-y: auto;
+    color: #1a4d7a;
+    max-height: 90vh;
+}
+
+dialog#modal-observacao-oculos::backdrop {
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#modal-observacao-oculos h1 {
+    color: #2c8ef0;
+    margin-bottom: 1em;
+    text-align: center;
+}
+
+#modal-observacao-oculos label {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.5vh;
+    color: #1a4d7a;
+}
+
+#modal-observacao-oculos .topo,
+#adicionarMacro {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    margin-bottom: 1em;
+}
+
+#modal-observacao-oculos .label-text {
+    width: 15%; 
+    color: #1a4d7a;
+    text-align: center; 
+}
+
+.input-text {
+    border: 1px solid #2c8ef0;
+    border-radius: 5px;
+    padding: 0.3em;
+    width: 60%;
+    margin-left: 20px;
+}
+
+#modal-observacao-oculos .topo img {
+    width: 40%;
+    cursor: pointer;
+}
+
+#modal-observacao-oculos button {
+    background-color: #2c8ef0;
+    color: #ffffff;
+    border: none;
+    border-radius: 4px;
+    padding: 0.5em 1em;
+    margin: 0.5em;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#modal-observacao-oculos button:hover {
+    background-color: #1a4d7a;
+}
+
+#modal-observacao-oculos input[type="checkbox"] {
+    accent-color: #2c8ef0;
+}
+
+.confirmar-cancelar {
+    display: flex;
+    justify-content: center;
+    margin-top: 2vh;
+}
+
+#lista-queixas-container {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 4px;
+}
+
+#lista-queixas-container label {
+    padding: 8px;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+}
+
+#lista-queixas-container label:hover {
+    background-color: #f5f5f5;
+}
+
+#lista-queixas-container label:last-child {
+    border-bottom: none;
+}
+
+.modal-content {
+    max-height: 300px; /* Ajuste para a altura máxima desejada */
+    overflow-y: auto; /* Permite que o scroll funcione automaticamente ao ultrapassar a altura máxima */
+    display: none;
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 4px;
+}
+
+.modal-content.active {
+    display: block;
+}

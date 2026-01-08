@@ -1,0 +1,231 @@
+.popup-historico-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+}
+
+.popup-historico-content {
+    background: white;
+    width: 90%;
+    max-width: 1000px;
+    height: 80%;
+    max-height: 800px;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    animation: popup-fade-in 0.3s ease-out;
+}
+
+@keyframes popup-fade-in {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.popup-historico-header {
+    background: linear-gradient(135deg, #1a4d7a, #2c8ef0);
+    color: white;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.popup-historico-header h2 {
+    margin: 0;
+    font-size: 1.5em;
+    font-weight: 600;
+}
+
+.popup-historico-close {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 2em;
+    cursor: pointer;
+    padding: 0;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background-color 0.2s ease;
+}
+
+.popup-historico-close:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.popup-historico-body {
+    flex: 1;
+    padding: 30px;
+    overflow-y: auto;
+    background: #f8f9fa;
+}
+
+.popup-historico-content-area {
+    background: white;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    padding: 20px;
+    min-height: 300px;
+    max-height: 500px;
+    overflow-y: auto;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    color: #333;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.06);
+}
+
+.popup-historico-content-area:focus {
+    outline: none;
+    border-color: #1a4d7a;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.06), 0 0 0 3px rgba(26, 77, 122, 0.1);
+}
+
+.popup-historico-loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 300px;
+    color: #666;
+    font-size: 1.1em;
+}
+
+.popup-historico-loading::before {
+    content: '';
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #e9ecef;
+    border-top: 2px solid #1a4d7a;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-right: 10px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.popup-historico-error {
+    text-align: center;
+    color: #dc3545;
+    font-size: 1.1em;
+    padding: 40px;
+}
+
+.popup-historico-empty {
+    text-align: center;
+    color: #6c757d;
+    font-size: 1.1em;
+    padding: 40px;
+    font-style: italic;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .popup-historico-content {
+        width: 95%;
+        height: 90%;
+        margin: 10px;
+    }
+    
+    .popup-historico-header {
+        padding: 15px;
+    }
+    
+    .popup-historico-header h2 {
+        font-size: 1.3em;
+    }
+    
+    .popup-historico-body {
+        padding: 20px;
+    }
+}
+
+/* Estilização para o conteúdo HTML dentro da área de conteúdo */
+.popup-historico-content-area h1,
+.popup-historico-content-area h2,
+.popup-historico-content-area h3,
+.popup-historico-content-area h4,
+.popup-historico-content-area h5,
+.popup-historico-content-area h6 {
+    color: #1a4d7a;
+    margin-top: 1.5em;
+    margin-bottom: 0.5em;
+}
+
+.popup-historico-content-area h1 {
+    font-size: 1.8em;
+    border-bottom: 2px solid #1a4d7a;
+    padding-bottom: 0.3em;
+}
+
+.popup-historico-content-area h2 {
+    font-size: 1.5em;
+}
+
+.popup-historico-content-area h3 {
+    font-size: 1.3em;
+}
+
+.popup-historico-content-area p {
+    margin-bottom: 1em;
+}
+
+.popup-historico-content-area ul,
+.popup-historico-content-area ol {
+    margin: 1em 0;
+    padding-left: 2em;
+}
+
+.popup-historico-content-area li {
+    margin-bottom: 0.5em;
+}
+
+.popup-historico-content-area table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1em 0;
+}
+
+.popup-historico-content-area th,
+.popup-historico-content-area td {
+    border: 1px solid #dee2e6;
+    padding: 8px 12px;
+    text-align: left;
+}
+
+.popup-historico-content-area th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+    color: #1a4d7a;
+}
+
+.popup-historico-content-area strong,
+.popup-historico-content-area b {
+    color: #1a4d7a;
+}
+
+.popup-historico-content-area em,
+.popup-historico-content-area i {
+    color: #6c757d;
+}

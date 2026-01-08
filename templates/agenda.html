@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agenda</title>
+    <link rel="stylesheet" href="../static/style/agenda.css" >
+    <link rel="stylesheet" href="../static/style/agenda-compact.css?v=1.0">
+    <link rel="stylesheet" href="../static/style/busca-avancada.css">
+    <script src="../static/js/popup-prontuario.js" defer></script>
+    <script src="../static/js/horario-atual.js"></script>
+    <script src="../static/js/estatisticas.js" defer></script>
+    <script src="../static/js/busca-avancada.js" defer></script>
+    <link rel="stylesheet" href="../static/style/estatisticas.css">
+    <script type="module" src="../static/js/flash_messages.js" defer></script>
+</head>
+<body>
+    <header>
+        <div id="flash-message" style="display: none;"></div>
+        <div class="container-header">
+            <div>
+                <label for="Horario">Horário:</label>
+                <p class="hora-atual"></p>
+            </div>
+
+            <div class="medico">
+                <label for="Medico">Médico:</label>
+                <p class="nome-medico">{{ nm_guerra }}</p>
+            </div>
+
+            <!-- ADICIONAR BOTÃO DE BUSCA AVANÇADA -->
+            <div class="busca-avancada-container">
+                <button onclick="window.abrirBuscaAvancada()" class="btn-busca-avancada" title="Busca Avançada de Pacientes">
+                    🔍 Busca Avançada
+                </button>
+            </div>
+    
+            <div class="buscar-recados">
+                <label for="Recados">Recados: </label>
+                <p class="recados" title="{{ ds_aviso }}">{{ ds_aviso }}</p>
+            </div>
+            
+            <div class="data-calendario">
+                <div class="calendario">
+                    <input type="date" id="calendario" onchange="atualizarAgenda();">
+                </div>
+    
+                <div class="data-agenda">
+                    <button class="botaoData" id="botaoAnterior"><span class="seta-forte">&lt;</span></button>
+                    <span id="dataSelecionada"></span>
+                    <button class="botaoData" id="botaoProximo"><span class="seta-forte">&gt;</span></button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section id="datesection">
+
+    </section>
+    
+    <div class="tabela-container">
+        <div class="tabela-scroll-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Hora</th>
+                        <th>Comp</th>
+                        <th>Chegada</th>
+                        <th>T. Espera</th>
+                        <th>Nome</th>
+                        <th>Idade</th>
+                        <th>Convênio</th>
+                        <th>Fone Celular</th>
+                        <th>Tipo</th>  
+                        <th>Observação</th>
+                    </tr>
+                </thead>
+                <tbody id="novaTabela">
+
+                </tbody>
+            </table>
+            <div class="container-total-agenda">
+            <section class="total-agenda">
+                <img title="Estatísticas" src="../static/img/grafico-preditivo (1).png" onclick="mostrarEstatiscas()" alt="Estatísticas">
+                <div>
+                    <label for="">Agendamentos:</label>
+                    <p id="totalAgendamentos">100</p>
+                </div>
+                <div>
+                    <label for="">Atendidos:</label>
+                    <p id="totalAtendidos">50</p>
+                </div>
+            </section>
+            </div>
+
+            <div class="popup-overlay" onclick="esconderEstatiscas(event)">
+                <div class="popup-content">
+                    <table class="estatisticas">
+                        <thead>
+                            <tr>
+                                <th>Tipo</th>
+                                <th>Legenda</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><img src="/static/img/estatisticas/adicionar.png" alt=""></td>
+                                <td>Consulta</td>
+                                <td class="qtd_consultas"></td>
+                            </tr>
+                            <tr>
+                                <td><img src="/static/img/estatisticas/seta-esquerda.png" alt=""></td>
+                                <td>Retorno</td>
+                                <td class="qtd_retorno"></td>
+                            </tr>
+                            <tr>
+                                <td><img src="/static/img/pessoas.png" alt=""></td>
+                                <td>Retorno Cirurgia</td>
+                                <td class="qtd_retornos_cirurgia"></td>
+                            </tr>
+                            <tr>
+                                <td><img src="/static/img/estatisticas/documento.png" alt=""></td>
+                                <td>Resultado de Exames</td>
+                                <td class="qtd_resultado_exame"></td>
+                            </tr>
+                            <tr>
+                                <td><img src="/static/img/estatisticas-prod/qtd_consulta_resultado.png" alt=""></td>
+                                <td>Consulta + Resultado</td>
+                                <td class="qtd_consulta_resultado"></td>
+                            </tr>
+                            <tr>
+                                <td><img src="/static/img/pessoas.png" alt=""></td>
+                                <td>OPD</td>
+                                <td class="qtd_opd"></td>
+                            </tr>
+                            <tr>
+                                <td><img src="/static/img/estatisticas-prod/qtd_teste_de_lente.png" alt=""></td>
+                                <td>Teste de Lente</td>
+                                <td class="qtd_teste_lente"></td>
+                            </tr>
+                            <tr>
+                                <td><img src="/static/img/pessoas.png" alt=""></td>
+                                <td>YAG</td>
+                                <td class="qtd_yag"></td>
+                            </tr>
+                            <tr>
+                                <td><img src="/static/img/pessoas.png" alt=""></td>
+                                <td>Avaliação Cirurgia</td>
+                                <td class="qtd_ava_cirurgica"></td>
+                            </tr>
+                            <tr>
+                                <td><img src="/static/img/estatisticas-prod/qtd_emergencia.png" alt=""></td>
+                                <td>Emergência</td>
+                                <td class="qtd_emergencia"></td>
+                            </tr>
+                            <tr>
+                                <td><img src="/static/img/estatisticas-prod/qtd_conversar.png" alt=""></td>
+                                <td>Conversar</td>
+                                <td class="qtd_conversar"></td>
+                            </tr>
+                            <tr>
+                                <td><img src="/static/img/estatisticas-prod/qtd_refracao.png" alt=""></td>
+                                <td>Refração</td>
+                                <td class="qtd_refracao"></td>
+                            </tr>
+                            <tr>
+                                <td><img src="/static/img/chamada-telefonica.png" alt=""></td>
+                                <td>Telefone</td>
+                                <td class="qtd_telefone"></td>
+                            </tr>
+                            <tr>
+                                <td><img src="/static/img/estatisticas-prod/qtd_ver_ficha.png" alt=""></td>
+                                <td>Ver ficha</td>
+                                <td class="qtd_ver_ficha"></td>
+                            </tr>
+                            <tr>
+                                <td><img src="/static/img/estatisticas-prod/qtd_ver_lente.png" alt=""></td>
+                                <td>Ver Lente</td>
+                                <td class="qtd_ver_lente"></td>
+                            </tr>
+                            <tr>
+                                <td><img src="/static/img/estatisticas-prod/qtd_laudo.png" alt=""></td>
+                                <td>Laudo</td>
+                                <td class="qtd_laudo"></td>
+                            </tr>
+                            <tr>
+                                <td><img src="/static/img/estatisticas-prod/qtd_prk.png" alt=""></td>
+                                <td>PRK</td>
+                                <td class="qtd_prk"></td>
+                            </tr>
+                            <tr>
+                                <td><img src="/static/img/status-consulta/ematendimento.png" alt=""></td>
+                                <td>Em andamento</td>
+                                <td class="qtd_em_andamento"></td>
+                            </tr>
+                            <tr>
+                                <td><img src="/static/img/agendamento.png" alt=""></td>
+                                <td>Marcada</td>
+                                <td class="qtd_marcada"></td>
+                            </tr>
+                            <tr>
+                                <td><img src="/static/img/status-consulta/quadra.png" alt=""></td>
+                                <td>Cancelada</td>
+                                <td class="qtd_cancelada"></td>
+                            </tr>
+                            <tr>
+                                <td><img src="/static/img/agendar.png" alt=""></td>
+                                <td>Confirmada</td>
+                                <td class="qtd_confirmada"></td>
+                            </tr>
+                            <tr>
+                                <td><img src="/static/img/status-consulta/sinal-de-parada.png" alt=""></td>
+                                <td>Faltas</td>
+                                <td class="qtd_faltas"></td>
+                            </tr>
+                            <tr>
+                                <td><img src="/static/img/status-consulta/feito.png" alt=""></td>
+                                <td>Aguardando</td>
+                                <td class="qtd_aguardando"></td>
+                            </tr>
+                            <tr>
+                                <td><img src="/static/img/estatisticas-prod/qtd_em_triagem.png" alt=""></td>
+                                <td>Em Triagem</td>
+                                <td class="qtd_em_triagem"></td>
+                            </tr>
+                            <tr>
+                                <td><img src="/static/img/status-consulta/botao-ok.png" alt=""></td>
+                                <td>Atendido</td>
+                                <td class="qtd_atendido"></td>
+                            </tr>
+                            <tr>
+                                <td><img src="/static/img/estatisticas/aceitar.png" alt=""></td>
+                                <td>Executada</td>
+                                <td class="qtd_executada"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>     
+    </div>
+</body>
+
+<!-- REMOVER ESTE BLOCO - o popup agora é criado via JavaScript -->
+<!-- 
+<div id="popup-atendimentos" class="popup-atendimentos-overlay" style="display: none;">
+    ...
+</div>
+-->
+
+<script type="module" src="../static/js/agenda.js"></script>
+</html>

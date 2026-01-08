@@ -1,0 +1,803 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #f4f4f4;
+    height: 100vh;
+}
+
+header {
+    background-color: #2c8ef0;
+    display: flex;
+    align-items: center;
+    padding: 0 1.5em;
+    height: 3em;
+    font-size: 1.5rem; 
+}
+
+#flash-message {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 24px;
+    text-align: center;
+    font-size: 1.3em;
+    font-weight: bold;
+    z-index: 1000000;
+    transition: opacity 1s ease-out;
+    opacity: 1;
+  }
+
+.hora-atual{
+    margin: 0;
+}
+
+img {
+    width: 2em; 
+}
+
+.calendario input{
+    padding: 0.3em;
+    border: none;
+    border-radius: 4px;
+    display: block;
+    font-size: 0.7em;
+}
+
+.container-header {
+    color: white;
+    padding: 1em; 
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 70%; 
+    margin: 0 auto;
+}
+
+.sub-header {
+    background-color: #3a7bbf;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 4em; 
+    padding: 0 1.5em;
+}
+
+.sub-header img{
+    width: 90%;
+    margin: auto;
+}
+
+.info-paciente {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 1500px; 
+}
+
+.info-paciente div label{ 
+    font-size: 1.3em;
+}
+
+.info-paciente div span{ 
+    font-size: 1.1em;
+}
+
+.info-paciente div label{ 
+    font-size: 1.3em;
+}
+
+.info-paciente div span{ 
+    font-size: 1.1em;
+}
+
+.info-paciente div {
+    display: flex;
+    flex-direction: column;
+    margin-right: 1.5em; 
+}
+
+.info-paciente label {
+    font-weight: bold;
+    margin-bottom: 0.3em;
+}
+
+.info-paciente span {
+    font-size: 1em;
+}
+
+.nome-medico {
+    font-size: 1em; 
+    margin: 0;
+}
+
+
+.ficha-paciente, .nome-paciente {
+    padding: 0.25em;
+    border: none;
+    border-radius: 3px;
+    display: flex;
+    font-size: 1.2rem;
+}
+ 
+
+.ficha-paciente {
+    width: 4em; 
+    margin-left: 0.3em;
+}
+
+.conteudo {
+    display: grid;
+    grid-template-columns: 7% 93%; 
+    height: calc(100vh - 7em); 
+}
+
+.navegacao-prontuario {
+    background-color: #1a4d7a;
+    display: flex;
+    justify-content: center;
+    height: 100%;
+}
+
+.navegacao-prontuario ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    
+}
+
+.navegacao-prontuario li {
+    margin: 0.3em 0; 
+}
+
+.navegacao-prontuario a {
+    display: block;
+    padding: 0.5em 0.8em; 
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 1.5em; 
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+}
+
+.navegacao-prontuario a:hover {
+    background-color: #3a7bbf;
+}
+
+.navegacao-prontuario a:active {
+    background-color: #2c8ef0;
+} 
+
+.navegacao-prontuario .botao-navegacao > a {
+    display: block;
+    padding: 0.5em 0.8em;
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 1.5em;
+    border-radius: 4px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    cursor: pointer;
+}
+
+.navegacao-prontuario .botao-navegacao > a.modified {
+    color: #ff4444;
+    background-color: rgba(255, 68, 68, 0.1);
+}
+
+.navegacao-prontuario .botao-navegacao > a.modified:hover {
+    background-color: rgba(255, 68, 68, 0.2);
+    color: #ff6666;
+}
+
+.arvore-prontuario {
+    width: 100%;
+    max-height: 300px; /* Altura padrão */
+    overflow-y: auto;
+    font-size: 0.9em;
+}
+/* Personalizando a barra de rolagem apenas para .arvore-prontuario */
+.arvore-prontuario::-webkit-scrollbar {
+    width: 10px; /* Ajuste este valor para a largura desejada */
+}
+
+.arvore-prontuario::-webkit-scrollbar-thumb {
+    background-color: #ffffff; /* Cor da barra de rolagem */
+    border-radius: 5px; /* Bordas arredondadas para uma aparência elegante */
+}
+
+.arvore-prontuario::-webkit-scrollbar-thumb:hover {
+    background-color: #aec7ff; /* Cor da barra ao passar o mouse */
+}
+.arvore-prontuario li, .arvore-impressora li{
+    text-align: center;
+    color: white;
+    align-items: center;
+    height: 2.2rem;
+    display: flex;
+    justify-content: center;
+    border-radius: 5px;
+    font-size: 1rem;
+    margin: 0 auto;
+}
+
+.arvore-prontuario li:hover, .arvore-impressora li:hover{
+    background-color: #3a7bbf;
+}
+
+.hidden{
+    display: none;
+}
+
+/* Ajuste na barra de botões inferior */
+.botoes-acao {
+    position: fixed;
+    bottom: 0px;
+    width: 100%;
+    padding: 0.48em 0.36em; /* Reduzido 20%: anterior era 0.8em 0.6em, depois 0.64em 0.48em */
+    display: flex;
+    justify-content: space-between;
+    background-color: #fff;
+    box-shadow: 0 -4px 4px rgba(8, 3, 3, 0.1); 
+    height: 2.88em; /* Reduzido 20%: anterior era 4.5em, depois 3.6em */
+}
+
+.botoes-acao div {
+    text-align: center;
+    flex: 1;
+    margin: 0 5.12px; /* Reduzido 20%: era 8px, depois 6.4px */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3.84px 0; /* Reduzido 20%: era 6px, depois 4.8px */
+}
+
+/* Ajuste nas imagens dos botões para centralizá-las melhor na barra mais alta */
+.botoes-acao img {
+    display: block;
+    margin: 0 auto 5.12px; /* Reduzido 20%: era 8px, depois 6.4px */
+    height: auto;
+    width: 17.92px; /* Reduzido 20%: era 28px, depois 22.4px */
+    max-height: 17.92px; /* Reduzido 20%: era 28px, depois 22.4px */
+}
+
+/* Ajuste nas labels para melhor posicionamento vertical */
+.label-botoes-acao {
+    margin-top: 0px;
+    display: block;
+    font-size: 0.576em; /* Reduzido 20%: era 0.9em, depois 0.72em */
+}
+
+.botoes-acao label{
+    font-size: 0.64em; /* Reduzido 20%: era 1em, depois 0.8em */
+}
+
+.search-results {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    max-height: 300px;
+    overflow-y: auto;
+    z-index: 9999;
+}
+
+.paciente-info {
+    position: relative;
+    width: 300px;
+    z-index: 9999;
+}
+
+.search-result-item {
+    padding: 8px 12px;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+    background-color: white;
+}
+
+.search-result-item:hover {
+    background-color: #f5f5f5;
+}
+
+.patient-name {
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 4px;
+    font-size: 16px;
+}
+
+.patient-details {
+    font-size: 12px;
+    color: #666;
+}
+
+.nome-paciente {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+/* Estilos específicos para o botão de impressão */
+#botao-imprimir-atual {
+    display: flex !important;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+#botao-imprimir-atual img {
+    width: 24px !important;
+    height: auto !important;
+    margin-bottom: 3px;
+}
+
+.pencil-icon {
+    width: 5% !important;
+    height: auto !important;
+    margin-left: -100px !important;
+}
+
+.data-consulta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.data-consulta label {
+    font-weight: bold;
+    color: white;
+    margin-bottom: 0.3em;
+    font-size: 1em;
+}
+
+.data-consulta p {
+    font-size: 1em;
+    margin: 0;
+    color: white;
+}
+
+@media (max-width: 1366px){
+    body {
+        font-size: 0.9rem;
+    }
+
+    header {
+        height: 2.5em;
+        font-size: 1.4rem; 
+    }
+
+    .conteudo {
+        grid-template-columns: 6% 94%; 
+    }
+
+    .pencil-icon {
+        width: 5% !important;
+        height: auto !important;
+        margin-left: -100px !important;
+    }
+
+    .hora-atual {
+        font-size: 0.9rem;
+    }
+
+    .calendario input[type="date"]{
+        font-size: 0.8em;
+    }
+
+    .container-header {
+        font-size: 1rem;
+    }
+
+
+    .sub-header {
+        font-size: 1rem;
+        height: 3rem;
+        justify-content: center;
+    }
+
+    .sub-header img{
+        width: 65%;
+    }
+
+    .info-paciente div label {
+        font-size: 1rem;
+    }
+
+    .info-paciente div span {
+        font-size: 0.9rem;
+    }
+
+    .nome-medico {
+        font-size: 0.9rem;
+    }
+
+    .ficha-paciente,
+    .nome-paciente {
+        font-size: 1rem;
+    }
+
+    .hora input,
+    .calendario input {
+        font-size: 1rem;
+    }
+
+    .navegacao-prontuario a {
+        font-size: 1em;
+    }
+
+    .botoes-acao{
+        height: 1.28rem; /* Reduzido 20%: era 1.6rem */
+        align-items: center;
+    }
+
+    .botoes-acao label {
+        font-size: 0.512rem; /* Reduzido 20%: era 0.64rem */
+    }
+
+    .botoes-acao div:hover label {
+        font-size: 0.704rem; /* Reduzido 20%: era 0.88rem */
+    }
+
+
+    .search-error,
+    .search-warning,
+    .search-no-results {
+        padding: 8px 12px;
+        text-align: center;
+        color: #666;
+    }
+
+    .search-error {
+        color: #d32f2f;
+    }
+
+    .search-warning {
+        color: #f57c00;
+    }
+    
+
+    .search-result-item:last-child {
+        border-bottom: none;
+    }
+
+    .data-consulta label {
+        font-size: 0.9em;
+    }
+    
+    .data-consulta p {
+        font-size: 0.9em;
+    }
+}
+
+
+@media (max-width: 1320px), (max-height: 1100px) {
+    .botoes-acao img {
+        width: 8.32%; /* Reduzido 20%: era 10.4% */
+    }
+
+    .pencil-icon {
+        width: 5% !important;
+        height: auto !important;
+        margin-left: -100px !important;
+    }
+
+    .navegacao-prontuario a {
+        font-size: 1em;
+    }
+
+    .arvore-prontuario li{
+        font-size: 0.8em;
+    }
+
+    .botoes-acao label {
+        font-size: 1em;
+    }
+
+    .botoes-acao div:hover label {
+        font-size: 1.1rem;
+    }
+
+    header {
+        height: 3.5em;
+        font-size: 1em; /* Reduzido de 1em */
+    }
+    
+    .container-header div label{
+        font-size: 1em; /* Reduzido de 1.2em */
+    }
+
+    .container-header div p{
+        font-size: 0.9em; /* Reduzido de 1.1em */
+    }
+
+    .paciente-info input{
+        font-size: 0.9em; /* Reduzido de 1.1em */
+        padding: 2px;
+        width: 100%;
+        border: none;
+    }
+
+    .paciente-info input:focus{
+        border-color: white !important;
+    }
+
+    .info-paciente div label{
+        font-size: 0.9em; /* Reduzido de 1.1em */
+    }
+
+    .info-paciente div span{
+        font-size: 0.9em; /* Reduzido de 1.1em */
+    }
+
+    .botoes-acao {
+        height: 3.5rem; /* Aumentado de 2rem para dar mais espaço */
+        align-items: center;
+        padding: 0.5em 0.6em;
+    }
+    
+    .botoes-acao img {
+        width: 22px;
+        margin: 0 auto 5px;
+    }
+    
+    .label-botoes-acao {
+        font-size: 0.75em;
+    }
+}
+
+@media (max-width: 1024px), (max-height: 768px) {
+    /* Ajuste do header para menor altura */
+    header {
+        height: 3em; /* Reduzido para ficar menos alto */
+        padding: 0 1em; /* Padding lateral reduzido */
+    }
+    
+    /* Container header com menos padding vertical */
+    .container-header {
+        padding: 0.4em; /* Reduzido de 1em */
+        width: 70%; /* Ajustado para melhor distribuição */
+    }
+
+    .data-consulta label {
+        font-size: 0.8em;
+    }
+    
+    .data-consulta p {
+        font-size: 0.8em;
+    }
+
+        .pencil-icon {
+        width: 25% !important;
+        height: auto !important;
+        margin-left: -100px !important;
+    }
+    
+    /* Ajuste da imagem que sai da lateral */
+    .container-header div:first-child img {
+        width:10% !important; /* Ligeiramente menor */
+        margin-left: -120px !important; /* Menos negativo para aproximar do centro */
+    }
+    
+    /* Redução das fontes */
+    .container-header div label {
+        font-size: 0.8em; /* Menor */
+    }
+    
+    .container-header div p,
+    .hora-atual,
+    .nome-medico {
+        font-size: 0.8em; /* Menor */
+    }
+    
+    /* Ícones menores */
+    .container-header img {
+        width: 1.5em; /* Reduzido */
+    }
+    
+    /* Ajuste para campo de busca de paciente */
+    .paciente-info input {
+        height: 13px; /* Menor altura */
+        font-size: 0.8em; /* Menor fonte */
+    }
+
+    /* Ajuste da posição do horário para a esquerda */
+    .container-header div:nth-child(2) {
+        margin-right: auto; /* Empurra o elemento para a esquerda */
+        margin-left: 20px; /* Espaço à esquerda */
+    }
+    
+    /* Ajuste fino para a imagem do relógio, se necessário */
+    .container-header div:nth-child(2) img {
+        margin-right: 5px; /* Espaço entre a imagem e o texto */
+    }
+
+    /* Ajuste mais agressivo da posição do horário */
+    .container-header div:nth-child(3) {
+        margin-right: auto;
+        margin-left: -80px !important; /* Força o posicionamento mais à esquerda */
+    }
+    
+    /* Reduzir o impacto do lápis */
+    .container-header div:first-child {
+        width: 10%;
+    }
+    
+    .container-header div:first-child img {
+        width: 30% !important;
+        margin-left: -50px !important; /* Menos negativo */
+    }
+    
+    /* Reajustar o layout geral do header */
+    .container-header {
+        justify-content: flex-start; /* Alinha os itens pelo início */
+        gap: 10px; /* Espaçamento entre elementos */
+    }
+
+    /* Ajuste da div paciente para organizar elementos em coluna */
+    .paciente {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    /* Posicionamento da label Paciente */
+    .paciente label {
+        text-align: left;
+        padding-left: 20px; /* Move um pouco para direita */
+        margin-bottom: 2px; /* Pequeno espaço entre label e input */
+        font-size: 0.75em; /* Menor fonte */
+    }
+    
+    /* Ajuste para o container do input */
+    .paciente-info {
+        width: 250px; /* Ajustar largura conforme necessário */
+    }
+
+    
+    /* Reduzir altura do input para deixar o layout mais compacto */
+    .nome-paciente {
+        padding: 4px 8px;
+        height: 14px;
+    }
+
+    div > label[for="DataAgenda"] {
+        margin-left: -65px; /* Move 5px para a esquerda */
+        display: inline-block; /* Garante que a margem seja aplicada */
+    }
+}
+
+.botoes-acao img {
+    margin-top: 5px;/* Espaçamento entre a imagem e o rótulo */
+}
+
+.read-only input,
+.read-only textarea,
+.read-only select,
+.read-only button {
+    pointer-events: none;
+    background-color: #f8f9fa; /* Change background color to indicate read-only state */
+    color: #000814; /* Change text color to indicate read-only state */
+}
+
+.read-only button {
+    display: none; /* Hide buttons in read-only mode */
+}
+
+.container-evolucao.read-only .evolucao input,
+.container-evolucao.read-only .evolucao textarea,
+.container-evolucao.read-only .evolucao select,
+.container-evolucao.read-only .evolucao button {
+    pointer-events: none;
+    background-color: #f8f9fa; /* Change background color to indicate read-only state */
+    color: #000814; /* Change text color to indicate read-only state */
+}
+
+.container-evolucao.read-only .evolucao button {
+    display: none; /* Hide buttons in read-only mode */
+}
+
+.container-evolucao.read-only .oculos input,
+.container-evolucao.read-only .oculos textarea,
+.container-evolucao.read-only .oculos select,
+.container-evolucao.read-only .oculos button {
+    pointer-events: none;
+    background-color: #f8f9fa; /* Change background color to indicate read-only state */
+    color: #000814; /* Change text color to indicate read-only state */
+}
+
+.container-evolucao.read-only .oculos button {
+    display: none; /* Hide buttons in read-only mode */
+}
+
+.popup-historico-paciente-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 99999;
+    display: flex;
+    align-items: flex-start; /* Alinha o popup ao topo */
+    justify-content: center;
+    padding-top: 20px;   /* Espaço de 20px do topo */
+    padding-bottom: 1px; /* Espaço de 30px do fundo */
+}
+
+.popup-historico-paciente-content {
+    background: #fff;
+    width: 70vw;
+    max-width: 1100px;
+    max-height: 90vh; /* Aumenta a altura máxima do popup */
+    border-radius: 12px;
+    box-shadow: 0 4px 32px rgba(0,0,0,0.2);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.popup-historico-paciente-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 24px 10px 24px;
+    border-bottom: 1px solid #e0e0e0;
+    background: #2c8ef0;
+    color: #fff;
+}
+.popup-historico-paciente-header h2 {
+    margin: 0;
+    font-size: 1.5em;
+}
+.popup-historico-paciente-close {
+    background: none;
+    border: none;
+    font-size: 2em;
+    color: #fff;
+    cursor: pointer;
+}
+.popup-historico-paciente-body {
+    flex: 1;
+    padding: 0;
+    overflow: hidden;
+    background: #f7f9fa;
+    display: flex;
+    flex-direction: column;
+}
+
+.popup-historico-paciente-scroll {
+    flex: 1;
+    height: 100%;
+    max-height: 100%;
+    overflow-y: auto;
+    padding: 24px;
+    scrollbar-width: thick;         /* Firefox */
+    scrollbar-color: #2c8ef0 #e0e0e0;
+}
+
+/* Chrome, Edge, Safari */
+.popup-historico-paciente-scroll::-webkit-scrollbar {
+    width: 18px;
+    background: #e0e0e0;
+    border-radius: 10px;
+}
+.popup-historico-paciente-scroll::-webkit-scrollbar-thumb {
+    background: #2c8ef0;
+    border-radius: 10px;
+}
+.popup-historico-paciente-scroll::-webkit-scrollbar-thumb:hover {
+    background: #1a4d7a;
+}
+@media (max-width: 900px) {
+    .popup-historico-paciente-content {
+        width: 98vw;
+        max-width: 98vw;
+        margin-top: -20px;
+    }
+}
