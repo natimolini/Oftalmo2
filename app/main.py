@@ -825,7 +825,6 @@ async def salvar_rascunho_prontuario(
             else:
                 anamnese.insert_anamnese(cd_medico, nr_atendimento, ds_anamnese, nm_usuario)
 
-        # 2. REFRAÇÃO E ÓCULOS
         if ds_refracao:
             select_nr_seq_refracao = refracao.select_nr_seq_refracao(nr_atendimento)
             ds_oculos = None
@@ -837,11 +836,39 @@ async def salvar_rascunho_prontuario(
                 v_oe_cil = converter_valor(vl_oe_pl_ard_cil)
                 v_add = converter_valor(vl_adicao)
                 
+                # Chamadas com argumentos nomeados para casar com o **kwargs do banco
                 if select_nr_seq_refracao:
-                    refracao.update_refracao(select_nr_seq_refracao[0][0], cd_medico, nr_atendimento, 'dinamica', v_od_esf, v_od_cil, vl_od_pl_ard_eixo, v_oe_esf, v_oe_cil, vl_oe_pl_ard_eixo, v_add, ds_observacao_refracao, nm_usuario)
+                    refracao.update_refracao(
+                        select_nr_seq_refracao[0][0], 
+                        'dinamica',
+                        vl_od_pl_ard_esf=v_od_esf,
+                        vl_od_pl_ard_cil=v_od_cil,
+                        vl_od_pl_ard_eixo=vl_od_pl_ard_eixo,
+                        vl_oe_pl_ard_esf=v_oe_esf,
+                        vl_oe_pl_ard_cil=v_oe_cil,
+                        vl_oe_pl_ard_eixo=vl_oe_pl_ard_eixo,
+                        vl_adicao=v_add,
+                        ds_observacao=ds_observacao_refracao,
+                        nm_usuario=nm_usuario
+                    )
                 else:
-                    refracao.insert_refracao(cd_medico, nr_atendimento, 'dinamica', v_od_esf, v_od_cil, vl_od_pl_ard_eixo, v_oe_esf, v_oe_cil, vl_oe_pl_ard_eixo, v_add, ds_observacao_refracao, nm_usuario)
+                    # Insert aceita 3 fixos antes do kwargs
+                    refracao.insert_refracao(
+                        cd_medico, 
+                        nr_atendimento, 
+                        'dinamica',
+                        vl_od_pl_ard_esf=v_od_esf,
+                        vl_od_pl_ard_cil=v_od_cil,
+                        vl_od_pl_ard_eixo=vl_od_pl_ard_eixo,
+                        vl_oe_pl_ard_esf=v_oe_esf,
+                        vl_oe_pl_ard_cil=v_oe_cil,
+                        vl_oe_pl_ard_eixo=vl_oe_pl_ard_eixo,
+                        vl_adicao=v_add,
+                        ds_observacao=ds_observacao_refracao,
+                        nm_usuario=nm_usuario
+                    )
 
+                # Mantendo sua regra de negócio de montagem da string de óculos
                 if any([v_od_esf, v_od_cil, vl_od_pl_ard_eixo, v_oe_esf, v_oe_cil, vl_oe_pl_ard_eixo, v_add, ds_observacao_refracao]):
                     ds_oculos = "Óculos: " + (locale.format_string('OD: %+0.2f', v_od_esf) if v_od_esf else '') + \
                                 (locale.format_string(' / %+0.2f x', v_od_cil) if v_od_cil else '') + \
@@ -859,9 +886,32 @@ async def salvar_rascunho_prontuario(
                 v_oe_cil_e = converter_valor(vl_oe_pl_are_cil)
                 
                 if select_nr_seq_refracao:
-                    refracao.update_refracao(select_nr_seq_refracao[0][0], cd_medico, nr_atendimento, 'estatica', v_od_esf_e, v_od_cil_e, vl_od_pl_are_eixo, v_oe_esf_e, v_oe_cil_e, vl_oe_pl_are_eixo, None, ds_observacao_refracao, nm_usuario)
+                    refracao.update_refracao(
+                        select_nr_seq_refracao[0][0], 
+                        'estatica',
+                        vl_od_pl_are_esf=v_od_esf_e,
+                        vl_od_pl_are_cil=v_od_cil_e,
+                        vl_od_pl_are_eixo=vl_od_pl_are_eixo,
+                        vl_oe_pl_are_esf=v_oe_esf_e,
+                        vl_oe_pl_are_cil=v_oe_cil_e,
+                        vl_oe_pl_are_eixo=vl_oe_pl_are_eixo,
+                        ds_observacao=ds_observacao_refracao,
+                        nm_usuario=nm_usuario
+                    )
                 else:
-                    refracao.insert_refracao(cd_medico, nr_atendimento, 'estatica', v_od_esf_e, v_od_cil_e, vl_od_pl_are_eixo, v_oe_esf_e, v_oe_cil_e, vl_oe_pl_are_eixo, None, ds_observacao_refracao, nm_usuario)
+                    refracao.insert_refracao(
+                        cd_medico, 
+                        nr_atendimento, 
+                        'estatica',
+                        vl_od_pl_are_esf=v_od_esf_e,
+                        vl_od_pl_are_cil=v_od_cil_e,
+                        vl_od_pl_are_eixo=vl_od_pl_are_eixo,
+                        vl_oe_pl_are_esf=v_oe_esf_e,
+                        vl_oe_pl_are_cil=v_oe_cil_e,
+                        vl_oe_pl_are_eixo=vl_oe_pl_are_eixo,
+                        ds_observacao=ds_observacao_refracao,
+                        nm_usuario=nm_usuario
+                    )
 
                 if any([v_od_esf_e, v_od_cil_e, vl_od_pl_are_eixo, v_oe_esf_e, v_oe_cil_e, ds_observacao_refracao]):
                     ds_oculos = "Óculos: " + (locale.format_string('OD: %+0.2f', v_od_esf_e) if v_od_esf_e else '') + \
@@ -875,8 +925,10 @@ async def salvar_rascunho_prontuario(
             if ds_oculos:
                 request.session[f"ds_oculos_{nr_atendimento}"] = ds_oculos
                 oc_res = oculos.select_nr_seq_oculos(nr_atendimento)
-                if oc_res: oculos.update_oculos(oc_res[0][0], ds_oculos, nm_usuario)
-                else: oculos.insert_oculos(cd_medico, nr_atendimento, nm_usuario, ds_oculos)
+                if oc_res:
+                    oculos.update_oculos(oc_res[0][0], ds_oculos, nm_usuario)
+                else:
+                    oculos.insert_oculos(cd_medico, nr_atendimento, nm_usuario, ds_oculos)
 
         # 3. ACUIDADE VISUAL
         if ds_acuidade:
