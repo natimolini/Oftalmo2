@@ -70,7 +70,6 @@ def insert_diagnostico(cd_medico, nr_atendimento, ds_diagnostico, nm_usuario):
     try:
         dup_result = oraconn.execute_select(duplicate_check_query, duplicate_params)
         if dup_result and dup_result[0][0] > 0:
-            print(f"[INFO] Diagnóstico já existe para este atendimento: {ds_diagnostico}")
             return "ALREADY_EXISTS"
     except Exception as e:
         print(f"[WARNING] Failed to check for duplicate diagnoses: {str(e)}. Continuing...")
@@ -150,7 +149,6 @@ def insert_diagnostico(cd_medico, nr_atendimento, ds_diagnostico, nm_usuario):
 
     try:
         result = oraconn.execute_insert(query, params_cleared)
-        print(f"[INFO] Diagnóstico inserido em diagnostico_medico e oft_diagnostico: {ds_diagnostico}")
         return result
     except Exception as e:
         error_msg = str(e)
@@ -181,7 +179,6 @@ def update_diagnostico_oft(nr_atendimento, ds_diagnostico, nm_usuario):
     
     try:
         result = oraconn.execute_update(query, params)
-        print(f"[INFO] Diagnóstico atualizado na oft_diagnostico: {ds_diagnostico}")
         return result
     except Exception as e:
         print(f"[ERROR] Erro ao atualizar oft_diagnostico: {str(e)}")
@@ -206,7 +203,6 @@ def update_diagnostico_medico(nr_atendimento, ds_diagnostico, nm_usuario):
     
     try:
         result = oraconn.execute_update(query, params)
-        print(f"[INFO] Diagnóstico atualizado na diagnostico_medico: {ds_diagnostico}")
         return result
     except Exception as e:
         print(f"[ERROR] Erro ao atualizar diagnostico_medico: {str(e)}")

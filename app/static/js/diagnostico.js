@@ -10,17 +10,11 @@ export async function carregarDiagnostico(pesquisa = '') {
 
         const response = await fetch(`/api/diagnostico-templates?search=${pesquisa}`);
         
-        // Obter texto bruto para diagnóstico do problema
         const responseText = await response.text();
-        console.log('Resposta bruta:', responseText);
         
-        // Tentar analisar a resposta
         let templates;
         try {
             templates = JSON.parse(responseText);
-            console.log('Tipo de dados recebido:', typeof templates);
-            console.log('É um array?', Array.isArray(templates));
-            console.log('Conteúdo:', templates);
         } catch (parseError) {
             console.error('Erro ao analisar JSON:', parseError);
             container.innerHTML = `<div style="text-align: center; padding: 10px; color: red;">

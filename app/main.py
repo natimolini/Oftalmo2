@@ -786,41 +786,50 @@ async def salvar_rascunho_prontuario(
     codigosExame: List[str] = Form([]),
     nomesExame: List[str] = Form([]),
     qtdExame: List[str] = Form([]),
-    ds_cirurgias: str = Form(None)
+    ds_cirurgias: str = Form(None),
 ):
-    # --- 1. CONFIGURAÇÕES E SEGURANÇA ---
+    # --- VERIFICAÇÕES INICIAIS ---
+    dt_consulta = get_status_consulta.get_dt_consulta(nr_atendimento)
+    if not dt_consulta:
+        get_status_consulta.update_status_em_consulta(nr_atendimento)
+
     cd_medico = request.session.get("cd_pessoa_fisica")
     nm_usuario = request.session.get("nm_usuario")
 
     if not cd_medico:
         return RedirectResponse("/login", status_code=302)
 
+    # Restauração da função de conversão original
     def converter_valor(valor: str):
-        if valor and valor.strip():
-            try: return float(valor.replace(',', '.'))
-            except: return None
-        return None
+        try:
+            if valor:
+                return float(valor.replace(',', '.'))
+            return None
+        except ValueError:
+            return None
 
     if get_status_consulta.get_status_consulta(nr_atendimento):
-        return JSONResponse(content={"status": "error", "mensagem": "Consulta já liberada."}, status_code=400)
+        return JSONResponse(
+            content={"status": "error", "mensagem": "Ação não autorizada: consulta já liberada."},
+            status_code=400
+        )
 
-    if not get_status_consulta.get_dt_consulta(nr_atendimento):
-        get_status_consulta.update_status_em_consulta(nr_atendimento)
+    # --- INÍCIO DOS BLOCOS DE SALVAMENTO (RESTAURADOS DO CÓDIGO 1) ---
 
     try:
-        # --- 2. ANAMNESE ---
+        # 1. ANAMNESE
         if ds_anamnese:
-            res_ana = anamnese.select_nr_seq_anamnese(nr_atendimento)
-            if res_ana:
-                anamnese.update_anamnese(res_ana[0][0], ds_anamnese, nm_usuario)
+            select_nr_seq_anamnese = anamnese.select_nr_seq_anamnese(nr_atendimento)
+            if select_nr_seq_anamnese:
+                anamnese.update_anamnese(select_nr_seq_anamnese[0][0], ds_anamnese, nm_usuario)
             else:
                 anamnese.insert_anamnese(cd_medico, nr_atendimento, ds_anamnese, nm_usuario)
 
-        # --- 3. REFRAÇÃO E ÓCULOS ---
+        # 2. REFRAÇÃO E ÓCULOS
         if ds_refracao:
-            res_refr = refracao.select_nr_seq_refracao(nr_atendimento)
+            select_nr_seq_refracao = refracao.select_nr_seq_refracao(nr_atendimento)
             ds_oculos = None
-            
+
             if tipo_refracao == 'dinamica':
                 v_od_esf = converter_valor(vl_od_pl_ard_esf)
                 v_od_cil = converter_valor(vl_od_pl_ard_cil)
@@ -828,97 +837,104 @@ async def salvar_rascunho_prontuario(
                 v_oe_cil = converter_valor(vl_oe_pl_ard_cil)
                 v_add = converter_valor(vl_adicao)
                 
-                if res_refr:
-                    refracao.update_refracao(res_refr[0][0], cd_medico, nr_atendimento, 'dinamica', v_od_esf, v_od_cil, vl_od_pl_ard_eixo, v_oe_esf, v_oe_cil, vl_oe_pl_ard_eixo, v_add, ds_observacao_refracao, nm_usuario)
+                if select_nr_seq_refracao:
+                    refracao.update_refracao(select_nr_seq_refracao[0][0], cd_medico, nr_atendimento, 'dinamica', v_od_esf, v_od_cil, vl_od_pl_ard_eixo, v_oe_esf, v_oe_cil, vl_oe_pl_ard_eixo, v_add, ds_observacao_refracao, nm_usuario)
                 else:
                     refracao.insert_refracao(cd_medico, nr_atendimento, 'dinamica', v_od_esf, v_od_cil, vl_od_pl_ard_eixo, v_oe_esf, v_oe_cil, vl_oe_pl_ard_eixo, v_add, ds_observacao_refracao, nm_usuario)
 
-                if any([v_od_esf, v_od_cil, vl_od_pl_ard_eixo, v_oe_esf, v_oe_cil, vl_oe_pl_ard_eixo, v_add]):
-                    ds_oculos = f"Óculos: OD: {v_od_esf or ''} / {v_od_cil or ''} x {vl_od_pl_ard_eixo or ''}° OE: {v_oe_esf or ''} / {v_oe_cil or ''} x {vl_oe_pl_ard_eixo or ''}° A={v_add or ''}\nOBS: {ds_observacao_refracao or ''}"
-            
+                if any([v_od_esf, v_od_cil, vl_od_pl_ard_eixo, v_oe_esf, v_oe_cil, vl_oe_pl_ard_eixo, v_add, ds_observacao_refracao]):
+                    ds_oculos = "Óculos: " + (locale.format_string('OD: %+0.2f', v_od_esf) if v_od_esf else '') + \
+                                (locale.format_string(' / %+0.2f x', v_od_cil) if v_od_cil else '') + \
+                                (f' {vl_od_pl_ard_eixo}°' if vl_od_pl_ard_eixo else '') + \
+                                (locale.format_string(' OE: %+0.2f', v_oe_esf) if v_oe_esf else '') + \
+                                (locale.format_string(' / %+0.2f x', v_oe_cil) if v_oe_cil else '') + \
+                                (f' {vl_oe_pl_ard_eixo}°' if vl_oe_pl_ard_eixo else '') + \
+                                (locale.format_string(' A=%+0.2f', v_add) if v_add else '') + \
+                                ("\nOBS: " + ds_observacao_refracao if ds_observacao_refracao else '')
+
             elif tipo_refracao == 'estatica':
-                v_od_esf = converter_valor(vl_od_pl_are_esf)
-                v_od_cil = converter_valor(vl_od_pl_are_cil)
-                v_oe_esf = converter_valor(vl_oe_pl_are_esf)
-                v_oe_cil = converter_valor(vl_oe_pl_are_cil)
+                v_od_esf_e = converter_valor(vl_od_pl_are_esf)
+                v_od_cil_e = converter_valor(vl_od_pl_are_cil)
+                v_oe_esf_e = converter_valor(vl_oe_pl_are_esf)
+                v_oe_cil_e = converter_valor(vl_oe_pl_are_cil)
                 
-                if res_refr:
-                    refracao.update_refracao(res_refr[0][0], cd_medico, nr_atendimento, 'estatica', v_od_esf, v_od_cil, vl_od_pl_are_eixo, v_oe_esf, v_oe_cil, vl_oe_pl_are_eixo, None, ds_observacao_refracao, nm_usuario)
+                if select_nr_seq_refracao:
+                    refracao.update_refracao(select_nr_seq_refracao[0][0], cd_medico, nr_atendimento, 'estatica', v_od_esf_e, v_od_cil_e, vl_od_pl_are_eixo, v_oe_esf_e, v_oe_cil_e, vl_oe_pl_are_eixo, None, ds_observacao_refracao, nm_usuario)
                 else:
-                    refracao.insert_refracao(cd_medico, nr_atendimento, 'estatica', v_od_esf, v_od_cil, vl_od_pl_are_eixo, v_oe_esf, v_oe_cil, vl_oe_pl_are_eixo, None, ds_observacao_refracao, nm_usuario)
+                    refracao.insert_refracao(cd_medico, nr_atendimento, 'estatica', v_od_esf_e, v_od_cil_e, vl_od_pl_are_eixo, v_oe_esf_e, v_oe_cil_e, vl_oe_pl_are_eixo, None, ds_observacao_refracao, nm_usuario)
 
-                if any([v_od_esf, v_od_cil, vl_od_pl_are_eixo, v_oe_esf, v_oe_cil, vl_oe_pl_are_eixo]):
-                    ds_oculos = f"Óculos: OD: {v_od_esf or ''} / {v_od_cil or ''} x {vl_od_pl_are_eixo or ''}° OE: {v_oe_esf or ''} / {v_oe_cil or ''} x {vl_oe_pl_are_eixo or ''}°\nOBS: {ds_observacao_refracao or ''}"
-
+                if any([v_od_esf_e, v_od_cil_e, vl_od_pl_are_eixo, v_oe_esf_e, v_oe_cil_e, ds_observacao_refracao]):
+                    ds_oculos = "Óculos: " + (locale.format_string('OD: %+0.2f', v_od_esf_e) if v_od_esf_e else '') + \
+                                (locale.format_string(' / %+0.2f x', v_od_cil_e) if v_od_cil_e else '') + \
+                                (f' {vl_od_pl_are_eixo}°' if vl_od_pl_are_eixo else '') + \
+                                (locale.format_string(' OE: %+0.2f', v_oe_esf_e) if v_oe_esf_e else '') + \
+                                (locale.format_string(' / %+0.2f x', v_oe_cil_e) if v_oe_cil_e else '') + \
+                                (f' {vl_oe_pl_are_eixo}°' if vl_oe_pl_are_eixo else '') + \
+                                ("\nOBS: " + ds_observacao_refracao if ds_observacao_refracao else '')
+            
             if ds_oculos:
                 request.session[f"ds_oculos_{nr_atendimento}"] = ds_oculos
-                res_oc = oculos.select_nr_seq_oculos(nr_atendimento)
-                if res_oc: oculos.update_oculos(res_oc[0][0], ds_oculos, nm_usuario)
+                oc_res = oculos.select_nr_seq_oculos(nr_atendimento)
+                if oc_res: oculos.update_oculos(oc_res[0][0], ds_oculos, nm_usuario)
                 else: oculos.insert_oculos(cd_medico, nr_atendimento, nm_usuario, ds_oculos)
 
-        # --- 4. ACUIDADE VISUAL ---
+        # 3. ACUIDADE VISUAL
         if ds_acuidade:
-            res_ac = acuidade_visual.select_nr_seq_acuidade(nr_atendimento)
-            if res_ac:
-                acuidade_visual.update_acuidade(res_ac[0][0], ds_acuidade, nm_usuario)
-            else:
-                acuidade_visual.insert_acuidade(cd_medico, nr_atendimento, ds_acuidade, nm_usuario)
+            sel_ac = acuidade_visual.select_nr_seq_acuidade(nr_atendimento)
+            if sel_ac: acuidade_visual.update_acuidade(sel_ac[0][0], ds_acuidade, nm_usuario)
+            else: acuidade_visual.insert_acuidade(cd_medico, nr_atendimento, ds_acuidade, nm_usuario)
 
-        # --- 5. TONOMETRIA ---
+        # 4. TONOMETRIA
         if ds_tonometria:
-            res_to = pressao.select_nr_seq_tonometria(nr_atendimento)
-            if res_to:
-                pressao.update_tonometria(res_to[0][0], ds_tonometria, nm_usuario)
-            else:
-                pressao.insert_tonometria(cd_medico, nr_atendimento, ds_tonometria, nm_usuario)
+            sel_to = pressao.select_nr_seq_tonometria(nr_atendimento)
+            if sel_to: pressao.update_tonometria(sel_to[0][0], ds_tonometria, nm_usuario)
+            else: pressao.insert_tonometria(cd_medico, nr_atendimento, ds_tonometria, nm_usuario)
 
-        # --- 6. DIAGNÓSTICO ---
+        # 5. DIAGNÓSTICO
         if ds_diagnostico:
-            for diag in ds_diagnostico.split('\n'):
-                if diag.strip():
-                    diagnostico.insert_diagnostico(cd_medico, nr_atendimento, diag.strip(), nm_usuario)
+            for diagnosis in ds_diagnostico.split('\n'):
+                if diagnosis.strip():
+                    diagnostico.insert_diagnostico(cd_medico, nr_atendimento, diagnosis.strip(), nm_usuario)
+                    time.sleep(0.5)
 
-        # --- 7. CONDUTA ---
+        # 6. CONDUTA
         if ds_conduta:
-            res_co = conduta.select_nr_seq_conduta(nr_atendimento)
-            if res_co:
-                conduta.update_conduta(res_co[0][0], ds_conduta, nm_usuario)
-            else:
-                conduta.insert_conduta(cd_medico, nr_atendimento, ds_conduta, nm_usuario)
+            sel_co = conduta.select_nr_seq_conduta(nr_atendimento)
+            if sel_co: conduta.update_conduta(sel_co[0][0], ds_conduta, nm_usuario)
+            else: conduta.insert_conduta(cd_medico, nr_atendimento, ds_conduta, nm_usuario)
 
-        # --- 8. RECEITA ---
+        # 7. RECEITA
         if ds_receita:
-            res_re = receita.select_nr_seq_receita(nr_atendimento)
-            if res_re:
-                receita.update_receita(res_re[0][0], ds_receita, nm_usuario)
-            else:
-                receita.insert_receita(nm_usuario, cd_medico, ds_receita, nr_atendimento)
+            sel_re = receita.select_nr_seq_receita(nr_atendimento)
+            if sel_re: receita.update_receita(sel_re[0][0], ds_receita, nm_usuario)
+            else: receita.insert_receita(nm_usuario, cd_medico, ds_receita, nr_atendimento)
 
-        # --- 9. EXAMES ---
+        # 8. EXAMES
         if ds_exames:
-            res_ex = get_exams.select_nr_seq_exame(nr_atendimento)
-            if res_ex:
-                nr_seq_exame = res_ex[0][0]
+            sel_ex = get_exams.select_nr_seq_exame(nr_atendimento)
+            if sel_ex:
+                nr_seq_exame = sel_ex[0][0]
                 get_exams.update_exam(nr_seq_exame, ds_exames, nm_usuario)
                 get_exams.deletar_exames_anteriores(nr_seq_exame)
             else:
                 get_exams.insert_exam(cd_medico, nr_atendimento, nm_usuario)
-                nr_seq_exame = get_exams.select_nr_seq_exame(nr_atendimento)[0][0]
+                sel_ex_novo = get_exams.select_nr_seq_exame(nr_atendimento)
+                nr_seq_exame = sel_ex_novo[0][0]
                 get_exams.update_exam(nr_seq_exame, ds_exames, nm_usuario)
 
-            for cod, qtd in zip(codigosExame, qtdExame):
-                clean_cod = cod.replace('.','').replace('-','')
+            for codigo, qtd in zip(codigosExame, qtdExame):
+                clean_cod = codigo.replace('.','').replace('-','')
                 if get_exams.verifica_cd_exame(clean_cod):
                     get_exams.insert_exam_item(nr_seq_exame, clean_cod, qtd, nm_usuario)
 
-        # --- 10. LENTES E CIRURGIAS ---
+        # 9. LENTES E CIRURGIAS
         if ds_lentes_contato:
-            res_lc_cons = get_lentes_contato.select_nr_seq_consulta(nr_atendimento)
-            if res_lc_cons:
-                nr_seq_c = res_lc_cons[0][0]
-                res_lc = get_lentes_contato.select_nr_seq_lentes_contato(nr_seq_c)
-                if res_lc: get_lentes_contato.update_lentes_contato(res_lc[0][0], nm_usuario, ds_lentes_contato)
-                else: get_lentes_contato.insert_lentes_contato(nr_seq_c, nm_usuario, ds_lentes_contato)
+            sel_lc_c = get_lentes_contato.select_nr_seq_consulta(nr_atendimento)
+            if sel_lc_c:
+                nr_c = sel_lc_c[0][0]
+                sel_lc = get_lentes_contato.select_nr_seq_lentes_contato(nr_c)
+                if sel_lc: get_lentes_contato.update_lentes_contato(sel_lc[0][0], nm_usuario, ds_lentes_contato)
+                else: get_lentes_contato.insert_lentes_contato(nr_c, nm_usuario, ds_lentes_contato)
 
         if ds_cirurgias is not None:
             if cirurgia.existe_cirurgia_por_atendimento(nr_atendimento):
@@ -929,8 +945,9 @@ async def salvar_rascunho_prontuario(
         return JSONResponse(content={"status": "success", "mensagem": "Rascunho salvo com sucesso."}, status_code=200)
 
     except Exception as e:
-        print(f"Erro ao salvar prontuário: {str(e)}")
-        return JSONResponse(content={"status": "error", "mensagem": "Erro interno ao salvar os dados."}, status_code=500)
+        print(f"ERRO NO SALVAMENTO: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Erro interno no servidor: {str(e)}")
+    
 
 @app.post("/salvar_liberar/{nr_atendimento}")
 async def salvar_liberar(request: Request, nr_atendimento: int):
