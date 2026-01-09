@@ -5,7 +5,7 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 PG_CONFIG = {
     "user": "postgres",
-    "password": "aloisk",
+    "password": "phf1310",
     "database": "oftalmo_teste",
     "host": "localhost",
     'port': 5432

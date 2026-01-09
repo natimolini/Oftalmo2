@@ -594,7 +594,6 @@ async def carregar_dados_secundarios(request: Request, nr_atendimento: int):
                 return False
                 
             except Exception as e:
-                print(f"Erro ao verificar dados da consulta {nr_atend}: {e}")
                 return False
         
         # Filtrar apenas consultas com dados
@@ -789,48 +788,39 @@ async def salvar_rascunho_prontuario(
     qtdExame: List[str] = Form([]),
     ds_cirurgias: str = Form(None)
 ):
-    # --- 1. CONFIGURAÇÕES INICIAIS E SEGURANÇA ---
+    # --- 1. CONFIGURAÇÕES E SEGURANÇA ---
     cd_medico = request.session.get("cd_pessoa_fisica")
     nm_usuario = request.session.get("nm_usuario")
 
     if not cd_medico:
         return RedirectResponse("/login", status_code=302)
 
-    # Função interna para converter strings de formulário em float
     def converter_valor(valor: str):
-        try:
-            if valor and valor.strip():
-                return float(valor.replace(',', '.'))
-            return None
-        except ValueError:
-            return None
+        if valor and valor.strip():
+            try: return float(valor.replace(',', '.'))
+            except: return None
+        return None
 
-    # Verifica se a consulta já foi liberada/finalizada
     if get_status_consulta.get_status_consulta(nr_atendimento):
-        return JSONResponse(
-            content={"status": "error", "mensagem": "Ação não autorizada: consulta já liberada."},
-            status_code=400
-        )
+        return JSONResponse(content={"status": "error", "mensagem": "Consulta já liberada."}, status_code=400)
 
-    # Atualiza status para 'em consulta' se necessário
     if not get_status_consulta.get_dt_consulta(nr_atendimento):
         get_status_consulta.update_status_em_consulta(nr_atendimento)
 
     try:
         # --- 2. ANAMNESE ---
         if ds_anamnese:
-            res = anamnese.select_nr_seq_anamnese(nr_atendimento)
-            if res:
-                anamnese.update_anamnese(res[0][0], ds_anamnese, nm_usuario)
+            res_ana = anamnese.select_nr_seq_anamnese(nr_atendimento)
+            if res_ana:
+                anamnese.update_anamnese(res_ana[0][0], ds_anamnese, nm_usuario)
             else:
                 anamnese.insert_anamnese(cd_medico, nr_atendimento, ds_anamnese, nm_usuario)
 
         # --- 3. REFRAÇÃO E ÓCULOS ---
         if ds_refracao:
             res_refr = refracao.select_nr_seq_refracao(nr_atendimento)
-            ds_oculos = ""
+            ds_oculos = None
             
-            # Lógica de processamento de valores (Dinamica ou Estatica)
             if tipo_refracao == 'dinamica':
                 v_od_esf = converter_valor(vl_od_pl_ard_esf)
                 v_od_cil = converter_valor(vl_od_pl_ard_cil)
@@ -842,6 +832,9 @@ async def salvar_rascunho_prontuario(
                     refracao.update_refracao(res_refr[0][0], cd_medico, nr_atendimento, 'dinamica', v_od_esf, v_od_cil, vl_od_pl_ard_eixo, v_oe_esf, v_oe_cil, vl_oe_pl_ard_eixo, v_add, ds_observacao_refracao, nm_usuario)
                 else:
                     refracao.insert_refracao(cd_medico, nr_atendimento, 'dinamica', v_od_esf, v_od_cil, vl_od_pl_ard_eixo, v_oe_esf, v_oe_cil, vl_oe_pl_ard_eixo, v_add, ds_observacao_refracao, nm_usuario)
+
+                if any([v_od_esf, v_od_cil, vl_od_pl_ard_eixo, v_oe_esf, v_oe_cil, vl_oe_pl_ard_eixo, v_add]):
+                    ds_oculos = f"Óculos: OD: {v_od_esf or ''} / {v_od_cil or ''} x {vl_od_pl_ard_eixo or ''}° OE: {v_oe_esf or ''} / {v_oe_cil or ''} x {vl_oe_pl_ard_eixo or ''}° A={v_add or ''}\nOBS: {ds_observacao_refracao or ''}"
             
             elif tipo_refracao == 'estatica':
                 v_od_esf = converter_valor(vl_od_pl_are_esf)
@@ -854,40 +847,54 @@ async def salvar_rascunho_prontuario(
                 else:
                     refracao.insert_refracao(cd_medico, nr_atendimento, 'estatica', v_od_esf, v_od_cil, vl_od_pl_are_eixo, v_oe_esf, v_oe_cil, vl_oe_pl_are_eixo, None, ds_observacao_refracao, nm_usuario)
 
-        # --- 4. ACUIDADE E TONOMETRIA ---
+                if any([v_od_esf, v_od_cil, vl_od_pl_are_eixo, v_oe_esf, v_oe_cil, vl_oe_pl_are_eixo]):
+                    ds_oculos = f"Óculos: OD: {v_od_esf or ''} / {v_od_cil or ''} x {vl_od_pl_are_eixo or ''}° OE: {v_oe_esf or ''} / {v_oe_cil or ''} x {vl_oe_pl_are_eixo or ''}°\nOBS: {ds_observacao_refracao or ''}"
+
+            if ds_oculos:
+                request.session[f"ds_oculos_{nr_atendimento}"] = ds_oculos
+                res_oc = oculos.select_nr_seq_oculos(nr_atendimento)
+                if res_oc: oculos.update_oculos(res_oc[0][0], ds_oculos, nm_usuario)
+                else: oculos.insert_oculos(cd_medico, nr_atendimento, nm_usuario, ds_oculos)
+
+        # --- 4. ACUIDADE VISUAL ---
         if ds_acuidade:
             res_ac = acuidade_visual.select_nr_seq_acuidade(nr_atendimento)
-            if res_ac: acuidade_visual.update_acuidade(res_ac[0][0], ds_acuidade, nm_usuario)
-            else: acuidade_visual.insert_acuidade(cd_medico, nr_atendimento, ds_acuidade, nm_usuario)
-            
+            if res_ac:
+                acuidade_visual.update_acuidade(res_ac[0][0], ds_acuidade, nm_usuario)
+            else:
+                acuidade_visual.insert_acuidade(cd_medico, nr_atendimento, ds_acuidade, nm_usuario)
+
+        # --- 5. TONOMETRIA ---
         if ds_tonometria:
             res_to = pressao.select_nr_seq_tonometria(nr_atendimento)
-            if res_to: pressao.update_tonometria(res_to[0][0], ds_tonometria, nm_usuario)
-            else: pressao.insert_tonometria(cd_medico, nr_atendimento, ds_tonometria, nm_usuario)
-
-        # --- 5. DIAGNÓSTICO (Lógica inteligente do Código 2) ---
-        if ds_diagnostico:
-            if diagnostico.verificar_diagnostico_existe(nr_atendimento):
-                diagnostico.update_diagnostico_medico(nr_atendimento, ds_diagnostico, nm_usuario)
-                diagnostico.update_diagnostico_oft(nr_atendimento, ds_diagnostico, nm_usuario)
+            if res_to:
+                pressao.update_tonometria(res_to[0][0], ds_tonometria, nm_usuario)
             else:
-                for diag in ds_diagnostico.split('\n'):
-                    if diag.strip():
-                        diagnostico.insert_diagnostico(cd_medico, nr_atendimento, diag.strip(), nm_usuario)
-                        time.sleep(0.1)
+                pressao.insert_tonometria(cd_medico, nr_atendimento, ds_tonometria, nm_usuario)
 
-        # --- 6. CONDUTA E RECEITA (Área de Foco) ---
+        # --- 6. DIAGNÓSTICO ---
+        if ds_diagnostico:
+            for diag in ds_diagnostico.split('\n'):
+                if diag.strip():
+                    diagnostico.insert_diagnostico(cd_medico, nr_atendimento, diag.strip(), nm_usuario)
+
+        # --- 7. CONDUTA ---
         if ds_conduta:
             res_co = conduta.select_nr_seq_conduta(nr_atendimento)
-            if res_co: conduta.update_conduta(res_co[0][0], ds_conduta, nm_usuario)
-            else: conduta.insert_conduta(cd_medico, nr_atendimento, ds_conduta, nm_usuario)
+            if res_co:
+                conduta.update_conduta(res_co[0][0], ds_conduta, nm_usuario)
+            else:
+                conduta.insert_conduta(cd_medico, nr_atendimento, ds_conduta, nm_usuario)
 
+        # --- 8. RECEITA ---
         if ds_receita:
-            res_re = get_receita.select_nr_seq_receita(nr_atendimento)
-            if res_re: receita.update_receita(res_re[0][0], ds_receita, nm_usuario)
-            else: receita.insert_receita(nm_usuario, cd_medico, ds_receita, nr_atendimento)
+            res_re = receita.select_nr_seq_receita(nr_atendimento)
+            if res_re:
+                receita.update_receita(res_re[0][0], ds_receita, nm_usuario)
+            else:
+                receita.insert_receita(nm_usuario, cd_medico, ds_receita, nr_atendimento)
 
-        # --- 7. EXAMES E REPLICAÇÃO EXTERNA ---
+        # --- 9. EXAMES ---
         if ds_exames:
             res_ex = get_exams.select_nr_seq_exame(nr_atendimento)
             if res_ex:
@@ -899,20 +906,12 @@ async def salvar_rascunho_prontuario(
                 nr_seq_exame = get_exams.select_nr_seq_exame(nr_atendimento)[0][0]
                 get_exams.update_exam(nr_seq_exame, ds_exames, nm_usuario)
 
-            # Inserção de itens de exame
             for cod, qtd in zip(codigosExame, qtdExame):
                 clean_cod = cod.replace('.','').replace('-','')
                 if get_exams.verifica_cd_exame(clean_cod):
                     get_exams.insert_exam_item(nr_seq_exame, clean_cod, qtd, nm_usuario)
 
-            # Replicação segura para oft_exame_externo (Extraído do Código 2)
-            try:
-                # Aqui entraria a sua lógica de oraconn.execute_update/insert
-                pass 
-            except Exception as e_ext:
-                print(f"Aviso: Falha na replicação externa: {e_ext}")
-
-        # --- 8. LENTES DE CONTATO E CIRURGIAS ---
+        # --- 10. LENTES E CIRURGIAS ---
         if ds_lentes_contato:
             res_lc_cons = get_lentes_contato.select_nr_seq_consulta(nr_atendimento)
             if res_lc_cons:
@@ -930,8 +929,8 @@ async def salvar_rascunho_prontuario(
         return JSONResponse(content={"status": "success", "mensagem": "Rascunho salvo com sucesso."}, status_code=200)
 
     except Exception as e:
-        print(f"Erro Crítico: {str(e)}")
-        return JSONResponse(content={"status": "error", "mensagem": f"Erro ao salvar: {str(e)}"}, status_code=500)
+        print(f"Erro ao salvar prontuário: {str(e)}")
+        return JSONResponse(content={"status": "error", "mensagem": "Erro interno ao salvar os dados."}, status_code=500)
 
 @app.post("/salvar_liberar/{nr_atendimento}")
 async def salvar_liberar(request: Request, nr_atendimento: int):
@@ -985,8 +984,6 @@ async def gerar_pdf_oculos(request: Request):
         nm_paciente = dados.get("nmPessoaFisica")
         dt_nascimento = dados.get("dataNascimento")
         nr_cpf = dados.get("dataCpf")
-
-        print("Debug - received values:", valores)  # Add debug print
         
         if tipo == 'estatica':
             vl_od_pl_ard_esf = valores.get('vl_od_pl_are_esf')
@@ -1022,7 +1019,6 @@ async def gerar_pdf_oculos(request: Request):
         return HTMLResponse(content=html_pdf, status_code=200)
 
     except Exception as e:
-        print("Error:", str(e))  # Add debug print
         return {"erro": f"Erro ao gerar o PDF: {str(e)}"}
 
 @app.post("/gerar-pdf-receita")
@@ -1243,7 +1239,6 @@ async def gerar_pdf_resumo(request: Request):
 
         summary = PatientSummary()
         consultas = summary.get_consultation_history(cd_pessoa_fisica)
-        print(consultas)
 
         try:
             html_pdf = impressao_dados_resumo.retornar_html_resumo(nm_paciente, idade_paciente, profissao, convenio, sexo, cpf, nascimento, consultas)
@@ -1268,9 +1263,6 @@ async def tabela_estatisticas(dataSelecionada: str, request: Request):
             }
         )
     except Exception as e:
-
-        print(f"Erro ao buscar estatísticas: {e}")
-
         return JSONResponse(
             content={
                 "status": "error",
@@ -1386,11 +1378,9 @@ async def get_consultas_antigas(cd_pessoa_fisica: str, request: Request):
                     'cd_pessoa_fisica': str(row[2]) if row[2] else None
                 })
         
-        print(f"Consultas antigas encontradas: {len(consultas_antigas)} para paciente {cd_pessoa_fisica}")
         return JSONResponse(content={"consultas_antigas": consultas_antigas})
 
     except Exception as e:
-        print(f"Erro ao buscar consultas antigas: {str(e)}")
         return JSONResponse(
             content={"error": f"Erro ao buscar consultas antigas: {str(e)}"},
             status_code=500
@@ -1493,22 +1483,14 @@ async def get_paciente_alergia_por_data(cd_pessoa_fisica: str, request: Request,
             'data_registro': data_registro
         })
         
-        print(f"Buscando dados para paciente {cd_pessoa_fisica} na data {data_registro}")
-        print(f"Resultados encontrados: {len(results) if results else 0}")
-        
         if results and len(results) > 0:
             ds_observacao = results[0][0] if results[0][0] else ""
             ds_observacao = tratar_html_popup(ds_observacao)
-            print(f"Observação encontrada: {len(ds_observacao)} caracteres")
             return JSONResponse(content={"ds_observacao": ds_observacao})
         else:
-            print("Nenhum resultado encontrado")
             return JSONResponse(content={"ds_observacao": "Nenhum dado histórico encontrado para esta data."})
 
-    except Exception as e:
-        print(f"Erro ao buscar dados de alergia por data: {str(e)}")
-       
-
+    except Exception as e:       
         return JSONResponse(
             content={"error": f"Erro ao buscar dados: {str(e)}"},
             status_code=500
@@ -1597,6 +1579,7 @@ async def salvar_receituario(request: Request):
 async def get_receituario_observacao(nr_atendimento: str):
     ds_observacao = get_conduta.get_ds_observacao(nr_atendimento)
     return {"ds_observacao": ds_observacao or ""}
+
 
 @app.get("/api/receituario/observacao2/{nr_atendimento}")
 async def get_receituario_observacao2(nr_atendimento: str):
@@ -1764,7 +1747,6 @@ async def buscar_exames_por_atendimento(nr_atendimento: int):
             "ds_exames": ds_exames
         }
     except Exception as e:
-        print(f"Erro ao buscar exames: {e}")
         raise HTTPException(status_code=500, detail=f"Erro ao buscar exames: {str(e)}")
 
 @app.put("/api/exames/{nr_atendimento}")
@@ -1832,7 +1814,6 @@ async def atualizar_exames_atendimento(nr_atendimento: int, request: Request):
     except HTTPException:
         raise
     except Exception as e:
-        print(f"Erro ao atualizar exames: {e}")
         raise HTTPException(status_code=500, detail=f"Erro ao atualizar exames: {str(e)}")
 
 @app.get("/api/cirurgias/{nr_atendimento}")
@@ -1846,7 +1827,6 @@ async def buscar_cirurgias_por_atendimento(nr_atendimento: int):
             "ds_cirurgias": ds_cirurgias
         }
     except Exception as e:
-        print(f"Erro ao buscar cirurgias: {e}")
         raise HTTPException(status_code=500, detail=f"Erro ao buscar cirurgias: {str(e)}")
 
 @app.put("/api/cirurgias/{nr_atendimento}")
@@ -1869,7 +1849,6 @@ async def atualizar_cirurgias_atendimento(nr_atendimento: int, request: Request)
     except HTTPException:
         raise
     except Exception as e:
-        print(f"Erro ao atualizar cirurgias: {e}")
         raise HTTPException(status_code=500, detail=f"Erro ao atualizar cirurgias: {str(e)}")
 
 @app.get("/api/prontuario-resumo/{nr_atendimento}")
@@ -1920,7 +1899,6 @@ async def get_prontuario_resumo(nr_atendimento: int):
         }
         
     except Exception as e:
-        print(f"Erro ao buscar resumo do prontuário: {e}")
         raise HTTPException(
             status_code=500, 
             detail=f"Erro ao buscar resumo do prontuário: {str(e)}"

@@ -29,7 +29,6 @@ def update_conduta(nr_seq_conduta, ds_conduta, nm_usuario):
         oft_conduta
     SET
         ds_conduta = :ds_conduta,
-        ds_observacao = :ds_conduta,
         nm_usuario_nrec = :nm_usuario,
         dt_atualizacao_nrec = SYSDATE
     WHERE
@@ -64,8 +63,7 @@ def insert_conduta(cd_medico, nr_atendimento, ds_conduta, nm_usuario):
         nr_sequencia,
         nm_usuario,
         dt_atualizacao,
-        ds_conduta,
-        ds_observacao
+        ds_conduta
     )
     VALUES
     (
@@ -75,7 +73,6 @@ def insert_conduta(cd_medico, nr_atendimento, ds_conduta, nm_usuario):
         oft_conduta_seq.NEXTVAL,
         :nm_usuario,
         SYSDATE,
-        :ds_conduta,
         :ds_conduta
     )
     """

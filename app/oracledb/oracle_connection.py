@@ -20,7 +20,10 @@ class OracleConnection:
             #oracle_client_path = r"C:\Oracle\instantclient_21_15"
 
             #Oracle Nati
-            oracle_client_path = r"C:\Oracle\instantclient_23_6"
+            #oracle_client_path = r"C:\Oracle\instantclient_23_6"
+
+            #Oracle Pedro
+            oracle_client_path = r"C:\Oracle\instantclient_21_17"
 
             #oracle_client_path = "/opt/oracle/instantclient_23_9" #alternativa para linux
             cx_Oracle.init_oracle_client(lib_dir=oracle_client_path)
