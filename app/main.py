@@ -1900,25 +1900,36 @@ async def buscar_cirurgias_por_atendimento(nr_atendimento: int):
 
 @app.put("/api/cirurgias/{nr_atendimento}")
 async def atualizar_cirurgias_atendimento(nr_atendimento: int, request: Request):
-    """Atualiza as cirurgias de um atendimento específico"""
+    """
+    Atualiza as cirurgias de um atendimento. 
+    Se não existir registro na tabela de conduta, ele cria um novo.
+    """
     try:
         dados = await request.json()
         ds_cirurgias = dados.get("ds_cirurgias", "")
         nm_usuario = request.session.get("nm_usuario", "SISTEMA")
         
-        sucesso = get_cirurgias.update_cirurgias(nr_atendimento, ds_cirurgias, nm_usuario)
-        
+        if cirurgia.existe_cirurgia_por_atendimento(nr_atendimento):
+            sucesso = cirurgia.update_cirurgia_observacao_por_atendimento(nr_atendimento, ds_cirurgias)
+            acao = "atualizadas"
+        else:
+            sucesso = cirurgia.insert_cirurgia(nr_atendimento, ds_cirurgias, nm_usuario)
+            acao = "inseridas"
         if sucesso:
             return {
-                "message": "Cirurgias atualizadas com sucesso",
+                "status": "success",
+                "message": f"Cirurgias {acao} com sucesso",
                 "nr_atendimento": nr_atendimento
             }
         else:
-            raise HTTPException(status_code=404, detail="Prontuário não encontrado")
-    except HTTPException:
-        raise
+            print(f"[ERRO BANCO] Falha ao executar {acao} para o atendimento: {nr_atendimento}")
+            raise HTTPException(status_code=500, detail="Erro interno ao gravar no banco de dados.")
+
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Erro ao atualizar cirurgias: {str(e)}")
+        import traceback
+        print(traceback.format_exc())
+        raise HTTPException(status_code=500, detail="Erro no processamento da requisição.")
+    
 
 @app.get("/api/prontuario-resumo/{nr_atendimento}")
 async def get_prontuario_resumo(nr_atendimento: int):
