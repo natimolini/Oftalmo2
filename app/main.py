@@ -11,6 +11,7 @@ import pdfkit
 import locale
 import time
 import logging
+import re
 from io import BytesIO
 import traceback
 
@@ -1820,70 +1821,59 @@ async def buscar_exames_por_atendimento(nr_atendimento: int):
 
 @app.put("/api/exames/{nr_atendimento}")
 async def atualizar_exames_atendimento(nr_atendimento: int, request: Request):
-    """Atualiza os exames de um atendimento específico"""
+    """
+    Atualiza exames. Se não existirem, cria o registro. 
+    Preserva itens existentes sem deletar nada (Lógica de Recepção).
+    """
     try:
         dados = await request.json()
         ds_exames = dados.get("ds_exames", "")
+        nm_usuario = request.session.get("nm_usuario", "SISTEMA_RECEP")
+        cd_medico = request.session.get("cd_pessoa_fisica")
+
+        res_exame = get_exams.select_nr_seq_exame(nr_atendimento)
         
-        # ========== INICIALIZAR VARIÁVEL ==========
-        exames_nao_encontrados = []
-        # ========== FIM DA INICIALIZAÇÃO ==========
-        
-        # Verificar se já existe um registro de exame
-        select_nr_seq_exame = get_exams.select_nr_seq_exame(nr_atendimento)
-        
-        if select_nr_seq_exame:
-            nr_seq_exame = select_nr_seq_exame[0][0]
-            # Atualizar exame existente
-            get_exams.update_exam(nr_seq_exame, ds_exames, "SISTEMA")
+        if not res_exame:
+            get_exams.insert_exam(cd_medico or 1, nr_atendimento, nm_usuario)
             
-            # Processar códigos de exames se houver
-            codigosExame = []
-            qtdExame = []
-            
-            # Extrair códigos e quantidades do texto
-            import re
-            linhas = ds_exames.split('\n')
-            for linha in linhas:
-                # Padrão: CODIGO - DESCRICAO (QTDx) ou CODIGO - DESCRICAO
-                match = re.match(r'^([0-9]+\.[0-9]+\.[0-9]+-[0-9]+)\s*-\s*.+?(?:\s*\((\d+)x\))?$', linha.strip())
-                if match:
-                    codigo = match.group(1).replace('.', '').replace('-', '')
-                    quantidade = match.group(2) if match.group(2) else '1'
-                    codigosExame.append(codigo)
-                    qtdExame.append(quantidade)
-            
-            # Deletar itens anteriores e inserir novos
-            if codigosExame:
-                get_exams.deletar_exames_anteriores(nr_seq_exame)
-                for codigo, qtd in zip(codigosExame, qtdExame):
-                    codigo_verificado = get_exams.verifica_cd_exame(codigo)
-                    if codigo_verificado:
-                        get_exams.insert_exam_item(nr_seq_exame, codigo, qtd, "SISTEMA")
-                    else:
-                        exames_nao_encontrados.append(codigo)
-            
-            # ========== RETORNAR COM INFORMAÇÃO DE EXAMES NÃO ENCONTRADOS ==========
-            mensagem = "Exames atualizados com sucesso"
-            if exames_nao_encontrados:
-                mensagem += f". Códigos não encontrados: {', '.join(exames_nao_encontrados)}"
-            
-            return {
-                "message": mensagem,
-                "nr_atendimento": nr_atendimento,
-                "exames_nao_encontrados": exames_nao_encontrados
-            }
-            # ========== FIM DO RETORNO ==========
-        else:
-            raise HTTPException(
-                status_code=404, 
-                detail="Nenhum registro de exame encontrado para este atendimento"
-            )
-            
-    except HTTPException:
-        raise
+            res_exame = get_exams.select_nr_seq_exame(nr_atendimento)
+            if not res_exame:
+                raise Exception("Falha ao criar registro de exame no banco de dados.")
+
+        nr_seq_exame = res_exame[0][0]
+
+        get_exams.update_exam(nr_seq_exame, ds_exames, nm_usuario)
+
+        codigos_no_texto = []
+        linhas = ds_exames.split('\n')
+        for linha in linhas:
+            match = re.match(r'^([0-9]+\.[0-9]+\.[0-9]+-[0-9]+)', linha.strip())
+            if match:
+                clean_code = match.group(1).replace('.', '').replace('-', '')
+                codigos_no_texto.append(clean_code)
+        try:
+            itens_no_banco = get_exams.select_itens_exame(nr_seq_exame)
+            lista_codigos_banco = [str(item[0]) for item in itens_no_banco] if itens_no_banco else []
+        except:
+            lista_codigos_banco = []
+
+        for codigo in set(codigos_no_texto):
+            if codigo not in lista_codigos_banco:
+                if get_exams.verifica_cd_exame(codigo):
+                    get_exams.insert_exam_item(nr_seq_exame, codigo, '1', nm_usuario)
+
+        return {
+            "status": "success",
+            "message": "Registro de exames sincronizado com sucesso",
+            "nr_atendimento": nr_atendimento
+        }
+
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Erro ao atualizar exames: {str(e)}")
+        import traceback
+        print(f"Erro na sincronização de exames: {str(e)}")
+        print(traceback.format_exc())
+        raise HTTPException(status_code=500, detail="Erro ao processar dados de exames.")
+    
 
 @app.get("/api/cirurgias/{nr_atendimento}")
 async def buscar_cirurgias_por_atendimento(nr_atendimento: int):
@@ -1900,25 +1890,36 @@ async def buscar_cirurgias_por_atendimento(nr_atendimento: int):
 
 @app.put("/api/cirurgias/{nr_atendimento}")
 async def atualizar_cirurgias_atendimento(nr_atendimento: int, request: Request):
-    """Atualiza as cirurgias de um atendimento específico"""
+    """
+    Atualiza as cirurgias de um atendimento. 
+    Se não existir registro na tabela de conduta, ele cria um novo.
+    """
     try:
         dados = await request.json()
         ds_cirurgias = dados.get("ds_cirurgias", "")
         nm_usuario = request.session.get("nm_usuario", "SISTEMA")
         
-        sucesso = get_cirurgias.update_cirurgias(nr_atendimento, ds_cirurgias, nm_usuario)
-        
+        if cirurgia.existe_cirurgia_por_atendimento(nr_atendimento):
+            sucesso = cirurgia.update_cirurgia_observacao_por_atendimento(nr_atendimento, ds_cirurgias)
+            acao = "atualizadas"
+        else:
+            sucesso = cirurgia.insert_cirurgia(nr_atendimento, ds_cirurgias, nm_usuario)
+            acao = "inseridas"
         if sucesso:
             return {
-                "message": "Cirurgias atualizadas com sucesso",
+                "status": "success",
+                "message": f"Cirurgias {acao} com sucesso",
                 "nr_atendimento": nr_atendimento
             }
         else:
-            raise HTTPException(status_code=404, detail="Prontuário não encontrado")
-    except HTTPException:
-        raise
+            print(f"[ERRO BANCO] Falha ao executar {acao} para o atendimento: {nr_atendimento}")
+            raise HTTPException(status_code=500, detail="Erro interno ao gravar no banco de dados.")
+
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Erro ao atualizar cirurgias: {str(e)}")
+        import traceback
+        print(traceback.format_exc())
+        raise HTTPException(status_code=500, detail="Erro no processamento da requisição.")
+    
 
 @app.get("/api/prontuario-resumo/{nr_atendimento}")
 async def get_prontuario_resumo(nr_atendimento: int):

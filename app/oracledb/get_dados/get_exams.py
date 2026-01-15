@@ -32,7 +32,6 @@ def verifica_cd_exame(cd_exame):
 
     try:
         result = oraconn.execute_select(query, {'cd_procedimento':cd_exame})
-        print(f"Insert result: {result}")
         return result
     except Exception as e:
         print(f'Erro ao verificar cd_exame no TASY: {e}')
@@ -92,7 +91,6 @@ def insert_exam(cd_medico, nr_atendimento, nm_usuario):
     
     try:
         result = oraconn.execute_insert(query, params)
-        print(f"Insert result: {result}")
         return result
     except Exception as e:
         error_msg = str(e)
@@ -129,12 +127,9 @@ def insert_exam_item(nr_seq_pedido, cd_exame, qtd_exame, nm_usuario):
         'qtd_exame': qtd_exame,
         'nm_usuario': nm_usuario
     }
-    
-    print(f"Attempting to insert exam with params: {params}")
-    
+        
     try:
         result = oraconn.execute_insert(query, params)
-        print(f"Insert result: {result}")
         return result
     except Exception as e:
         error_msg = str(e)
