@@ -24,25 +24,18 @@ function sincronizarData(data) {
     dataSelecionadaElemento.textContent = formatarData(data);
 }
 
-// Função para popular dados do prontuário
 async function popularDadosProntuario(newWindow, nrAtendimento) {
     try {
-        console.log('Fetching evolution data...');
         const response = await fetch(`/api/evolucao/${nrAtendimento}`);
         
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         
-        const evolucaoData = await response.json();
-        console.log('Retrieved evolution data:', evolucaoData);
-        
-        // Make sure we're using the correct window reference
+        const evolucaoData = await response.json();        
         const targetDocument = newWindow.document;
         
-        // Update form fields
         if (evolucaoData.queixa) {
-            console.log('Updating anamnese:', evolucaoData.queixa);
             const anamneseTextarea = targetDocument.getElementById('text-area-anamnese');
             if (anamneseTextarea) {
                 anamneseTextarea.value = evolucaoData.queixa;
@@ -59,7 +52,6 @@ async function popularDadosProntuario(newWindow, nrAtendimento) {
         }
         
         if (evolucaoData.acuidade) {
-            console.log('Updating acuidade:', evolucaoData.acuidade);
             const acuidadeTextarea = targetDocument.getElementById('textarea-acuidade');
             if (acuidadeTextarea) {
                 acuidadeTextarea.value = evolucaoData.acuidade;
@@ -68,7 +60,6 @@ async function popularDadosProntuario(newWindow, nrAtendimento) {
         }
 
         if (evolucaoData.pressao) {
-            console.log('Updating pressao:', evolucaoData.pressao);
             const pressaoTextarea = targetDocument.getElementById('textarea-tonometria');
             if (pressaoTextarea) {
                 pressaoTextarea.value = evolucaoData.pressao;
@@ -77,7 +68,6 @@ async function popularDadosProntuario(newWindow, nrAtendimento) {
         }
 
         if (evolucaoData.diagnostico) {
-            console.log('Updating diagnostico:', evolucaoData.diagnostico);
             const diagnosticoTextarea = targetDocument.getElementById('text-area-diagnostico');
             if (diagnosticoTextarea) {
                 diagnosticoTextarea.value = evolucaoData.diagnostico;
@@ -86,7 +76,6 @@ async function popularDadosProntuario(newWindow, nrAtendimento) {
         }
 
         if (evolucaoData.conduta) {
-            console.log('Updating conduta:', evolucaoData.conduta);
             const condutaTextarea = targetDocument.getElementById('textarea-conduta');
             if (condutaTextarea) {
                 condutaTextarea.value = evolucaoData.conduta;
@@ -95,7 +84,6 @@ async function popularDadosProntuario(newWindow, nrAtendimento) {
         }
 
         if (evolucaoData.exames) {
-            console.log('Updating exames:', evolucaoData.exames);
             const examesTextarea = targetDocument.getElementById('textarea-exames');
             if (examesTextarea) {
                 examesTextarea.value = evolucaoData.exames;
@@ -103,18 +91,14 @@ async function popularDadosProntuario(newWindow, nrAtendimento) {
             }
         }
 
-        // Handle refraction fields
         if (evolucaoData.vl_od_pl_ard_esf !== undefined) {
-            console.log('Updating refraction fields...');
             
-            // Set dynamic refraction radio button
             const radioDinamica = targetDocument.querySelector('input[name="tipo_refracao"][value="dinamica"]');
             if (radioDinamica) {
                 radioDinamica.checked = true;
                 radioDinamica.dispatchEvent(new Event('change'));
             }
 
-            // Update refraction values
             const refractionFields = {
                 'vl_od_pl_ard_esf': evolucaoData.vl_od_pl_ard_esf,
                 'vl_od_pl_ard_cil': evolucaoData.vl_od_pl_ard_cil,
@@ -127,7 +111,6 @@ async function popularDadosProntuario(newWindow, nrAtendimento) {
 
             Object.entries(refractionFields).forEach(([fieldName, value]) => {
                 if (value !== null && value !== undefined) {
-                    console.log(`Setting ${fieldName} to ${value}`);
                     const input = targetDocument.querySelector(`input[name="${fieldName}"]`);
                     if (input) {
                         input.value = value;
@@ -144,10 +127,7 @@ async function popularDadosProntuario(newWindow, nrAtendimento) {
                     obsRefracaoTextarea.dispatchEvent(new Event('input'));
                 }
             }
-        }
-
-        console.log('Finished updating all fields');
-        
+        }        
     } catch (error) {
         console.error('Error fetching or updating evolution data:', error);
     }
@@ -266,10 +246,7 @@ async function atualizarAgenda() {
                 data.data
                     .filter(linha => linha[2] !== "Cancelada")
                     .forEach(linha => {
-                        console.log("Linha completa:", linha);
-                        console.log(`Tipo (linha[1]): ${linha[1]}, Status (linha[2]): ${linha[2]}`);
                         
-                        // Tipo (linha[1])
                         if (linha[1] === "Consulta") statistics.qtd_consultas++;
                         else if (linha[1] === "Retorno") statistics.qtd_retorno++;
                         else if (linha[1] === "Retorno Cirurgia") statistics.qtd_retornos_cirurgia++;
@@ -302,7 +279,6 @@ async function atualizarAgenda() {
                         const telefone = linha[8] || '';
                         const telefoneFiltrado = telefone.replace(/[^0-9()\-]/g, '');
                         
-                        console.log('Estou criando a tabela de agenda')
                         const tr = document.createElement('tr');
                         tr.innerHTML = `
                             <td>${linha[0]}</td>
@@ -494,12 +470,10 @@ async function atualizarAgenda() {
                                     const resultado = await resposta.json();
                                     exibirMensagem(resultado.message, 'error');
                                 } else {
-                                    console.log('Opening patient record:', { nrAtendimento, cdPessoaFisica });
                                     const dataSelecionada = document.getElementById('calendario').value;
                                     window.open(`/prontuario/${nrAtendimento}?cd_pessoa_fisica=${cdPessoaFisica}&data_agenda=${dataSelecionada}`, '_blank');
                                 }
                             } catch (error) {
-                                console.error("Erro ao buscar prontuário:", error);
                                 exibirMensagem("Erro ao abrir prontuário", "error");
                             }
                         });

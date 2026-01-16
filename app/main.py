@@ -487,6 +487,8 @@ async def exibir_prontuario(nr_atendimento: int, request: Request):
     cd_pessoa_fisica = request.query_params.get('cd_pessoa_fisica')
     data_agenda = request.query_params.get('data_agenda')
 
+    print(f"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA: {cd_pessoa_fisica}")
+
     # Buscar a data do atendimento do banco se não vier na URL
     if not data_agenda:
         from app.oracledb.get_dados.get_agenda import oraconn
@@ -1661,15 +1663,11 @@ from fastapi.responses import JSONResponse
 
 @app.get("/api/historico-paciente/{cd_pessoa_fisica}")
 async def historico_paciente(cd_pessoa_fisica: str):
-    try:
-        logger.info(f"Buscando histórico para paciente: {cd_pessoa_fisica}")
-        
+    try:        
         historico = []
-
         # 1. Consultas normais (oft_consulta)
         try:
             consultas = get_consultas_por_paciente(cd_pessoa_fisica)
-            logger.info(f"Consultas normais encontradas: {len(consultas)}")
             
             for consulta in consultas:
                 historico.append({
@@ -1685,7 +1683,6 @@ async def historico_paciente(cd_pessoa_fisica: str):
         # 2. Consultas antigas (paciente_alergia)
         try:
             consultas_antigas = get_consultas_antigas_alergia(cd_pessoa_fisica)
-            logger.info(f"Consultas antigas encontradas: {len(consultas_antigas)}")
             
             for antiga in consultas_antigas:
                 historico.append({
@@ -1700,7 +1697,6 @@ async def historico_paciente(cd_pessoa_fisica: str):
         # 3. Prontuários especiais (PostgreSQL)
         try:
             prontuarios_especiais = await prontuario_especial.listar_prontuarios_especiais_paciente(int(cd_pessoa_fisica))
-            logger.info(f"Prontuários especiais encontrados: {len(prontuarios_especiais)}")
             
             for especial in prontuarios_especiais:
                 conteudo_especial = f"""

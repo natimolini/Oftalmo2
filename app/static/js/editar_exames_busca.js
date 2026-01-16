@@ -308,7 +308,6 @@ class EditarExamesBusca {
                     statusIcon.innerHTML = '<img src="/static/img/status-consulta/sinal-de-parada.png" title="Oftalmologia não gerada" style="width:20px;">';
                 }
 
-                // Monta o restante do item
                 item.innerHTML = `
                     <div class="atendimento-info">
                         <div class="atendimento-data">${atendimento.data}</div>
@@ -318,10 +317,12 @@ class EditarExamesBusca {
                         ${atendimento.status}
                     </div>
                     <div class="atendimento-acoes">
-                        <button class="btn-editar-exam-cir" data-atendimento="${atendimento.nr_atendimento}">
+                        <button class="btn-editar-exam-cir" data-atendimento="${atendimento.nr_atendimento}" data-pessoa="${cdPessoa}">
                             Editar Exam/Cir
                         </button>
-                        <button class="btn-abrir-prontuario" data-atendimento="${atendimento.nr_atendimento}">
+                        <button class="btn-abrir-prontuario" 
+                                data-atendimento="${atendimento.nr_atendimento}" 
+                                data-pessoa="${cdPessoa}">
                             Abrir Prontuário
                         </button>
                     </div>
@@ -533,9 +534,7 @@ class EditarExamesBusca {
             return;
         }
 
-        try {
-            console.log('Buscando histórico do paciente:', this.dadosPacienteAtual.cd_pessoa_fisica);
-            
+        try {            
             // Buscar histórico do paciente
             const response = await fetch(`/api/historico-paciente/${this.dadosPacienteAtual.cd_pessoa_fisica}`);
             
@@ -544,7 +543,6 @@ class EditarExamesBusca {
             }
 
             const historico = await response.json();
-            console.log('Histórico recebido:', historico);
 
             if (!historico || historico.length === 0) {
                 this.exibirMensagem('Nenhum histórico encontrado para este paciente', 'error');
@@ -567,9 +565,7 @@ class EditarExamesBusca {
             const conteudoResumo = document.getElementById('impressao-resumo-conteudo');
             conteudoResumo.innerHTML = '';
 
-            historico.forEach((consulta, index) => {
-                console.log(`Processando consulta ${index + 1}:`, consulta);
-                
+            historico.forEach((consulta, index) => {                
                 const consultaDiv = document.createElement('div');
                 consultaDiv.className = 'impressao-consulta';
 
