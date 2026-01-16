@@ -404,10 +404,8 @@ class EditarExamesBusca {
             this.prontuarioOriginal = conteudoFormatado;
         }
 
-        // Buscar dados de evolução para impressão
         await this.carregarDadosEvolucao(nrAtendimento);
 
-        // Mostrar containers
         document.getElementById('dados-paciente-container').style.display = 'block';
         document.getElementById('tabs-edicao-container').style.display = 'block';
         document.getElementById('button-group-container').style.display = 'flex';
@@ -476,12 +474,10 @@ class EditarExamesBusca {
         }
 
         try {
-            // Carregar dados de evolução se ainda não foram carregados
             if (!this.dadosEvolucaoAtual) {
                 await this.carregarDadosEvolucao(this.nrAtendimentoAtual);
             }
 
-            // Preencher dados do cabeçalho
             document.getElementById('print-nr-atendimento').textContent = this.nrAtendimentoAtual || '-';
             document.getElementById('print-nome').textContent = this.dadosPacienteAtual.nm_pessoa_fisica || '-';
             document.getElementById('print-data-atendimento').textContent = this.dadosPacienteAtual.dt_atendimento || '-';
@@ -498,7 +494,6 @@ class EditarExamesBusca {
             document.getElementById('print-sexo').textContent = this.dadosPacienteAtual.ie_sexo === 'M' ? 'Masculino' : 
                                                                this.dadosPacienteAtual.ie_sexo === 'F' ? 'Feminino' : '-';
 
-            // Preencher seções - usando os nomes corretos dos campos
             document.getElementById('print-qp').textContent = this.dadosEvolucaoAtual.queixa_paciente || 'Não informado';
             document.getElementById('print-refracao').textContent = this.dadosEvolucaoAtual.refracao || 'Não informado';
             document.getElementById('print-acuidade').textContent = this.dadosEvolucaoAtual.acuidade_visual || 'Não informado';
@@ -508,14 +503,11 @@ class EditarExamesBusca {
             document.getElementById('print-cirurgia').textContent = this.dadosEvolucaoAtual.cirurgias || 'Não informado';
             document.getElementById('print-lente').textContent = this.dadosEvolucaoAtual.lente_contato || 'Não informado';
 
-            // IMPORTANTE: Remover outras classes antes de adicionar a nova
             document.body.classList.remove('imprimindo-resumo', 'imprimindo-agenda');
             document.body.classList.add('imprimindo-prontuario');
             
-            // Imprimir
             window.print();
             
-            // REMOVER a classe após a impressão
             setTimeout(() => {
                 document.body.classList.remove('imprimindo-prontuario');
             }, 1000);
@@ -523,7 +515,6 @@ class EditarExamesBusca {
         } catch (error) {
             console.error('Erro ao imprimir:', error);
             this.exibirMensagem('Erro ao preparar impressão', 'error');
-            // Remover classe em caso de erro
             document.body.classList.remove('imprimindo-prontuario');
         }
     }
@@ -535,7 +526,6 @@ class EditarExamesBusca {
         }
 
         try {            
-            // Buscar histórico do paciente
             const response = await fetch(`/api/historico-paciente/${this.dadosPacienteAtual.cd_pessoa_fisica}`);
             
             if (!response.ok) {
@@ -549,7 +539,6 @@ class EditarExamesBusca {
                 return;
             }
 
-            // Preencher dados do cabeçalho
             document.getElementById('print-resumo-nome').textContent = this.dadosPacienteAtual.nm_pessoa_fisica || '-';
             document.getElementById('print-resumo-nascimento').textContent = this.dadosPacienteAtual.dt_nascimento || '-';
             document.getElementById('print-resumo-cpf').textContent = this.dadosPacienteAtual.nr_cpf || '-';
@@ -561,7 +550,6 @@ class EditarExamesBusca {
                 minute: '2-digit' 
             });
 
-            // Montar conteúdo do histórico
             const conteudoResumo = document.getElementById('impressao-resumo-conteudo');
             conteudoResumo.innerHTML = '';
 
@@ -582,9 +570,7 @@ class EditarExamesBusca {
                     </div>
                 `;
 
-                // Adicionar conteúdo formatado
                 if (consulta.conteudo) {
-                    // O conteúdo já vem formatado do backend
                     const conteudoFormatado = consulta.conteudo.replace(/\n/g, '<br>');
                     consultaHTML += `
                         <div class="impressao-consulta-campo">
@@ -599,14 +585,11 @@ class EditarExamesBusca {
 
             console.log('Conteúdo de resumo montado, preparando para impressão');
 
-            // IMPORTANTE: Remover outras classes antes de adicionar a nova
             document.body.classList.remove('imprimindo-prontuario', 'imprimindo-agenda');
             document.body.classList.add('imprimindo-resumo');
             
-            // Imprimir
             window.print();
             
-            // REMOVER a classe após a impressão
             setTimeout(() => {
                 document.body.classList.remove('imprimindo-resumo');
             }, 1000);
@@ -614,7 +597,6 @@ class EditarExamesBusca {
         } catch (error) {
             console.error('Erro ao imprimir resumo:', error);
             this.exibirMensagem('Erro ao preparar impressão do resumo: ' + error.message, 'error');
-            // Remover classe em caso de erro
             document.body.classList.remove('imprimindo-resumo');
         }
     }
@@ -634,7 +616,6 @@ class EditarExamesBusca {
             const textareaExames = document.getElementById('textarea-exames');
             const textareaCirurgias = document.getElementById('textarea-cirurgias');
 
-            // Salvar Exames se foi modificado
             if (textareaExames.value !== this.examesOriginais) {
                 const responseExames = await fetch(`/api/exames/${nrAtendimento}`, {
                     method: 'PUT',
@@ -651,7 +632,6 @@ class EditarExamesBusca {
                 }
             }
 
-            // Salvar Cirurgias se foi modificado
             if (textareaCirurgias.value !== this.cirurgiasOriginais) {
                 const responseCirurgias = await fetch(`/api/cirurgias/${nrAtendimento}`, {
                     method: 'PUT',
@@ -745,7 +725,6 @@ class EditarExamesBusca {
     }
 }
 
-// Função para formatar data por extenso
 function dataPorExtenso(dataISO) {
     const meses = [
         "janeiro", "fevereiro", "março", "abril", "maio", "junho",
@@ -755,7 +734,6 @@ function dataPorExtenso(dataISO) {
     return `${parseInt(dia)} de ${meses[parseInt(mes) - 1]} de ${ano}`;
 }
 
-// Preencher campo de data com hoje
 document.addEventListener('DOMContentLoaded', () => {
     const inputData = document.getElementById('data-impressao-agenda');
     if (inputData) {
@@ -764,12 +742,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// Evento do botão de imprimir agenda
 document.getElementById('btn-imprimir-agenda').addEventListener('click', async () => {
     const data = document.getElementById('data-impressao-agenda').value;
     if (!data) return alert("Selecione uma data!");
 
-    // Buscar agenda do backend
     const resp = await fetch(`/get_agenda_data?data=${data}`);
     if (!resp.ok) return alert("Erro ao buscar agenda!");
 
@@ -777,7 +753,6 @@ document.getElementById('btn-imprimir-agenda').addEventListener('click', async (
     const tbody = document.getElementById('impressao-agenda-tbody');
     tbody.innerHTML = "";
 
-    // agenda.data: array de arrays, colunas: [0]=hora, [5]=nome, [7]=convenio, [1]=tipo, [2]=comp
     agenda.data
         .filter(linha => linha[2] !== "Cancelada")
         .forEach(linha => {
@@ -791,27 +766,21 @@ document.getElementById('btn-imprimir-agenda').addEventListener('click', async (
         tbody.appendChild(tr);
     });
 
-    // Preencher header
     document.getElementById('agenda-data-extenso').textContent = dataPorExtenso(data);
 
-    // IMPORTANTE: Remover outras classes antes de adicionar a nova
     document.body.classList.remove('imprimindo-prontuario', 'imprimindo-resumo');
     
-    // Mostrar template de impressão
     document.getElementById('impressao-agenda-template').style.display = "block";
     document.body.classList.add('imprimindo-agenda');
 
-    // Imprimir
     window.print();
 
-    // Esconder template após impressão e remover classe
     setTimeout(() => {
         document.getElementById('impressao-agenda-template').style.display = "none";
         document.body.classList.remove('imprimindo-agenda');
     }, 1000);
 });
 
-// Inicializar quando o DOM carregar
 document.addEventListener('DOMContentLoaded', () => {
     new EditarExamesBusca();
 });

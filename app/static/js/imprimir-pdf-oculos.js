@@ -71,6 +71,12 @@ document.addEventListener('DOMContentLoaded', () => {
             const valor = campo.value || null; 
             dados[nome] = valor;
         });
+        const elementoData = document.getElementById('data-agenda-display');
+        if (elementoData) {
+            dados['dt_atendimento'] = elementoData.textContent.trim();
+        } else {
+            dados['dt_atendimento'] = null;
+        }
         return dados;
     };
 

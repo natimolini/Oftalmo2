@@ -1057,6 +1057,8 @@ async def gerar_pdf_oculos(request: Request):
         dt_nascimento = dados.get("dataNascimento")
         nr_cpf = dados.get("dataCpf")
         
+        dt_atendimento = valores.get("dt_atendimento")
+        
         if tipo == 'estatica':
             vl_od_pl_ard_esf = valores.get('vl_od_pl_are_esf')
             vl_od_pl_ard_cil = valores.get('vl_od_pl_are_cil')
@@ -1085,6 +1087,7 @@ async def gerar_pdf_oculos(request: Request):
             nm_paciente,
             dt_nascimento,
             nr_cpf,
+            dt_atendimento,
             tipo=tipo
         )
             

@@ -21,12 +21,24 @@ def format_value(value, is_axis=False):
         except (ValueError, TypeError):
             return value
 
-def retornar_html_oculos(nr_atendimento, vl_od_pl_ard_esf, vl_od_pl_ard_cil, vl_od_pl_ard_eixo, vl_oe_pl_ard_esf, vl_oe_pl_ard_cil, vl_oe_pl_ard_eixo, adicao, observacao, nm_paciente, dt_nascimento, nr_cpf, tipo="dinamica"):
-    data_atual = datetime.now()
-    data_formatada = data_atual.strftime("%d de %B de %Y")
+def retornar_html_oculos(nr_atendimento, vl_od_pl_ard_esf, vl_od_pl_ard_cil, vl_od_pl_ard_eixo, vl_oe_pl_ard_esf, vl_oe_pl_ard_cil, vl_oe_pl_ard_eixo, adicao, observacao, nm_paciente, dt_nascimento, nr_cpf, dt_atendimento, tipo="dinamica"):
+    print(dt_atendimento)
+    if dt_atendimento:
+        try:
+            dia, mes, ano = dt_atendimento.split('/')
+            meses = {
+                '01': "Janeiro", '02': "Fevereiro", '03': "Março", '04': "Abril", 
+                '05': "Maio", '06': "Junho", '07': "Julho", '08': "Agosto", 
+                '09': "Setembro", '10': "Outubro", '11': "Novembro", '12': "Dezembro"
+            }
+            data_formatada = f"{dia} de {meses.get(mes, mes)} de {ano}"
+        except:
+            data_formatada = dt_atendimento
+    else:
+        from datetime import datetime
+        data_formatada = datetime.now().strftime("%d de %B de %Y")
 
     data_nascimento_formatada = formatar_data(dt_nascimento)
-
     tipo_refracao = "Dinâmica" if tipo == "dinamica" else "Estática"
 
     od_esf = format_value(vl_od_pl_ard_esf)
