@@ -136,10 +136,10 @@ def get_consultas_por_paciente(cd_pessoa_fisica):
             oc.nr_sequencia
     ) sub
     WHERE rn = 1
+    AND dt_consulta >= TO_DATE('17/10/2025', 'DD/MM/YYYY')
     ORDER BY dt_consulta ASC
     """
     results = oraconn.execute_select(query, {'cd_pessoa_fisica': cd_pessoa_fisica})
-    print(f"Consultas encontradas: {len(results)} - {results}")
     
     if not results:
         return []
@@ -230,6 +230,7 @@ def get_consultas_antigas_alergia(cd_pessoa_fisica):
         FROM paciente_alergia
         WHERE cd_pessoa_fisica = :cd_pessoa_fisica
         AND dt_registro IS NOT NULL
+        AND dt_registro < TO_DATE('17/10/2025', 'DD/MM/YYYY')
         ORDER BY dt_registro ASC
     """
     results = oraconn.execute_select(query, {'cd_pessoa_fisica': cd_pessoa_fisica})

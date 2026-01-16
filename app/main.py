@@ -1057,6 +1057,8 @@ async def gerar_pdf_oculos(request: Request):
         dt_nascimento = dados.get("dataNascimento")
         nr_cpf = dados.get("dataCpf")
         
+        dt_atendimento = valores.get("dt_atendimento")
+        
         if tipo == 'estatica':
             vl_od_pl_ard_esf = valores.get('vl_od_pl_are_esf')
             vl_od_pl_ard_cil = valores.get('vl_od_pl_are_cil')
@@ -1085,6 +1087,7 @@ async def gerar_pdf_oculos(request: Request):
             nm_paciente,
             dt_nascimento,
             nr_cpf,
+            dt_atendimento,
             tipo=tipo
         )
             
@@ -1099,15 +1102,11 @@ async def gerar_pdf_receita(request: Request):
         dados = await request.json()
         receita = dados.get("receita")
         
-        # Aceitar ambos os formatos de nome de campo
         nm_paciente = dados.get("nm_pessoa_fisica") or dados.get("nmPessoaFisica")
         dt_nascimento = dados.get("data_nascimento") or dados.get("dataNascimento")
         nr_cpf = dados.get("data_cpf") or dados.get("dataCpf")
         nr_copias = dados.get("nr_copias", 1)
 
-        logger.info(f"Gerando receita: {nm_paciente}, {dt_nascimento}, {nr_cpf}, cópias: {nr_copias}")
-
-        # Validar se os dados essenciais foram recebidos
         if not nm_paciente:
             raise HTTPException(status_code=400, detail="Nome do paciente não informado")
         if not dt_nascimento:
@@ -1724,7 +1723,6 @@ async def historico_paciente(cd_pessoa_fisica: str):
         
         historico.sort(key=lambda x: parse_data(x.get("data_consulta", "")), reverse=False)
 
-        logger.info(f"Total de registros no histórico: {len(historico)}")
         return JSONResponse(content=historico)
         
     except Exception as e:
@@ -2336,7 +2334,6 @@ async def get_evolucao_completa(nr_atendimento: int, request: Request):
                 "message": "Nenhum dado de evolução encontrado"
             })
         
-        # Buscar dados adicionais que podem não estar na evolução básica
         refracao_completa = get_ultima_refracao.get_ultima_refracao(nr_atendimento)
         
         # Buscar dados individuais (mesma forma que é feito ao carregar o prontuário)
