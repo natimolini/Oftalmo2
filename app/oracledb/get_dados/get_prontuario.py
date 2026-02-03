@@ -1,4 +1,6 @@
 from app.oracledb.oracle_connection import OracleConnection
+from datetime import datetime
+
 
 #PRODUCAO
 oraconn = OracleConnection('ghrprontuario', 'Xy7#kT2@', '10.250.250.2', '1521', 'dbprod.oftalmocuritiba.com.br')
@@ -12,7 +14,7 @@ def get_nr_seq_consulta(nr_atendimento):
 
     return oraconn.execute_select(query, {'nr_atendimento': nr_atendimento})
 
-def get_dados_paciente(nr_atendimento):
+def get_dados_paciente_antigo(nr_atendimento):
     query = """
     SELECT
         ac.nm_paciente AS nome,
@@ -84,6 +86,97 @@ def get_dados_paciente(nr_atendimento):
     cpf = result[7]
     nascimento = result[8]
     cd_pessoa_fisica = result[9]
+
+    return nm_paciente, idade_paciente, profissao, convenio, ultima_consulta, sexo, nr_sequencia_ultima_consulta, cpf, nascimento, cd_pessoa_fisica
+
+def get_dados_paciente(nr_atendimento):
+    query = """
+    SELECT
+        ac.nm_paciente AS nome,                   -- [0]
+        ac.qt_idade_pac AS idade,                 -- [1] (O que vamos sobrescrever)
+        (
+            SELECT MAX(b.ds_cargo)
+            FROM pessoa_fisica a
+            JOIN cargo b ON a.cd_cargo = b.cd_cargo
+            WHERE a.cd_pessoa_fisica = ac.cd_pessoa_fisica
+        ) AS profissao,                           -- [2]
+        c.ds_convenio AS convenio,                -- [3]
+        (
+            SELECT TO_CHAR(MAX(dt_consulta), 'DD/MM/YYYY')
+            FROM oft_consulta oc1
+            WHERE oc1.cd_pessoa_fisica = ac.cd_pessoa_fisica
+            AND oc1.dt_consulta < (
+                SELECT MAX(oc2.dt_consulta)
+                FROM oft_consulta oc2
+                WHERE oc2.cd_pessoa_fisica = ac.cd_pessoa_fisica
+            )
+        ) AS ultima_consulta,                     -- [4]
+        (
+            SELECT nr_sequencia
+            FROM oft_consulta oc1
+            WHERE oc1.cd_pessoa_fisica = ac.cd_pessoa_fisica
+            AND oc1.dt_consulta = (
+                SELECT MAX(oc2.dt_consulta)
+                FROM oft_consulta oc2
+                WHERE oc2.cd_pessoa_fisica = ac.cd_pessoa_fisica
+                    AND oc2.dt_consulta < (
+                        SELECT MAX(oc3.dt_consulta)
+                        FROM oft_consulta oc3
+                        WHERE oc3.cd_pessoa_fisica = ac.cd_pessoa_fisica
+                    )
+            )
+        ) AS nr_sequencia_ultima_consulta,        -- [5]
+        CASE
+            WHEN p.ie_sexo = 'M' THEN 'Masculino'
+            WHEN p.ie_sexo = 'F' THEN 'Feminino'
+            ELSE 'Indefinido'
+        END AS sexo,                              -- [6]
+        p.nr_cpf AS cpf,                          -- [7]
+        p.dt_nascimento AS nascimento,            -- [8]
+        p.cd_pessoa_fisica AS cd_pessoa_fisica    -- [9]
+    FROM
+        agenda_consulta ac
+    LEFT JOIN
+        convenio c ON c.cd_convenio = ac.cd_convenio
+    LEFT JOIN
+        pessoa_fisica p ON p.cd_pessoa_fisica = ac.cd_pessoa_fisica
+    WHERE
+        ac.nr_atendimento = :nr_atendimento
+    """
+
+    results = oraconn.execute_select(query, {'nr_atendimento': nr_atendimento})
+    if not results:
+        return None
+
+    result = [["" if val is None else val for val in row] for row in results][0]
+
+    nm_paciente = result[0]
+    idade_original = result[1] 
+    profissao = result[2]
+    convenio = result[3]
+    ultima_consulta = result[4]
+    nr_sequencia_ultima_consulta = result[5]
+    sexo = result[6]
+    cpf = result[7]
+    nascimento = result[8] 
+    cd_pessoa_fisica = result[9]
+
+    idade_paciente = idade_original
+    if nascimento:
+        try:
+            dt_nasc = nascimento
+            if isinstance(nascimento, str):
+                for fmt in ('%d/%m/%Y', '%Y-%m-%d %H:%M:%S', '%Y-%m-%d'):
+                    try:
+                        dt_nasc = datetime.strptime(nascimento, fmt)
+                        break
+                    except: continue
+            
+            hoje = datetime.now()
+            idade_calc = hoje.year - dt_nasc.year - ((hoje.month, hoje.day) < (dt_nasc.month, dt_nasc.day))
+            idade_paciente = str(idade_calc)
+        except:
+            pass 
 
     return nm_paciente, idade_paciente, profissao, convenio, ultima_consulta, sexo, nr_sequencia_ultima_consulta, cpf, nascimento, cd_pessoa_fisica
 

@@ -1,4 +1,6 @@
 from app.oracledb.oracle_connection import OracleConnection
+from datetime import datetime
+
 
 # PRODUCAO
 oraconn = OracleConnection('ghrprontuario', 'Xy7#kT2@', '10.250.250.2', '1521', 'dbprod.oftalmocuritiba.com.br')
@@ -6,6 +8,7 @@ oraconn = OracleConnection('ghrprontuario', 'Xy7#kT2@', '10.250.250.2', '1521', 
 # oraconn = OracleConnection('tasy', 'aloisk', '10.250.250.2', '1521', 'dbhomol.oftalmocuritiba.com.br')
 # TESTEGHR
 # oraconn = OracleConnection('demo', 'aloisktasy7818', '192.168.10.19', '1521', 'dbteste')
+
 
 def get_dados_agenda(cd_pessoa_fisica, data):
     query = """
@@ -48,8 +51,30 @@ def get_dados_agenda(cd_pessoa_fisica, data):
         'data': data
     })
 
-    # evita None no front
-    return [["" if val is None else val for val in row] for row in results]
+    lista_processada = []
+    
+    for row in results:
+        linha = list(row)
+        
+        dt_nasc_str = linha[12]
+        idade_calculada = ""
+        
+        if dt_nasc_str:
+            try:
+                nascimento = datetime.strptime(dt_nasc_str, '%d/%m/%Y')
+                hoje = datetime.now()
+                
+                idade = hoje.year - nascimento.year - ((hoje.month, hoje.day) < (nascimento.month, nascimento.day))
+                idade_calculada = str(idade)
+            except Exception:
+                idade_calculada = linha[6]
+
+        linha[6] = idade_calculada
+        
+        linha_limpa = ["" if val is None else val for val in linha]
+        lista_processada.append(linha_limpa)
+
+    return lista_processada
 
 def get_aviso(cd_pessoa_fisica):
     query = """

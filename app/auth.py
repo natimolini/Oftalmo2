@@ -3,10 +3,18 @@ import asyncpg
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-PG_CONFIG = {
+"""PG_CONFIG = {
     "user": "postgres",
     "password": "@GhrB$2024#",
     "database": "prontuario_oftalmo_prod",
+    "host": "localhost",
+    'port': 5432
+}"""
+
+PG_CONFIG = {
+    "user": "postgres",
+    "password": "phf1310",
+    "database": "oftalmo_teste",
     "host": "localhost",
     'port': 5432
 }
