@@ -17,9 +17,9 @@ class OracleConnection:
     def _initialize_oracle_client(cls):
         if not cls._oracle_client_initialized:
             #Oracle Pedro
-            oracle_client_path = r"C:\Oracle\instantclient_21_17"
+            #oracle_client_path = r"C:\Oracle\instantclient_21_17"
 
-            #oracle_client_path = "/opt/oracle/instantclient_23_9" #alternativa para linux
+            oracle_client_path = "/opt/oracle/instantclient_23_9" #alternativa para linux
             cx_Oracle.init_oracle_client(lib_dir=oracle_client_path)
             cls._oracle_client_initialized = True
 
