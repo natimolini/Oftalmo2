@@ -51,11 +51,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     window.enviarDadosReceita = async (dados) => {
         try {
-            // Capturar número de cópias
             const qtdCopiasInput = document.getElementById('qtd-copias');
             const nr_copias = qtdCopiasInput ? parseInt(qtdCopiasInput.value) || 1 : 1;
 
-            // Adicionar número de cópias aos dados
             const dadosCompletos = {
                 ...dados,
                 nr_copias: nr_copias
@@ -70,35 +68,62 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             if (response.ok) {
-                const htmlContent = await response.text();
+                const contentType = response.headers.get('Content-Type') || '';
 
-                const iframe = document.createElement('iframe');
-                iframe.style.position = 'absolute';
-                iframe.style.width = '0';
-                iframe.style.height = '0';
-                iframe.style.border = 'none';
-                document.body.appendChild(iframe);
+                if (contentType.includes('application/pdf')) {
+                    const blob = await response.blob();
+                    const url = URL.createObjectURL(blob);
+                    const iframe = document.createElement('iframe');
+                    iframe.style.display = 'none';
+                    iframe.src = url;
+                    document.body.appendChild(iframe);
 
-                const iframeDoc = iframe.contentWindow.document;
-                iframeDoc.open();
-                iframeDoc.write(htmlContent);
-                iframeDoc.close();
-
-                iframe.contentWindow.addEventListener('load', () => {
-                    setTimeout(() => {
-                        try {
-                            iframe.contentWindow.focus();
-                            iframe.contentWindow.print();
-                        } catch (e) {
-                            console.error("Erro ao imprimir:", e);
-                            exibirMensagem("Não foi possível abrir o diálogo de impressão", "error");
-                        }
-
+                    iframe.onload = () => {
                         setTimeout(() => {
-                            document.body.removeChild(iframe);
-                        }, 1000);
-                    }, 500);
-                });
+                            try {
+                                iframe.contentWindow.focus();
+                                iframe.contentWindow.print();
+                            } catch (e) {
+                                console.error('Erro ao imprimir PDF:', e);
+                                exibirMensagem("Não foi possível abrir o diálogo de impressão", "error");
+                            }
+                            setTimeout(() => {
+                                document.body.removeChild(iframe);
+                                URL.revokeObjectURL(url);
+                            }, 1000);
+                        }, 500);
+                    };
+                } else {
+                    const htmlContent = await response.text();
+
+                    const iframe = document.createElement('iframe');
+                    iframe.style.position = 'absolute';
+                    iframe.style.width = '0';
+                    iframe.style.height = '0';
+                    iframe.style.border = 'none';
+                    document.body.appendChild(iframe);
+
+                    const iframeDoc = iframe.contentWindow.document;
+                    iframeDoc.open();
+                    iframeDoc.write(htmlContent);
+                    iframeDoc.close();
+
+                    iframe.contentWindow.addEventListener('load', () => {
+                        setTimeout(() => {
+                            try {
+                                iframe.contentWindow.focus();
+                                iframe.contentWindow.print();
+                            } catch (e) {
+                                console.error("Erro ao imprimir:", e);
+                                exibirMensagem("Não foi possível abrir o diálogo de impressão", "error");
+                            }
+
+                            setTimeout(() => {
+                                document.body.removeChild(iframe);
+                            }, 1000);
+                        }, 500);
+                    });
+                }
 
                 exibirMensagem('Documento preparado para impressão!', 'success');
             } else {

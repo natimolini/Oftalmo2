@@ -89,38 +89,44 @@ document.addEventListener('DOMContentLoaded', () => {
             });
     
             if (response.ok) {
-                const htmlContent = await response.text();
+                const contentType = response.headers.get('Content-Type') || '';
 
+                if (contentType.includes('application/pdf')) {
+                    const blob = await response.blob();
+                    const url = URL.createObjectURL(blob);
+                    const iframe = document.createElement('iframe');
+                    iframe.style.display = 'none';
+                    iframe.src = url;
+                    document.body.appendChild(iframe);
 
-                const iframe = document.createElement('iframe');
-                iframe.style.display = 'none'; 
-                document.body.appendChild(iframe);
-
-                const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-                iframeDoc.open();
-                iframeDoc.write(htmlContent);
-                iframeDoc.close();
-
-                iframe.onload = () => {
-                    // Garantir que o documento está completamente carregado
-                    if (iframe.contentWindow.document.readyState === 'complete') {
-                        // Pequeno delay para garantir que o navegador está pronto
+                    iframe.onload = () => {
                         setTimeout(() => {
                             try {
                                 iframe.contentWindow.focus();
                                 iframe.contentWindow.print();
                             } catch (e) {
-                                console.error("Erro ao imprimir:", e);
-                                alert("Não foi possível abrir o diálogo de impressão. Por favor, tente novamente.");
+                                console.error('Erro ao imprimir PDF:', e);
+                                alert('Não foi possível abrir o diálogo de impressão. Por favor, tente novamente.');
                             }
-                            
                             setTimeout(() => {
                                 document.body.removeChild(iframe);
+                                URL.revokeObjectURL(url);
                             }, 1000);
                         }, 300);
-                    } else {
-                        // Se ainda não estiver carregado, aguarde
-                        iframe.contentWindow.addEventListener('load', () => {
+                    };
+                } else {
+                    const htmlContent = await response.text();
+                    const iframe = document.createElement('iframe');
+                    iframe.style.display = 'none'; 
+                    document.body.appendChild(iframe);
+
+                    const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+                    iframeDoc.open();
+                    iframeDoc.write(htmlContent);
+                    iframeDoc.close();
+
+                    iframe.onload = () => {
+                        if (iframe.contentWindow.document.readyState === 'complete') {
                             setTimeout(() => {
                                 try {
                                     iframe.contentWindow.focus();
@@ -129,14 +135,28 @@ document.addEventListener('DOMContentLoaded', () => {
                                     console.error("Erro ao imprimir:", e);
                                     alert("Não foi possível abrir o diálogo de impressão. Por favor, tente novamente.");
                                 }
-                                
                                 setTimeout(() => {
                                     document.body.removeChild(iframe);
                                 }, 1000);
                             }, 300);
-                        });
-                    }
-                };
+                        } else {
+                            iframe.contentWindow.addEventListener('load', () => {
+                                setTimeout(() => {
+                                    try {
+                                        iframe.contentWindow.focus();
+                                        iframe.contentWindow.print();
+                                    } catch (e) {
+                                        console.error("Erro ao imprimir:", e);
+                                        alert("Não foi possível abrir o diálogo de impressão. Por favor, tente novamente.");
+                                    }
+                                    setTimeout(() => {
+                                        document.body.removeChild(iframe);
+                                    }, 1000);
+                                }, 300);
+                            });
+                        }
+                    };
+                }
             } else {
                 console.error('Erro ao gerar o PDF:', response);
                 exibirMensagem("Erro ao gerar o PDF.", "error");

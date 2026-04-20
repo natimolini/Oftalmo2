@@ -75,7 +75,7 @@ def gerar_estrutura_pagina_exames(conteudo_exames, nm_paciente, ds_convenio, nr_
         }}
         
         thead td {{
-            padding-top: 0.5cm;
+            padding-top: 0.7cm; 
             padding-bottom: 0.3cm;
         }}
 
