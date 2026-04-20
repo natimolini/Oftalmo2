@@ -1148,9 +1148,23 @@ async def gerar_pdf_exames(request: Request):
         try:
             html_pdf = impressao_dados_evolucao.retornar_html_exames(exames, nm_paciente, convenio, dt_nascimento, nr_cpf)
             
-            return HTMLResponse(content=html_pdf, status_code=200)
+            try:
+                try:
+                    from weasyprint import HTML
+                except Exception as import_err:
+                    raise RuntimeError('WeasyPrint não está disponível') from import_err
+
+                pdf_bytes = HTML(string=html_pdf).write_pdf()
+                return StreamingResponse(
+                    BytesIO(pdf_bytes),
+                    media_type="application/pdf",
+                    headers={"Content-Disposition": "inline; filename=exames.pdf"}
+                )
+            except Exception as pdf_exc:
+                logger.warning(f"Erro ao gerar PDF com WeasyPrint, retornando HTML: {pdf_exc}")
+                return HTMLResponse(content=html_pdf, status_code=200)
         except Exception as e:
-            print(f'Erro ao tentar gerar arquivo PDF: {e}')
+            return {"erro": f"Erro ao gerar o PDF: {str(e)}"}
 
     except Exception as e:
         return {"erro": f"Erro ao gerar o PDF: {str(e)}"}
